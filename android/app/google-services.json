@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "658901568912",
+    "firebase_url": "https://biodiversity-database.firebaseio.com",
+    "project_id": "biodiversity-database",
+    "storage_bucket": "biodiversity-database.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:658901568912:android:bdea5635eafb4234c5b715",
+        "android_client_info": {
+          "package_name": "bettergardens.ch.biodiversity"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "658901568912-4e1a2istkkmmfepm7jfrfgsuulibmnu8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bettergardens.ch.biodiversity",
+            "certificate_hash": "ee85dd64d3c7a593f3827dadaeac4a7385e320be"
+          }
+        },
+        {
+          "client_id": "658901568912-c87utu1sadmo9lulu1be463g0c0s534o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bettergardens.ch.biodiversity",
+            "certificate_hash": "e13a64e4f56a72dbaf39bcfc73c8ace38231aae7"
+          }
+        },
+        {
+          "client_id": "658901568912-fhrit6fu17840v4jj81bug55gnpbtbcl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrO1yo9QazI9wxfgpztr8LhcmMyJomanA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "658901568912-fhrit6fu17840v4jj81bug55gnpbtbcl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

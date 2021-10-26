@@ -1,0 +1,23 @@
+# Privacy agreement
+
+## Gespeicherte Daten
+
+Die Daten welche wir von dir speichern sind die folgenden:
+- Name
+- Vorname
+- Email
+- Spitzname
+- Adresse
+
+Diese werden verwendet um die App zu betreiben.
+Die Daten werden nicht an dritte weitergegeben.
+
+## Verwendung der Daten
+
+In Zukunft könnten die Daten anonymisiert für statistische Zwecke verwendet werden.
+
+## Deine Rechte
+
+Deine Daten kannst du jederzeit schriftlich anfordern oder löschen lassen.
+schreibe dazu einfach eine Mail an <gabriel.ineichen@students.fhnw.ch>
+

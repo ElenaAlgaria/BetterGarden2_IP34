@@ -1,0 +1,69 @@
+include: package:pedantic/analysis_options.yaml
+
+linter:
+  rules:
+    always_use_package_imports: true
+    prefer_relative_imports: false
+    package_api_docs: true
+    public_member_api_docs: false
+    prefer_single_quotes: true
+    use_key_in_widget_constructors: true
+    prefer_const_constructors: true
+    unawaited_futures: false
+    avoid_print: true
+    comment_references: true
+    avoid_empty_else: true
+    valid_regexps: true
+    iterable_contains_unrelated_type: true
+
+
+analyzer:
+  exclude:
+    - lib/components/tags/
+  errors:
+    always_use_package_imports: error
+    avoid_empty_else: error
+    avoid_print: error
+    avoid_relative_lib_imports: error
+    avoid_returning_null_for_future: error
+    avoid_slow_async_io: error
+    avoid_types_as_parameter_names: error
+    avoid_web_libraries_in_flutter: error
+    cancel_subscriptions: error
+    close_sinks: error
+    comment_references: error
+    control_flow_in_finally: error
+    diagnostic_describe_all_properties: error
+    empty_statements: error
+    hash_and_equals: error
+    invariant_booleans: error
+    iterable_contains_unrelated_type: error
+    list_remove_unrelated_type: error
+    literal_only_boolean_expressions: error
+    no_adjacent_strings_in_list: error
+    no_duplicate_case_values: error
+    no_logic_in_create_state: error
+    prefer_relative_imports: error
+    prefer_void_to_null: error
+    test_types_in_equals: error
+    throw_in_finally: error
+    unnecessary_statements: error
+    unrelated_type_equality_checks: error
+    unsafe_html: error
+    use_key_in_widget_constructors: error
+    valid_regexps: error
+    package_api_docs: error
+    public_member_api_docs: warning
+
+    type_annotate_public_apis: error
+    overridden_fields: warning
+    parameter_assignments: warning
+    sort_child_properties_last: warning
+    sort_constructors_first: warning
+    sort_unnamed_constructors_first: warning
+    prefer_double_quotes: warning
+
+
+    missing_required_param: error
+    deprecated_member_use: error
+    missing_return: warning
