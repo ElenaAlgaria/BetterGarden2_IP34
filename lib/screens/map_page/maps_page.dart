@@ -5,6 +5,7 @@ import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/text_field_with_descriptor.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
+import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -30,49 +31,89 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   LatLng _focusedLocation;
   AnimationController _fabController;
   Garden _tappedGarden = Garden.empty();
+
   static const List<IconData> icons = [
     Icons.playlist_add,
     Icons.house,
   ];
+  var _currentSpecies;
   final double _zoom = 14.0;
   Set<Marker> _markers = {};
+
+  Set<Circle> circles = {};
+
+  List<Species> speciesList = [];
 
   @override
   void initState() {
     super.initState();
     ServiceProvider.instance.mapMarkerService.getMarkerSet(
         onTapCallback: (element) {
-      setState(() {
-        _tappedGarden = element;
-      });
-      displayModalBottomSheet(context);
-    }).then((markers) {
+          setState(() {
+            _tappedGarden = element;
+          });
+          // displayModalBottomSheet(context);
+        }).then((markers) {
       setState(() {
         _markers = markers;
       });
     });
+    speciesList =
+        ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
     _fabController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
   }
 
+  void modifyPermieterCircle(String name) {
+    if (name != '') {
+      addCircle(500);
+    } else {
+      removeCircle();
+    }
+  }
+
+  void removeCircle() {
+    setState(() {
+      circles = <Circle>{};
+    });
+  }
+
+  void addCircle(radius) {
+    var c = Set<Circle>.from(circles);
+    var lat = widget.garden.getLatLng().latitude;
+    var lon = widget.garden.getLatLng().longitude;
+    c.add(Circle(
+        circleId: CircleId('circleOneTest'),
+        radius: radius.toDouble(),
+        center: LatLng(lat, lon),
+        fillColor: Color(0x339fc476),
+        strokeWidth: 10));
+    setState(() {
+      circles = c;
+    });
+  }
+
   void loadUserLocation() async {
     if (widget.garden == null &&
         Provider.of<MapInteractionContainer>(context, listen: false)
-                .selectedLocation ==
+            .selectedLocation ==
             null) {
       await Provider.of<MapInteractionContainer>(context, listen: false)
           .getLocation()
-          .then((loc) =>
-              mapController.animateCamera(CameraUpdate.newLatLng(loc)));
+          .then((loc) => {setCurrentLocation(loc)});
     }
+  }
+
+  void setCurrentLocation(LatLng loc) async {
+    mapController.animateCamera(CameraUpdate.newLatLng(loc));
   }
 
   @override
   Widget build(BuildContext context) {
     final mapInteraction =
-        Provider.of<MapInteractionContainer>(context, listen: false);
+    Provider.of<MapInteractionContainer>(context, listen: false);
     loadUserLocation();
 
     return Scaffold(
@@ -85,17 +126,17 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           GoogleMap(
             myLocationEnabled: true,
             myLocationButtonEnabled:
-                (defaultTargetPlatform == TargetPlatform.iOS) ? false : true,
+            (defaultTargetPlatform == TargetPlatform.iOS) ? false : true,
             onMapCreated: (controller) => mapController = controller,
             initialCameraPosition: (widget.garden != null)
                 ? CameraPosition(target: widget.garden.getLatLng(), zoom: _zoom)
                 : (mapInteraction.selectedLocation != null)
-                    ? CameraPosition(
-                        target: mapInteraction.selectedLocation, zoom: _zoom)
-                    : CameraPosition(
-                        target: mapInteraction.defaultLocation,
-                        zoom: _zoom,
-                      ),
+                ? CameraPosition(
+                target: mapInteraction.selectedLocation, zoom: _zoom)
+                : CameraPosition(
+              target: mapInteraction.defaultLocation,
+              zoom: _zoom,
+            ),
             zoomControlsEnabled: false,
             rotateGesturesEnabled: false,
             mapToolbarEnabled: false,
@@ -115,7 +156,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               Provider.of<MapInteractionContainer>(context, listen: false)
                   .selectedLocation = pos;
             },
+            circles: Set<Circle>.from(circles),
           ),
+          speciesListWidget()
         ],
       ),
       floatingActionButton: Row(
@@ -151,15 +194,53 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     );
   }
 
+  Widget speciesListWidget() {
+    return Container(
+        padding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
+        child: Container(
+            color: Colors.white,
+            child: DropdownButton<String>(
+              // value: selectedPurpose,
+              hint: Text(
+                _currentSpecies ?? 'Spezies auswählen',
+                style: TextStyle(fontFamily: "Gotham"),
+              ),
+              items: [
+                const DropdownMenuItem<String>(
+                  value: '',
+                  child: Text(
+                    'Keine',
+                    style: TextStyle(fontFamily: "Gotham"),
+                  ),
+                ),
+                ...speciesList.map((species) {
+                  return DropdownMenuItem<String>(
+                    value: species.name,
+                    child: Text(
+                      species.name,
+                      style: const TextStyle(fontFamily: "Gotham"),
+                    ),
+                  );
+                }).toList()
+              ],
+              onChanged: (String name) {
+                modifyPermieterCircle(name);
+                setState(() {
+                  _currentSpecies = name;
+                });
+              },
+            )));
+  }
+
   Future<Widget> displayModalBottomSheet(BuildContext context) async {
     return await showModalBottomSheet(
         barrierColor: Colors.transparent,
         backgroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20.0),
-          topRight: Radius.circular(20.0),
-        )),
+              topLeft: Radius.circular(20.0),
+              topRight: Radius.circular(20.0),
+            )),
         context: context,
         isScrollControlled: true,
         builder: (context) {
@@ -222,15 +303,16 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         });
   }
 
-  Future<Widget> displayModalBottomSheetConnectionProject(BuildContext context) async {
+  Future<Widget> displayModalBottomSheetConnectionProject(
+      BuildContext context) async {
     return await showModalBottomSheet(
         barrierColor: Colors.transparent,
         backgroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20.0),
-          topRight: Radius.circular(20.0),
-        )),
+              topLeft: Radius.circular(20.0),
+              topRight: Radius.circular(20.0),
+            )),
         context: context,
         isScrollControlled: true,
         builder: (context) {
