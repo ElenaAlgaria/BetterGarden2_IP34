@@ -8,7 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 /// Displays the impressum
 class CreateGroupPage extends StatelessWidget {
   /// Displays the impressum
-  CreateGroupPage({Key key}) : super(key: key);
+  CreateGroupPage(currentSpecies, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

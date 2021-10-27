@@ -206,7 +206,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => CreateGroupPage()),
+              MaterialPageRoute(builder: (context) => CreateGroupPage(_currentSpecies)),
             );
           },
         ));
