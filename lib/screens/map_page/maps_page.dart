@@ -6,6 +6,7 @@ import 'package:biodiversity/components/text_field_with_descriptor.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/species.dart';
+import 'package:biodiversity/screens/create_group_page/create_group_page.dart';
 import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -158,7 +159,8 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             },
             circles: Set<Circle>.from(circles),
           ),
-          speciesListWidget()
+          speciesListWidget(),
+          navigateToCreateGroupButton()
         ],
       ),
       floatingActionButton: Row(
@@ -192,6 +194,22 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           ),
       ),
     );
+  }
+
+  Widget navigateToCreateGroupButton() {
+    return Container(
+        margin: EdgeInsets.fromLTRB(250, 0, 0, 0),
+        color: Colors.white,
+        child: IconButton(
+          icon: const Icon(Icons.add),
+          tooltip: 'Create new Group',
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CreateGroupPage()),
+            );
+          },
+        ));
   }
 
   Widget speciesListWidget() {
