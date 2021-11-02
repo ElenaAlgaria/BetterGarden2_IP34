@@ -14,17 +14,22 @@ class CreateVernetzungsprojekt extends StatelessWidget {
       drawer: MyDrawer(),
       body: Column(
       children: [
-        const TextField(
+         const TextField(
           decoration:InputDecoration(
             hintText: 'Projekttitel',
             labelText: 'Projekttitel',
             labelStyle: TextStyle(
               fontSize: 15,
-              color: Colors.black
-
+              color: Colors.black,
+/*              validaor: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Geben Sie Ihrem Vernetzungsprojekt einen Titel.';
+                }
+                return null;
+              }*/
             )
           ),
-              maxLength: 25,
+              maxLength: 20,
         ),
         const TextField(
           decoration: InputDecoration(
@@ -32,10 +37,10 @@ class CreateVernetzungsprojekt extends StatelessWidget {
             labelText: 'Projektbeschreibung',
             labelStyle: TextStyle(
               fontSize: 15,
-              color: Colors.black
+              color: Colors.black,
             )
           ),
-            maxLength: 200,
+            maxLength: 500,
           maxLines: 2,
         )
       ],
