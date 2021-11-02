@@ -1,5 +1,6 @@
 import 'package:biodiversity/models/storage_provider.dart';
 import 'package:biodiversity/services/biodiversity_service.dart';
+import 'package:biodiversity/services/connection_project_service.dart';
 import 'package:biodiversity/services/garden_service.dart';
 import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/map_marker_service.dart';
@@ -41,4 +42,8 @@ class MockServiceProvider extends Mock implements ServiceProvider {
   @override
   MapMarkerService get mapMarkerService =>
       MapMarkerService(storageProvider: storageProvider);
+
+  @override
+  ConnectionProjectService get connectionProjectService =>
+      ConnectionProjectService(storageProvider: storageProvider);
 }
