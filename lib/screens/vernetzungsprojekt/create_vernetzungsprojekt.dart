@@ -22,7 +22,7 @@ class CreateVernetzungsprojekt extends StatelessWidget {
                         padding: const EdgeInsets.all(20.0),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             TextFormField(
                               validator: (value) {
@@ -37,7 +37,7 @@ class CreateVernetzungsprojekt extends StatelessWidget {
                                   labelText: 'Projekttitel',
                                   labelStyle: TextStyle(
                                     fontSize: 15,
-                                    color: Colors.black,
+                                   // color: Colors.black,
                                   )),
                               maxLength: 20,
                             ),
@@ -54,10 +54,10 @@ class CreateVernetzungsprojekt extends StatelessWidget {
                                   labelText: 'Projektbeschreibung',
                                   labelStyle: TextStyle(
                                     fontSize: 15,
-                                    color: Colors.black,
+                                  //  color: Colors.black,
                                   )),
                               maxLength: 500,
-                              maxLines: 2,
+                              maxLines: 3,
                             ),
                             ElevatedButton.icon(
                               onPressed: () {
