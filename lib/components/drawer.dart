@@ -9,6 +9,7 @@ import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
 import 'package:biodiversity/screens/species_list_page/species_list_page.dart';
 import 'package:biodiversity/screens/take_home_message_page/take_home_messages.dart';
+import 'package:biodiversity/screens/vernetzungsprojekt/create_vernetzungsprojekt.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -111,6 +112,16 @@ class MyDrawer extends StatelessWidget {
                                             'Bitte melde Dich zuerst an', LoginPage())),
                                   );
                                 }
+                              },
+                            ),
+                            ListTile(
+                              title: const Text('Vernetzungsprojekt starten'),
+                              onTap: () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => CreateVernetzungsprojekt()),
+                                );
                               },
                             ),
                             ListTile(
