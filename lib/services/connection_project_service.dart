@@ -57,9 +57,6 @@ class ConnectionProjectService extends ChangeNotifier {
 
   /// Returns a list of all registered ConnectionProjects
   List<ConnectionProject> getAllConnectionProjects() {
-    var newshit = ConnectionProject.empty(storageProvider: _storage);
-    newshit.title = "ASDF1";
-    newshit.saveConnectionProject();
     return _connectionProjects;
   }
 
