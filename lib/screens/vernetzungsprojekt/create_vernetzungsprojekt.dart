@@ -37,6 +37,11 @@ class CreateVernetzungsprojekt extends StatelessWidget {
           ),
             maxLength: 200,
           maxLines: 2,
+        ),
+        ElevatedButton.icon(
+          onPressed: () {  },
+          label: Text("Vernetzungsprojekt speichern"),
+          icon: Icon(Icons.save) ,
         )
       ],
     )
