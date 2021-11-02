@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 
 import 'package:biodiversity/components/drawer.dart';
 
-class CreateVernetzungsprojekt extends StatelessWidget {
-  CreateVernetzungsprojekt({Key key}) : super(key: key);
+class CreateProjectPage extends StatelessWidget {
+  CreateProjectPage({Key key}) : super(key: key);
 
   final _formkey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text('Vernetzungsprojekt erstellen')),
+        appBar: AppBar(title: const Text('Vernetzungsprojekt starten')),
         drawer: MyDrawer(),
         body: Builder(
             builder: (context) => Center(
@@ -37,7 +37,6 @@ class CreateVernetzungsprojekt extends StatelessWidget {
                                   labelText: 'Projekttitel',
                                   labelStyle: TextStyle(
                                     fontSize: 15,
-                                   // color: Colors.black,
                                   )),
                               maxLength: 20,
                             ),
@@ -54,7 +53,6 @@ class CreateVernetzungsprojekt extends StatelessWidget {
                                   labelText: 'Projektbeschreibung',
                                   labelStyle: TextStyle(
                                     fontSize: 15,
-                                  //  color: Colors.black,
                                   )),
                               maxLength: 500,
                               maxLines: 3,
@@ -65,7 +63,7 @@ class CreateVernetzungsprojekt extends StatelessWidget {
                                   return;
                                 }
                               },
-                              label: Text("Vernetzungsprojekt speichern"),
+                              label: Text("Vernetzungsprojekt starten"),
                               icon: Icon(Icons.save),
                             )
                           ],
