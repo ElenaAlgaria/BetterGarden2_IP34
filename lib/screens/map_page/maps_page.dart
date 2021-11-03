@@ -7,6 +7,7 @@ import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/screens/create_group_page/create_group_page.dart';
+import 'package:biodiversity/screens/project_page/create_project_page.dart';
 import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -206,7 +207,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => CreateGroupPage(_currentSpecies)),
+              MaterialPageRoute(builder: (context) => CreateProjectPage()),
             );
           },
         ));

@@ -2,10 +2,13 @@ import 'dart:developer';
 
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/dropdown_formfield.dart';
+import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/species.dart';
+import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CreateProjectPage extends StatefulWidget {
   /// Display the create project page
@@ -20,11 +23,12 @@ class _CreateProjectPageState extends State<CreateProjectPage>
   final _formkey = GlobalKey<FormState>();
 
   List<Species> _speciesList = [];
+  List<Garden> _gardensList = [];
   String _currentSpecies;
+  String _currentGarden;
 
-  TextEditingController _titleController = TextEditingController();
-  TextEditingController _descriptionController = TextEditingController();
-
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
 
   @override
   void initState() {
@@ -43,7 +47,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                 child: Form(
                     key: _formkey,
                     child: Padding(
-                        padding: const EdgeInsets.all(20.0),
+                        padding: const EdgeInsets.fromLTRB(20.0, 0, 20.0, 10.0),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -84,6 +88,10 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                               maxLines: 3,
                             ),
                             speciesListWidget(),
+                            Container(
+                              margin: const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
+                              child: gardensListWidget(),
+                            ),
                             ElevatedButton.icon(
                               onPressed: () {
                                 if (!_formkey.currentState.validate()) {
@@ -102,6 +110,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
   void saveProject() {
     // TODO: save project with db
     log(_currentSpecies);
+    log(_currentGarden);
     log(_titleController.text);
     log(_descriptionController.text);
   }
@@ -125,6 +134,35 @@ class _CreateProjectPageState extends State<CreateProjectPage>
         return {
           "display": species.name,
           "value": species.name,
+        };
+      }).toList(),
+      textField: 'display',
+      valueField: 'value',
+    );
+  }
+
+  Widget gardensListWidget() {
+    final user = Provider.of<User>(context);
+    _gardensList =
+        ServiceProvider.instance.gardenService.getAllGardensFromUser(user);
+    return DropDownFormField(
+      titleText: 'Garten',
+      hintText: 'Bitte auswählen',
+      value: _currentGarden,
+      onSaved: (value) {
+        setState(() {
+          _currentGarden = value;
+        });
+      },
+      onChanged: (value) {
+        setState(() {
+          _currentGarden = value;
+        });
+      },
+      dataSource: _gardensList.map((garden) {
+        return {
+          "display": garden.name,
+          "value": garden.name,
         };
       }).toList(),
       textField: 'display',
