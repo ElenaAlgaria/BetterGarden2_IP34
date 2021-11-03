@@ -35,6 +35,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
     super.initState();
     _speciesList =
         ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
+    _currentSpecies = _speciesList.first.name;
   }
 
   @override
@@ -145,6 +146,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
     final user = Provider.of<User>(context);
     _gardensList =
         ServiceProvider.instance.gardenService.getAllGardensFromUser(user);
+    _currentGarden = _gardensList.first.name;
     return DropDownFormField(
       titleText: 'Garten',
       hintText: 'Bitte auswählen',
