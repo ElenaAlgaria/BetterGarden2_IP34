@@ -1,12 +1,19 @@
 import 'package:biodiversity/components/information_object_list_widget.dart';
+import 'package:biodiversity/models/garden.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:biodiversity/components/drawer.dart';
 
-class CreateProjectPage extends StatelessWidget {
+class CreateProjectPage extends StatefulWidget {
+  /// Display the create project page
   CreateProjectPage({Key key}) : super(key: key);
 
+  @override
+  _CreateProjectPageState createState() => _CreateProjectPageState();
+}
+
+class _CreateProjectPageState extends State<CreateProjectPage> with TickerProviderStateMixin {
   final _formkey = GlobalKey<FormState>();
 
   @override
