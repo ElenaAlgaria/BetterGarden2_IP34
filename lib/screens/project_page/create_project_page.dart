@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:biodiversity/components/drawer.dart';
+import 'package:biodiversity/components/dropdown_formfield.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,12 +19,17 @@ class _CreateProjectPageState extends State<CreateProjectPage>
     with TickerProviderStateMixin {
   final _formkey = GlobalKey<FormState>();
 
-  List<Species> speciesList = [];
+  List<Species> _speciesList = [];
+  String _currentSpecies;
+
+  TextEditingController _titleController = TextEditingController();
+  TextEditingController _descriptionController = TextEditingController();
+
 
   @override
   void initState() {
     super.initState();
-    speciesList =
+    _speciesList =
         ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
   }
 
@@ -41,6 +49,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             TextFormField(
+                              controller: _titleController,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Geben Sie Ihrem Projekt einen Titel.';
@@ -57,6 +66,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                               maxLength: 20,
                             ),
                             TextFormField(
+                              controller: _descriptionController,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Geben Sie Ihrem Projekt eine Beschreibung.';
@@ -73,10 +83,13 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                               maxLength: 500,
                               maxLines: 3,
                             ),
+                            speciesListWidget(),
                             ElevatedButton.icon(
                               onPressed: () {
                                 if (!_formkey.currentState.validate()) {
                                   return;
+                                } else {
+                                  saveProject();
                                 }
                               },
                               label: Text("Vernetzungsprojekt starten"),
@@ -84,5 +97,38 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                             )
                           ],
                         ))))));
+  }
+
+  void saveProject() {
+    // TODO: save project with db
+    log(_currentSpecies);
+    log(_titleController.text);
+    log(_descriptionController.text);
+  }
+
+  Widget speciesListWidget() {
+    return DropDownFormField(
+      titleText: 'Spezies',
+      hintText: 'Bitte auswählen',
+      value: _currentSpecies,
+      onSaved: (value) {
+        setState(() {
+          _currentSpecies = value;
+        });
+      },
+      onChanged: (value) {
+        setState(() {
+          _currentSpecies = value;
+        });
+      },
+      dataSource: _speciesList.map((species) {
+        return {
+          "display": species.name,
+          "value": species.name,
+        };
+      }).toList(),
+      textField: 'display',
+      valueField: 'value',
+    );
   }
 }
