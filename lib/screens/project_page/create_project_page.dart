@@ -1,9 +1,8 @@
-import 'package:biodiversity/components/information_object_list_widget.dart';
-import 'package:biodiversity/models/garden.dart';
+import 'package:biodiversity/components/drawer.dart';
+import 'package:biodiversity/models/species.dart';
+import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'package:biodiversity/components/drawer.dart';
 
 class CreateProjectPage extends StatefulWidget {
   /// Display the create project page
@@ -13,8 +12,18 @@ class CreateProjectPage extends StatefulWidget {
   _CreateProjectPageState createState() => _CreateProjectPageState();
 }
 
-class _CreateProjectPageState extends State<CreateProjectPage> with TickerProviderStateMixin {
+class _CreateProjectPageState extends State<CreateProjectPage>
+    with TickerProviderStateMixin {
   final _formkey = GlobalKey<FormState>();
+
+  List<Species> speciesList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    speciesList =
+        ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
+  }
 
   @override
   Widget build(BuildContext context) {
