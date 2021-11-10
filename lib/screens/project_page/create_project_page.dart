@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/dropdown_formfield.dart';
+import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/user.dart';
@@ -24,8 +25,8 @@ class _CreateProjectPageState extends State<CreateProjectPage>
 
   List<Species> _speciesList = [];
   List<Garden> _gardensList = [];
-  String _currentSpecies;
-  String _currentGarden;
+  Species _currentSpecies;
+  Garden _currentGarden;
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -35,7 +36,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
     super.initState();
     _speciesList =
         ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
-    _currentSpecies = _speciesList.first.name;
+    _currentSpecies = _speciesList.first;
   }
 
   @override
@@ -109,11 +110,20 @@ class _CreateProjectPageState extends State<CreateProjectPage>
   }
 
   void saveProject() {
-    // TODO: save project with db
-    log(_currentSpecies);
-    log(_currentGarden);
+    var newConnectionProject = ConnectionProject.empty();
+    newConnectionProject.title = _titleController.text;
+    newConnectionProject.description = _descriptionController.text;
+    newConnectionProject.gardens.add(_currentGarden.reference);
+    newConnectionProject.targetSpecies =  _currentSpecies.reference;
+    newConnectionProject.saveConnectionProject();
+
+    log('saved following connectionProject');
+    log(_currentSpecies.name);
+    log(_currentGarden.name);
     log(_titleController.text);
     log(_descriptionController.text);
+
+    // TODO: close Widget again after successful save
   }
 
   Widget speciesListWidget() {
@@ -134,7 +144,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
       dataSource: _speciesList.map((species) {
         return {
           "display": species.name,
-          "value": species.name,
+          "value": species,
         };
       }).toList(),
       textField: 'display',
@@ -146,7 +156,12 @@ class _CreateProjectPageState extends State<CreateProjectPage>
     final user = Provider.of<User>(context);
     _gardensList =
         ServiceProvider.instance.gardenService.getAllGardensFromUser(user);
-    _currentGarden = _gardensList.first.name;
+    if(_gardensList.isEmpty) {
+      throw ArgumentError(
+          'You have to register a garden, before creating a connection project');
+    } else {
+      _currentGarden = _gardensList.first;
+    }
     return DropDownFormField(
       titleText: 'Garten',
       hintText: 'Bitte auswählen',
@@ -164,7 +179,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
       dataSource: _gardensList.map((garden) {
         return {
           "display": garden.name,
-          "value": garden.name,
+          "value": garden,
         };
       }).toList(),
       textField: 'display',
