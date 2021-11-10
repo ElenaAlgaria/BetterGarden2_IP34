@@ -125,6 +125,10 @@ class _CreateProjectPageState extends State<CreateProjectPage>
     log(_titleController.text);
     log(_descriptionController.text);
 
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text(
+            'Verbindungsprojekt wurde erfolgreich erstellt.')));
+
     // TODO: close Widget again after successful save
   }
 
