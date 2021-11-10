@@ -1,4 +1,4 @@
-import 'dart:math' as math;
+import 'dart:math' as Math;
 
 import 'package:biodiversity/components/circlesOverview.dart';
 import 'package:biodiversity/components/drawer.dart';
@@ -95,6 +95,12 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     setState(() {
       circles = c;
     });
+  }
+
+  double intersectionsCircle(Circle circle1, Circle circle2){
+
+    double intersection = (Math.pow((circle1.radius - circle2.radius), 2) <= Math.pow((circle1.center.longitude - circle2.center.longitude), 2) + Math.pow((circle1.center.latitude - circle2.center.latitude),2) <= Math.pow((circle1.radius + circle2.radius),2));
+    return intersection;
   }
 
   void loadUserLocation() async {
