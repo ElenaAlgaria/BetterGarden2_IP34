@@ -54,7 +54,7 @@ class ConnectionProject extends ChangeNotifier {
   ConnectionProject.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data(), reference: snapshot.reference);
 
-  /// saves the conectionproject object to the database
+  /// saves the connectionproject object to the database
   /// any information already present on the database will be overridden
   Future<void> saveConnectionProject() async {
     logging.log('Save ConnectionProject $title');
