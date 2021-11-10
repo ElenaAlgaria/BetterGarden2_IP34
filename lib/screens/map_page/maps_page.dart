@@ -97,10 +97,11 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     });
   }
 
-  double intersectionsCircle(Circle circle1, Circle circle2){
-
-    double intersection = (Math.pow((circle1.radius - circle2.radius), 2) <= Math.pow((circle1.center.longitude - circle2.center.longitude), 2) + Math.pow((circle1.center.latitude - circle2.center.latitude),2) <= Math.pow((circle1.radius + circle2.radius),2));
-    return intersection;
+  bool intersectionsCircle(Circle circle1, Circle circle2){
+    var a = Math.pow((circle1.radius - circle2.radius), 2);
+    var b = Math.pow((circle1.center.longitude - circle2.center.longitude), 2) + Math.pow((circle1.center.latitude - circle2.center.latitude),2);
+    var c = Math.pow((circle1.radius + circle2.radius),2);
+    return (a <= b && b <= c);
   }
 
   void loadUserLocation() async {
