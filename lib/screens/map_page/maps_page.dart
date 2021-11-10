@@ -3,6 +3,7 @@ import 'dart:math' as Math;
 import 'package:biodiversity/components/circlesOverview.dart';
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/text_field_with_descriptor.dart';
+import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/species.dart';
@@ -10,6 +11,7 @@ import 'package:biodiversity/screens/create_group_page/create_group_page.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
 import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -51,11 +53,11 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     super.initState();
     ServiceProvider.instance.mapMarkerService.getMarkerSet(
         onTapCallback: (element) {
-          setState(() {
-            _tappedGarden = element;
-          });
-          // displayModalBottomSheet(context);
-        }).then((markers) {
+      setState(() {
+        _tappedGarden = element;
+      });
+      // displayModalBottomSheet(context);
+    }).then((markers) {
       setState(() {
         _markers = markers;
       });
@@ -97,17 +99,33 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     });
   }
 
-  bool intersectionsCircle(Circle circle1, Circle circle2){
+  bool intersectionsCircle(Circle circle1, Circle circle2) {
     var a = Math.pow((circle1.radius - circle2.radius), 2);
-    var b = Math.pow((circle1.center.longitude - circle2.center.longitude), 2) + Math.pow((circle1.center.latitude - circle2.center.latitude),2);
-    var c = Math.pow((circle1.radius + circle2.radius),2);
+    var b = Math.pow((circle1.center.longitude - circle2.center.longitude), 2) +
+        Math.pow((circle1.center.latitude - circle2.center.latitude), 2);
+    var c = Math.pow((circle1.radius + circle2.radius), 2);
     return (a <= b && b <= c);
+  }
+
+  void areaProjects(List<Garden> garden, ConnectionProject connectionProject) {
+    var garden = connectionProject.gardens;
+    var radius = 500;
+    var area = Math.pi * Math.pow(radius, 2);
+    var lat = widget.garden.getLatLng().latitude;
+    var lon = widget.garden.getLatLng().longitude;
+
+    // alli areas zemmerechne
+
+
+    for (var item in garden) {
+      //item. get Garden radius ??
+    }
   }
 
   void loadUserLocation() async {
     if (widget.garden == null &&
         Provider.of<MapInteractionContainer>(context, listen: false)
-            .selectedLocation ==
+                .selectedLocation ==
             null) {
       await Provider.of<MapInteractionContainer>(context, listen: false)
           .getLocation()
@@ -122,7 +140,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final mapInteraction =
-    Provider.of<MapInteractionContainer>(context, listen: false);
+        Provider.of<MapInteractionContainer>(context, listen: false);
     loadUserLocation();
 
     return Scaffold(
@@ -135,17 +153,17 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           GoogleMap(
             myLocationEnabled: true,
             myLocationButtonEnabled:
-            (defaultTargetPlatform == TargetPlatform.iOS) ? false : true,
+                (defaultTargetPlatform == TargetPlatform.iOS) ? false : true,
             onMapCreated: (controller) => mapController = controller,
             initialCameraPosition: (widget.garden != null)
                 ? CameraPosition(target: widget.garden.getLatLng(), zoom: _zoom)
                 : (mapInteraction.selectedLocation != null)
-                ? CameraPosition(
-                target: mapInteraction.selectedLocation, zoom: _zoom)
-                : CameraPosition(
-              target: mapInteraction.defaultLocation,
-              zoom: _zoom,
-            ),
+                    ? CameraPosition(
+                        target: mapInteraction.selectedLocation, zoom: _zoom)
+                    : CameraPosition(
+                        target: mapInteraction.defaultLocation,
+                        zoom: _zoom,
+                      ),
             zoomControlsEnabled: false,
             rotateGesturesEnabled: false,
             mapToolbarEnabled: false,
@@ -189,7 +207,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 builder: (context, child) {
                   return Transform(
                     transform: Matrix4.rotationZ(
-                        _fabController.value * 0.75 * math.pi),
+                        _fabController.value * 0.75 * Math.pi),
                     alignment: FractionalOffset.center,
                     child: Icon(
                       _fabController.isDismissed ? Icons.add : Icons.add,
@@ -264,9 +282,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         backgroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20.0),
-              topRight: Radius.circular(20.0),
-            )),
+          topLeft: Radius.circular(20.0),
+          topRight: Radius.circular(20.0),
+        )),
         context: context,
         isScrollControlled: true,
         builder: (context) {
@@ -336,9 +354,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         backgroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20.0),
-              topRight: Radius.circular(20.0),
-            )),
+          topLeft: Radius.circular(20.0),
+          topRight: Radius.circular(20.0),
+        )),
         context: context,
         isScrollControlled: true,
         builder: (context) {
