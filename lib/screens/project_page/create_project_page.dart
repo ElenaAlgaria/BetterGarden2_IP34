@@ -45,6 +45,8 @@ class _CreateProjectPageState extends State<CreateProjectPage>
         drawer: MyDrawer(),
         body: Builder(
             builder: (context) => Center(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(32),
                 child: Form(
                     key: _formkey,
                     child: Padding(
@@ -105,7 +107,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                               icon: Icon(Icons.save),
                             )
                           ],
-                        ))))));
+                        )))))));
   }
 
   void saveProject() {
