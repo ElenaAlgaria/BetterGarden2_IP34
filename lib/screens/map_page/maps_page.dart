@@ -1,4 +1,4 @@
-import 'dart:math' as Math;
+import 'dart:math' as math;
 
 import 'package:biodiversity/components/circlesOverview.dart';
 import 'package:biodiversity/components/drawer.dart';
@@ -7,7 +7,6 @@ import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/species.dart';
-import 'package:biodiversity/screens/create_group_page/create_group_page.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
 import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
@@ -39,6 +38,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   static const List<IconData> icons = [
     Icons.playlist_add,
     Icons.house,
+    Icons.animation_outlined,
   ];
   var _currentSpecies;
   final double _zoom = 14.0;
@@ -71,8 +71,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   }
 
   void modifyPermieterCircle(String name) {
+    var random = math.Random();
     if (name != '') {
-      addCircle(500);
+      addCircle(random.nextInt(1500) + 100);
     } else {
       removeCircle();
     }
@@ -86,8 +87,15 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
 
   void addCircle(radius) {
     var c = Set<Circle>.from(circles);
-    var lat = widget.garden.getLatLng().latitude;
-    var lon = widget.garden.getLatLng().longitude;
+    var lat = 0.0;
+    var lon = 0.0;
+    if (widget.garden == null) {
+      lat = _focusedLocation.latitude;
+      lon = _focusedLocation.longitude;
+    } else {
+      lat = widget.garden.getLatLng().latitude;
+      lon = widget.garden.getLatLng().longitude;
+    }
     c.add(Circle(
         circleId: CircleId('circleOneTest'),
         radius: radius.toDouble(),
@@ -187,8 +195,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             },
             circles: Set<Circle>.from(circles),
           ),
-          speciesListWidget(),
-          navigateToCreateGroupButton()
+          speciesListWidget()
         ],
       ),
       floatingActionButton: Row(
@@ -208,8 +215,8 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 animation: _fabController,
                 builder: (context, child) {
                   return Transform(
-                    transform: Matrix4.rotationZ(
-                        _fabController.value * 0.75 * Math.pi),
+                    transform:
+                        Matrix4.rotationZ(_fabController.value * 0.9 * math.pi),
                     alignment: FractionalOffset.center,
                     child: Icon(
                       _fabController.isDismissed ? Icons.add : Icons.add,
@@ -224,7 +231,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget navigateToCreateGroupButton() {
+/*  Widget navigateToCreateGroupButton() {
     return Container(
         margin: EdgeInsets.fromLTRB(250, 0, 0, 0),
         color: Colors.white,
@@ -238,7 +245,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             );
           },
         ));
-  }
+  }*/
 
   Widget speciesListWidget() {
     return Container(
@@ -443,6 +450,36 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                   startingPosition: _focusedLocation);
             },
             child: Icon(icons[1], color: Theme.of(context).backgroundColor),
+          ),
+        ),
+      ),
+      Container(
+        height: 56.0,
+        width: 75.0,
+        alignment: FractionalOffset.center,
+        child: ScaleTransition(
+          scale: CurvedAnimation(
+            parent: _fabController,
+            curve: Interval(0.0, 1.0 - 1 / icons.length / 2.0,
+                curve: Curves.easeOut),
+          ),
+          child: FloatingActionButton(
+            heroTag: null,
+            tooltip: 'Vernetzungsprojekt erstellen',
+            backgroundColor: Theme.of(context).cardColor,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CreateProjectPage(),
+                  settings: RouteSettings(
+                    arguments: speciesList.firstWhere(
+                            (element) => element.name == _currentSpecies) ?? speciesList[2],
+                  ),
+                ),
+              );
+            },
+            child: Icon(icons[2], color: Theme.of(context).backgroundColor),
           ),
         ),
       ),

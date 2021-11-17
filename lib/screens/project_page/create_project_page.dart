@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/dropdown_formfield.dart';
+import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/user.dart';
@@ -12,7 +13,7 @@ import 'package:provider/provider.dart';
 
 class CreateProjectPage extends StatefulWidget {
   /// Display the create project page
-  CreateProjectPage({Key key}) : super(key: key);
+  CreateProjectPage({Key key, Species currentSpecies}) : super(key: key);
 
   @override
   _CreateProjectPageState createState() => _CreateProjectPageState();
@@ -24,8 +25,8 @@ class _CreateProjectPageState extends State<CreateProjectPage>
 
   List<Species> _speciesList = [];
   List<Garden> _gardensList = [];
-  String _currentSpecies;
-  String _currentGarden;
+  Garden _currentGarden;
+  Species _currentSpecies;
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -35,85 +36,105 @@ class _CreateProjectPageState extends State<CreateProjectPage>
     super.initState();
     _speciesList =
         ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
-    _currentSpecies = _speciesList.first.name;
   }
 
   @override
   Widget build(BuildContext context) {
+    if(ModalRoute.of(context).settings.arguments != '' && _currentSpecies == null) {
+      _currentSpecies = ModalRoute.of(context).settings.arguments as Species;
+    } else {
+      _currentSpecies ??= _speciesList[2];
+    }
     return Scaffold(
         appBar: AppBar(title: const Text('Vernetzungsprojekt starten')),
         drawer: MyDrawer(),
         body: Builder(
             builder: (context) => Center(
-                child: Form(
-                    key: _formkey,
-                    child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20.0, 0, 20.0, 10.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            TextFormField(
-                              controller: _titleController,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Geben Sie Ihrem Projekt einen Titel.';
-                                } else {
-                                  return null;
-                                }
-                              },
-                              decoration: const InputDecoration(
-                                  hintText: 'Projekttitel',
-                                  labelText: 'Projekttitel',
-                                  labelStyle: TextStyle(
-                                    fontSize: 15,
-                                  )),
-                              maxLength: 20,
-                            ),
-                            TextFormField(
-                              controller: _descriptionController,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Geben Sie Ihrem Projekt eine Beschreibung.';
-                                } else {
-                                  return null;
-                                }
-                              },
-                              decoration: const InputDecoration(
-                                  hintText: 'Projektbeschreibung',
-                                  labelText: 'Projektbeschreibung',
-                                  labelStyle: TextStyle(
-                                    fontSize: 15,
-                                  )),
-                              maxLength: 500,
-                              maxLines: 3,
-                            ),
-                            speciesListWidget(),
-                            Container(
-                              margin: const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
-                              child: gardensListWidget(),
-                            ),
-                            ElevatedButton.icon(
-                              onPressed: () {
-                                if (!_formkey.currentState.validate()) {
-                                  return;
-                                } else {
-                                  saveProject();
-                                }
-                              },
-                              label: Text("Vernetzungsprojekt starten"),
-                              icon: Icon(Icons.save),
-                            )
-                          ],
-                        ))))));
+                child: SingleChildScrollView(
+                    padding: EdgeInsets.all(32),
+                    child: Form(
+                        key: _formkey,
+                        child: Padding(
+                            padding:
+                                const EdgeInsets.fromLTRB(20.0, 0, 20.0, 10.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                TextFormField(
+                                  controller: _titleController,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Geben Sie Ihrem Projekt einen Titel.';
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                  decoration: const InputDecoration(
+                                      hintText: 'Projekttitel',
+                                      labelText: 'Projekttitel',
+                                      labelStyle: TextStyle(
+                                        fontSize: 15,
+                                      )),
+                                  maxLength: 20,
+                                ),
+                                TextFormField(
+                                  controller: _descriptionController,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Geben Sie Ihrem Projekt eine Beschreibung.';
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                  decoration: const InputDecoration(
+                                      hintText: 'Projektbeschreibung',
+                                      labelText: 'Projektbeschreibung',
+                                      labelStyle: TextStyle(
+                                        fontSize: 15,
+                                      )),
+                                  maxLength: 500,
+                                  maxLines: 3,
+                                ),
+                                speciesListWidget(),
+                                Container(
+                                  margin:
+                                      const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
+                                  child: gardensListWidget(),
+                                ),
+                                ElevatedButton.icon(
+                                  onPressed: () {
+                                    if (!_formkey.currentState.validate()) {
+                                      return;
+                                    } else {
+                                      saveProject();
+                                    }
+                                  },
+                                  label: Text("Vernetzungsprojekt starten"),
+                                  icon: Icon(Icons.save),
+                                )
+                              ],
+                            )))))));
   }
 
   void saveProject() {
-    // TODO: save project with db
-    log(_currentSpecies);
-    log(_currentGarden);
+    var newConnectionProject = ConnectionProject.empty();
+    newConnectionProject.title = _titleController.text;
+    newConnectionProject.description = _descriptionController.text;
+    newConnectionProject.gardens.add(_currentGarden.reference);
+    newConnectionProject.targetSpecies = _currentSpecies.reference;
+    newConnectionProject.saveConnectionProject();
+
+    log('saved following connectionProject');
+    log(_currentSpecies.name);
+    log(_currentGarden.name);
     log(_titleController.text);
     log(_descriptionController.text);
+
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Verbindungsprojekt wurde erfolgreich erstellt.')));
+
+    // TODO: close Widget again after successful save
   }
 
   Widget speciesListWidget() {
@@ -134,7 +155,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
       dataSource: _speciesList.map((species) {
         return {
           "display": species.name,
-          "value": species.name,
+          "value": species,
         };
       }).toList(),
       textField: 'display',
@@ -146,7 +167,12 @@ class _CreateProjectPageState extends State<CreateProjectPage>
     final user = Provider.of<User>(context);
     _gardensList =
         ServiceProvider.instance.gardenService.getAllGardensFromUser(user);
-    _currentGarden = _gardensList.first.name;
+    if (_gardensList.isEmpty) {
+      throw ArgumentError(
+          'You have to register a garden, before creating a connection project');
+    } else {
+      _currentGarden = _gardensList.first;
+    }
     return DropDownFormField(
       titleText: 'Garten',
       hintText: 'Bitte auswählen',
@@ -164,7 +190,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
       dataSource: _gardensList.map((garden) {
         return {
           "display": garden.name,
-          "value": garden.name,
+          "value": garden,
         };
       }).toList(),
       textField: 'display',
