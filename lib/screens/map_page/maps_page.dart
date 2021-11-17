@@ -51,7 +51,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    ServiceProvider.instance.mapMarkerService.getMarkerSet(
+    ServiceProvider.instance.mapMarkerService.getMarkerSet('garden',
         onTapCallback: (element) {
       setState(() {
         _tappedGarden = element;
@@ -108,28 +108,68 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   }
 
   bool intersectionsCircle(Circle circle1, Circle circle2) {
-    var a = Math.pow((circle1.radius - circle2.radius), 2);
-    var b = Math.pow((circle1.center.longitude - circle2.center.longitude), 2) +
-        Math.pow((circle1.center.latitude - circle2.center.latitude), 2);
-    var c = Math.pow((circle1.radius + circle2.radius), 2);
+    var a = math.pow(((circle1.radius * 2) - circle2.radius), 2);
+    var b = math.pow((circle1.center.longitude - circle2.center.longitude), 2) +
+        math.pow((circle1.center.latitude - circle2.center.latitude), 2);
+    var c = math.pow(((circle1.radius * 2) + circle2.radius), 2);
     return (a <= b && b <= c);
   }
 
-  void areaProjects(List<Garden> garden, ConnectionProject connectionProject) {
-    var garden = connectionProject.gardens;
-    var radius = 500;
-    var area = Math.pi * Math.pow(radius, 2);
-    var lat = widget.garden.getLatLng().latitude;
-    var lon = widget.garden.getLatLng().longitude;
+  void areaProjects(DocumentReference reference) {
+    ConnectionProject connectionProject = ServiceProvider
+        .instance.connectionProjectService
+        .getConnectionProjectByReference(reference);
+    var radius = ServiceProvider.instance.speciesService
+        .getSpeciesByName(connectionProject.targetSpecies.toString())
+        .radius;
+    List<Garden> gardens = connectionProject.gardens.map((element) {
+      return ServiceProvider.instance.gardenService
+          .getGardenByReference(element);
+    });
+
+    gardens.forEach((element) {
+    var circle = Circle(
+          circleId: CircleId('circleConnectionProject'),
+          radius: radius.toDouble(),
+          center: LatLng(
+              element
+                  .getLatLng()
+                  .latitude, element
+              .getLatLng()
+              .longitude),
+          fillColor: Color(0x33c47676),
+          strokeWidth: 10);
+
+        ServiceProvider.instance.gardenService.getAllGardens().forEach((element) {
+               var circle2 = ( Circle(
+              circleId: CircleId('circleConnectionProject'),
+              radius: radius.toDouble(),
+              center: LatLng(
+                  element
+                      .getLatLng()
+                      .latitude, element
+                  .getLatLng()
+                  .longitude),
+              strokeWidth: 10));
 
 
-    // alli areas zemmerechne
-    // ShapeBorder
-
-
-    for (var item in garden) {
-      //item. get Garden radius ??
-    }
+          if (intersectionsCircle(circle, circle2)) {
+            // Marker für circle 2 söll pflänzli werde
+            ServiceProvider.instance.mapMarkerService.getMarkerSet(
+                'joinableGarden',
+                onTapCallback: (element) {
+                  setState(() {
+                    _tappedGarden = element;
+                  });
+                }).then((markers) {
+              setState(() {
+                _markers = markers;
+              });
+            });
+          };
+        });
+        });
+        //var area = math.pi * math.pow(radius, 2) * gardens.length;
   }
 
   void loadUserLocation() async {
@@ -474,7 +514,8 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                   builder: (context) => CreateProjectPage(),
                   settings: RouteSettings(
                     arguments: speciesList.firstWhere(
-                            (element) => element.name == _currentSpecies) ?? speciesList[2],
+                            (element) => element.name == _currentSpecies) ??
+                        speciesList[2],
                   ),
                 ),
               );

@@ -39,7 +39,7 @@ class MapMarkerService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _loadIcons() async {
+   Future<void> _loadIcons(BitmapDescriptor joinableGarden) async {
     //TODO: add images for linking project
     BitmapDescriptor gardenIcon;
 
@@ -49,17 +49,28 @@ class MapMarkerService extends ChangeNotifier {
         'res/gardenIcon.png',
       );
     }else{
+      if(joinableGarden == gardenIcon){
       gardenIcon = await BitmapDescriptor.fromAssetImage(
         const ImageConfiguration(),
         'res/2.0x/gardenIcon.png',
       );
+      } else{
+        // Todo create new Icon
+        joinableGarden = await BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(), 'res/plantIcon.png', );
+      }
     }
 
     _icons.putIfAbsent('garden', () => gardenIcon);
+    _icons.putIfAbsent('joinableGarden', () => joinableGarden);
+  }
+
+  void setMarker(){
+
   }
 
   /// returns a set of all markers
-  Future<Set<Marker>> getMarkerSet({Function(Garden element) onTapCallback}) async {
+  Future<Set<Marker>> getMarkerSet(String icon, {Function(Garden element) onTapCallback}) async {
     while (!_initialized) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
@@ -70,7 +81,7 @@ class MapMarkerService extends ChangeNotifier {
         markerId: MarkerId(
             object.getLatLng().toString() + object.creationDate.toString()),
         position: object.getLatLng(),
-        icon: _icons['garden'],
+        icon: _icons[icon],
         onTap: () {
           onTapCallback(object);
         },

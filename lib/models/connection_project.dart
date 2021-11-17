@@ -6,6 +6,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
+import 'garden.dart';
+
 /// Container class for the connection project
 class ConnectionProject extends ChangeNotifier {
   /// title of the connection project
@@ -100,6 +102,8 @@ class ConnectionProject extends ChangeNotifier {
       saveConnectionProject();
     }
   }
+
+
 
   /// is true if this connectionproject is an empty placeholder
   bool get isEmpty => _isEmpty;
