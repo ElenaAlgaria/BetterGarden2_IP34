@@ -40,75 +40,81 @@ class _CreateProjectPageState extends State<CreateProjectPage>
 
   @override
   Widget build(BuildContext context) {
-    _currentSpecies = ModalRoute.of(context).settings.arguments as Species;
+    if(ModalRoute.of(context).settings.arguments != '' && _currentSpecies == null) {
+      _currentSpecies = ModalRoute.of(context).settings.arguments as Species;
+    } else {
+      _currentSpecies ??= _speciesList[2];
+    }
     return Scaffold(
         appBar: AppBar(title: const Text('Vernetzungsprojekt starten')),
         drawer: MyDrawer(),
         body: Builder(
             builder: (context) => Center(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(32),
-                child: Form(
-                    key: _formkey,
-                    child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20.0, 0, 20.0, 10.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            TextFormField(
-                              controller: _titleController,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Geben Sie Ihrem Projekt einen Titel.';
-                                } else {
-                                  return null;
-                                }
-                              },
-                              decoration: const InputDecoration(
-                                  hintText: 'Projekttitel',
-                                  labelText: 'Projekttitel',
-                                  labelStyle: TextStyle(
-                                    fontSize: 15,
-                                  )),
-                              maxLength: 20,
-                            ),
-                            TextFormField(
-                              controller: _descriptionController,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Geben Sie Ihrem Projekt eine Beschreibung.';
-                                } else {
-                                  return null;
-                                }
-                              },
-                              decoration: const InputDecoration(
-                                  hintText: 'Projektbeschreibung',
-                                  labelText: 'Projektbeschreibung',
-                                  labelStyle: TextStyle(
-                                    fontSize: 15,
-                                  )),
-                              maxLength: 500,
-                              maxLines: 3,
-                            ),
-                            speciesListWidget(),
-                            Container(
-                              margin: const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
-                              child: gardensListWidget(),
-                            ),
-                            ElevatedButton.icon(
-                              onPressed: () {
-                                if (!_formkey.currentState.validate()) {
-                                  return;
-                                } else {
-                                  saveProject();
-                                }
-                              },
-                              label: Text("Vernetzungsprojekt starten"),
-                              icon: Icon(Icons.save),
-                            )
-                          ],
-                        )))))));
+                child: SingleChildScrollView(
+                    padding: EdgeInsets.all(32),
+                    child: Form(
+                        key: _formkey,
+                        child: Padding(
+                            padding:
+                                const EdgeInsets.fromLTRB(20.0, 0, 20.0, 10.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                TextFormField(
+                                  controller: _titleController,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Geben Sie Ihrem Projekt einen Titel.';
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                  decoration: const InputDecoration(
+                                      hintText: 'Projekttitel',
+                                      labelText: 'Projekttitel',
+                                      labelStyle: TextStyle(
+                                        fontSize: 15,
+                                      )),
+                                  maxLength: 20,
+                                ),
+                                TextFormField(
+                                  controller: _descriptionController,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Geben Sie Ihrem Projekt eine Beschreibung.';
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                  decoration: const InputDecoration(
+                                      hintText: 'Projektbeschreibung',
+                                      labelText: 'Projektbeschreibung',
+                                      labelStyle: TextStyle(
+                                        fontSize: 15,
+                                      )),
+                                  maxLength: 500,
+                                  maxLines: 3,
+                                ),
+                                speciesListWidget(),
+                                Container(
+                                  margin:
+                                      const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
+                                  child: gardensListWidget(),
+                                ),
+                                ElevatedButton.icon(
+                                  onPressed: () {
+                                    if (!_formkey.currentState.validate()) {
+                                      return;
+                                    } else {
+                                      saveProject();
+                                    }
+                                  },
+                                  label: Text("Vernetzungsprojekt starten"),
+                                  icon: Icon(Icons.save),
+                                )
+                              ],
+                            )))))));
   }
 
   void saveProject() {
@@ -126,8 +132,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
     log(_descriptionController.text);
 
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text(
-            'Verbindungsprojekt wurde erfolgreich erstellt.')));
+        content: Text('Verbindungsprojekt wurde erfolgreich erstellt.')));
 
     // TODO: close Widget again after successful save
   }
@@ -162,7 +167,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
     final user = Provider.of<User>(context);
     _gardensList =
         ServiceProvider.instance.gardenService.getAllGardensFromUser(user);
-    if(_gardensList.isEmpty) {
+    if (_gardensList.isEmpty) {
       throw ArgumentError(
           'You have to register a garden, before creating a connection project');
     } else {

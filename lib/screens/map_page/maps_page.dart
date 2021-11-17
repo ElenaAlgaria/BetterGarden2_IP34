@@ -447,7 +447,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                   builder: (context) => CreateProjectPage(),
                   settings: RouteSettings(
                     arguments: speciesList.firstWhere(
-                        (element) => element.name == _currentSpecies),
+                            (element) => element.name == _currentSpecies) ?? speciesList[2],
                   ),
                 ),
               );
