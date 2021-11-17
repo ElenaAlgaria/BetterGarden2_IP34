@@ -1,5 +1,5 @@
 import 'dart:math' as math;
-
+import 'dart:math';
 import 'package:biodiversity/components/circlesOverview.dart';
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/text_field_with_descriptor.dart';
@@ -37,6 +37,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   static const List<IconData> icons = [
     Icons.playlist_add,
     Icons.house,
+    Icons.animation_outlined,
   ];
   var _currentSpecies;
   final double _zoom = 14.0;
@@ -51,11 +52,11 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     super.initState();
     ServiceProvider.instance.mapMarkerService.getMarkerSet(
         onTapCallback: (element) {
-          setState(() {
-            _tappedGarden = element;
-          });
-          // displayModalBottomSheet(context);
-        }).then((markers) {
+      setState(() {
+        _tappedGarden = element;
+      });
+      // displayModalBottomSheet(context);
+    }).then((markers) {
       setState(() {
         _markers = markers;
       });
@@ -69,8 +70,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   }
 
   void modifyPermieterCircle(String name) {
+    var random = math.Random();
     if (name != '') {
-      addCircle(500);
+      addCircle(random.nextInt(1500) + 100);
     } else {
       removeCircle();
     }
@@ -84,8 +86,15 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
 
   void addCircle(radius) {
     var c = Set<Circle>.from(circles);
-    var lat = widget.garden.getLatLng().latitude;
-    var lon = widget.garden.getLatLng().longitude;
+    var lat = 0.0;
+    var lon= 0.0;
+    if (widget.garden == null) {
+      lat = _focusedLocation.latitude;
+      lon = _focusedLocation.longitude;
+    } else {
+      lat = widget.garden.getLatLng().latitude;
+      lon = widget.garden.getLatLng().longitude;
+    }
     c.add(Circle(
         circleId: CircleId('circleOneTest'),
         radius: radius.toDouble(),
@@ -100,7 +109,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   void loadUserLocation() async {
     if (widget.garden == null &&
         Provider.of<MapInteractionContainer>(context, listen: false)
-            .selectedLocation ==
+                .selectedLocation ==
             null) {
       await Provider.of<MapInteractionContainer>(context, listen: false)
           .getLocation()
@@ -115,7 +124,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final mapInteraction =
-    Provider.of<MapInteractionContainer>(context, listen: false);
+        Provider.of<MapInteractionContainer>(context, listen: false);
     loadUserLocation();
 
     return Scaffold(
@@ -128,17 +137,17 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           GoogleMap(
             myLocationEnabled: true,
             myLocationButtonEnabled:
-            (defaultTargetPlatform == TargetPlatform.iOS) ? false : true,
+                (defaultTargetPlatform == TargetPlatform.iOS) ? false : true,
             onMapCreated: (controller) => mapController = controller,
             initialCameraPosition: (widget.garden != null)
                 ? CameraPosition(target: widget.garden.getLatLng(), zoom: _zoom)
                 : (mapInteraction.selectedLocation != null)
-                ? CameraPosition(
-                target: mapInteraction.selectedLocation, zoom: _zoom)
-                : CameraPosition(
-              target: mapInteraction.defaultLocation,
-              zoom: _zoom,
-            ),
+                    ? CameraPosition(
+                        target: mapInteraction.selectedLocation, zoom: _zoom)
+                    : CameraPosition(
+                        target: mapInteraction.defaultLocation,
+                        zoom: _zoom,
+                      ),
             zoomControlsEnabled: false,
             rotateGesturesEnabled: false,
             mapToolbarEnabled: false,
@@ -160,8 +169,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             },
             circles: Set<Circle>.from(circles),
           ),
-          speciesListWidget(),
-          navigateToCreateGroupButton()
+          speciesListWidget()
         ],
       ),
       floatingActionButton: Row(
@@ -182,7 +190,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 builder: (context, child) {
                   return Transform(
                     transform: Matrix4.rotationZ(
-                        _fabController.value * 0.75 * math.pi),
+                        _fabController.value * 0.9 * math.pi),
                     alignment: FractionalOffset.center,
                     child: Icon(
                       _fabController.isDismissed ? Icons.add : Icons.add,
@@ -197,7 +205,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget navigateToCreateGroupButton() {
+/*  Widget navigateToCreateGroupButton() {
     return Container(
         margin: EdgeInsets.fromLTRB(250, 0, 0, 0),
         color: Colors.white,
@@ -211,7 +219,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             );
           },
         ));
-  }
+  }*/
 
   Widget speciesListWidget() {
     return Container(
@@ -257,9 +265,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         backgroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20.0),
-              topRight: Radius.circular(20.0),
-            )),
+          topLeft: Radius.circular(20.0),
+          topRight: Radius.circular(20.0),
+        )),
         context: context,
         isScrollControlled: true,
         builder: (context) {
@@ -329,9 +337,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         backgroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20.0),
-              topRight: Radius.circular(20.0),
-            )),
+          topLeft: Radius.circular(20.0),
+          topRight: Radius.circular(20.0),
+        )),
         context: context,
         isScrollControlled: true,
         builder: (context) {
@@ -416,6 +424,30 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                   startingPosition: _focusedLocation);
             },
             child: Icon(icons[1], color: Theme.of(context).backgroundColor),
+          ),
+        ),
+      ),
+      Container(
+        height: 56.0,
+        width: 75.0,
+        alignment: FractionalOffset.center,
+        child: ScaleTransition(
+          scale: CurvedAnimation(
+            parent: _fabController,
+            curve: Interval(0.0, 1.0 - 1 / icons.length / 2.0,
+                curve: Curves.easeOut),
+          ),
+          child: FloatingActionButton(
+            heroTag: null,
+            tooltip: 'Vernetzungsprojekt erstellen',
+            backgroundColor: Theme.of(context).cardColor,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CreateProjectPage()),
+              );
+            },
+            child: Icon(icons[2], color: Theme.of(context).backgroundColor),
           ),
         ),
       ),
