@@ -115,6 +115,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     var lon = widget.garden.getLatLng().longitude;
 
     // alli areas zemmerechne
+    // ShapeBorder
 
 
     for (var item in garden) {
