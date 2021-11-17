@@ -1,12 +1,11 @@
 import 'dart:math' as math;
-import 'dart:math';
+
 import 'package:biodiversity/components/circlesOverview.dart';
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/text_field_with_descriptor.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/species.dart';
-import 'package:biodiversity/screens/create_group_page/create_group_page.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
 import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
@@ -87,7 +86,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   void addCircle(radius) {
     var c = Set<Circle>.from(circles);
     var lat = 0.0;
-    var lon= 0.0;
+    var lon = 0.0;
     if (widget.garden == null) {
       lat = _focusedLocation.latitude;
       lon = _focusedLocation.longitude;
@@ -189,8 +188,8 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 animation: _fabController,
                 builder: (context, child) {
                   return Transform(
-                    transform: Matrix4.rotationZ(
-                        _fabController.value * 0.9 * math.pi),
+                    transform:
+                        Matrix4.rotationZ(_fabController.value * 0.9 * math.pi),
                     alignment: FractionalOffset.center,
                     child: Icon(
                       _fabController.isDismissed ? Icons.add : Icons.add,
@@ -444,7 +443,13 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CreateProjectPage()),
+                MaterialPageRoute(
+                  builder: (context) => CreateProjectPage(),
+                  settings: RouteSettings(
+                    arguments: speciesList.firstWhere(
+                        (element) => element.name == _currentSpecies),
+                  ),
+                ),
               );
             },
             child: Icon(icons[2], color: Theme.of(context).backgroundColor),

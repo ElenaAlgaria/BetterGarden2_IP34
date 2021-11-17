@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 
 class CreateProjectPage extends StatefulWidget {
   /// Display the create project page
-  CreateProjectPage({Key key}) : super(key: key);
+  CreateProjectPage({Key key, Species currentSpecies}) : super(key: key);
 
   @override
   _CreateProjectPageState createState() => _CreateProjectPageState();
@@ -25,8 +25,8 @@ class _CreateProjectPageState extends State<CreateProjectPage>
 
   List<Species> _speciesList = [];
   List<Garden> _gardensList = [];
-  Species _currentSpecies;
   Garden _currentGarden;
+  Species _currentSpecies;
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -36,11 +36,11 @@ class _CreateProjectPageState extends State<CreateProjectPage>
     super.initState();
     _speciesList =
         ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
-    _currentSpecies = _speciesList.first;
   }
 
   @override
   Widget build(BuildContext context) {
+    _currentSpecies = ModalRoute.of(context).settings.arguments as Species;
     return Scaffold(
         appBar: AppBar(title: const Text('Vernetzungsprojekt starten')),
         drawer: MyDrawer(),
@@ -116,7 +116,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
     newConnectionProject.title = _titleController.text;
     newConnectionProject.description = _descriptionController.text;
     newConnectionProject.gardens.add(_currentGarden.reference);
-    newConnectionProject.targetSpecies =  _currentSpecies.reference;
+    newConnectionProject.targetSpecies = _currentSpecies.reference;
     newConnectionProject.saveConnectionProject();
 
     log('saved following connectionProject');
