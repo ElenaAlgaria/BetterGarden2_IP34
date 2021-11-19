@@ -7,6 +7,7 @@ import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/services/service_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,6 +28,9 @@ class _CreateProjectPageState extends State<CreateProjectPage>
   List<Garden> _gardensList = [];
   Garden _currentGarden;
   Species _currentSpecies;
+
+
+
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -117,11 +121,14 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                             )))))));
   }
 
-  void saveProject() {
+ void saveProject() {
     var newConnectionProject = ConnectionProject.empty();
     newConnectionProject.title = _titleController.text;
     newConnectionProject.description = _descriptionController.text;
     newConnectionProject.gardens.add(_currentGarden.reference);
+    newConnectionProject.creationDate = DateTime.now();
+    newConnectionProject.coordinates = GeoPoint(_currentGarden.coordinates.latitude + 0.0005,
+                                                _currentGarden.coordinates.longitude + 0.0005); //Entspricht 80m offset
     newConnectionProject.targetSpecies = _currentSpecies.reference;
     newConnectionProject.saveConnectionProject();
 
