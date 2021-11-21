@@ -112,7 +112,7 @@ class MapMarkerService extends ChangeNotifier {
           '/' +
           object.gardens.length.toString());
       list.add(Marker(
-        markerId: MarkerId(projectLatLng.getLatLng().toString() + object.creationDate.toString()),
+        markerId: MarkerId(projectLatLng.toString() + object.creationDate.toString()),
         position:
             object.getLatLng(),
         //object.getLatLng() new LatLng(projectLatLng.latitude + 10, projectLatLng.longitude)
