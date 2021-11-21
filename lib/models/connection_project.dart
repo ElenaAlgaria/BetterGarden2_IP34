@@ -39,6 +39,7 @@ class ConnectionProject extends ChangeNotifier {
     description = '';
     targetSpecies = null;
     creationDate = DateTime.now();
+    coordinates = null;
     gardens = [];
     _isEmpty = true;
   }
@@ -83,8 +84,8 @@ class ConnectionProject extends ChangeNotifier {
       'title': title,
       'description': description,
       'targetSpecies': targetSpecies,
-      'creationDate' : creationDate,
       'coordinates' : coordinates,
+      'creationDate' : creationDate,
       'gardens': gardens
     });
   }

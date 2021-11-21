@@ -28,9 +28,6 @@ class MapMarkerService extends ChangeNotifier {
     _loadIcons();
   }
 
-
-
-
   @override
   void dispose() {
     _gardenStreamSubscription.cancel();
@@ -93,8 +90,7 @@ class MapMarkerService extends ChangeNotifier {
         onTap: () {
           onTapCallback(object);
         },
-      )
-      );
+      ));
     }
     return list;
   }
@@ -110,18 +106,21 @@ class MapMarkerService extends ChangeNotifier {
     for (final object in _connectionProjects) {
       // TODO: implement getting center of project with multiple gardens
       var projectLatLng = ServiceProvider.instance.gardenService
-          .getGardenByReference(object.gardens.first).getLatLng();
-
+          .getGardenByReference(object.gardens?.first)
+          ?.getLatLng();
+      debugPrint(object.creationDate.toString() +
+          '/' +
+          object.gardens.length.toString());
       list.add(Marker(
-        markerId: MarkerId(
-            projectLatLng.toString() + object.creationDate.toString()),
-        position: object.getLatLng(), //new LatLng(projectLatLng.latitude + 10, projectLatLng.longitude)
+        markerId: MarkerId(projectLatLng.getLatLng().toString() + object.creationDate.toString()),
+        position:
+            object.getLatLng(),
+        //object.getLatLng() new LatLng(projectLatLng.latitude + 10, projectLatLng.longitude)
         icon: _icons['connectionProject'],
         onTap: () {
           onTapCallback(object);
         },
-      )
-      );
+      ));
     }
     return list;
   }
