@@ -24,6 +24,9 @@ class Species implements InformationObject {
   @override
   String get additionalInfo => null;
 
+  @override
+  int radius;
+
   /// other species which
   final List<String> connectedTo;
 
@@ -49,6 +52,7 @@ class Species implements InformationObject {
         _storage = storageProvider ?? StorageProvider.instance,
         category = map.containsKey('class') ? map['class'] as String : '',
         name = map.containsKey('name') ? map['name'] as String : '',
+        radius = map.containsKey('radius') ? map['radius'] as int : null,
         shortDescription = map.containsKey('shortDescription')
             ? map['shortDescription'] as String
             : '',
@@ -85,6 +89,7 @@ class Species implements InformationObject {
   /// returns a formatted string with other [Species]
   /// which go well together with this
   String getConnectedTo() => _getCommaSeparatedString(connectedTo);
+
 
   String _getCommaSeparatedString(Iterable<String> elements) {
     final string = StringBuffer();

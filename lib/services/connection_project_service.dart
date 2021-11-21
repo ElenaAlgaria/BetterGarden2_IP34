@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:biodiversity/models/connection_project.dart';
+import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/storage_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -54,6 +55,7 @@ class ConnectionProjectService extends ChangeNotifier {
   //                 'Bitte melde Dich zuerst an', LoginPage())));
   //   }
   // }
+
 
   /// Returns a list of all registered ConnectionProjects
   List<ConnectionProject> getAllConnectionProjects() {

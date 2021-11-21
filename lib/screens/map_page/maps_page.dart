@@ -10,6 +10,7 @@ import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
 import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +39,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   static const List<IconData> icons = [
     Icons.playlist_add,
     Icons.house,
+    Icons.animation_outlined,
   ];
   var _currentSpecies;
   final double _zoom = 14.0;
@@ -50,8 +52,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _markers.clear();
-    ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(
+    ServiceProvider.instance.mapMarkerService.getMarkerSet('garden',
         onTapCallback: (element) {
           setState(() {
             _tappedGarden = element;
@@ -108,6 +109,71 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     setState(() {
       circles = c;
     });
+  }
+
+  bool intersectionsCircle(Circle circle1, Circle circle2) {
+    var a = math.pow(((circle1.radius * 2) - circle2.radius), 2);
+    var b = math.pow((circle1.center.longitude - circle2.center.longitude), 2) +
+        math.pow((circle1.center.latitude - circle2.center.latitude), 2);
+    var c = math.pow(((circle1.radius * 2) + circle2.radius), 2);
+    return (a <= b && b <= c);
+  }
+
+  void areaProjects(DocumentReference reference) {
+    ConnectionProject connectionProject = ServiceProvider
+        .instance.connectionProjectService
+        .getConnectionProjectByReference(reference);
+    var radius = ServiceProvider.instance.speciesService
+        .getSpeciesByName(connectionProject.targetSpecies.toString())
+        .radius;
+    List<Garden> gardens = connectionProject.gardens.map((element) {
+      return ServiceProvider.instance.gardenService
+          .getGardenByReference(element);
+    });
+
+    gardens.forEach((element) {
+    var circle = Circle(
+          circleId: CircleId('circleConnectionProject'),
+          radius: radius.toDouble(),
+          center: LatLng(
+              element
+                  .getLatLng()
+                  .latitude, element
+              .getLatLng()
+              .longitude),
+          fillColor: Color(0x33c47676),
+          strokeWidth: 10);
+
+        ServiceProvider.instance.gardenService.getAllGardens().forEach((element) {
+               var circle2 = ( Circle(
+              circleId: CircleId('circleConnectionProject'),
+              radius: radius.toDouble(),
+              center: LatLng(
+                  element
+                      .getLatLng()
+                      .latitude, element
+                  .getLatLng()
+                  .longitude),
+              strokeWidth: 10));
+
+
+          if (intersectionsCircle(circle, circle2)) {
+            // Marker für circle 2 söll pflänzli werde
+            ServiceProvider.instance.mapMarkerService.getMarkerSet(
+                'joinableGarden',
+                onTapCallback: (element) {
+                  setState(() {
+                    _tappedGarden = element;
+                  });
+                }).then((markers) {
+              setState(() {
+                _markers = markers;
+              });
+            });
+          };
+        });
+        });
+        //var area = math.pi * math.pow(radius, 2) * gardens.length;
   }
 
   void loadUserLocation() async {
@@ -429,6 +495,37 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                   startingPosition: _focusedLocation);
             },
             child: Icon(icons[1], color: Theme.of(context).backgroundColor),
+          ),
+        ),
+      ),
+      Container(
+        height: 56.0,
+        width: 75.0,
+        alignment: FractionalOffset.center,
+        child: ScaleTransition(
+          scale: CurvedAnimation(
+            parent: _fabController,
+            curve: Interval(0.0, 1.0 - 1 / icons.length / 2.0,
+                curve: Curves.easeOut),
+          ),
+          child: FloatingActionButton(
+            heroTag: null,
+            tooltip: 'Vernetzungsprojekt erstellen',
+            backgroundColor: Theme.of(context).cardColor,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CreateProjectPage(),
+                  settings: RouteSettings(
+                    arguments: speciesList.firstWhere(
+                            (element) => element.name == _currentSpecies) ??
+                        speciesList[2],
+                  ),
+                ),
+              );
+            },
+            child: Icon(icons[2], color: Theme.of(context).backgroundColor),
           ),
         ),
       ),

@@ -45,6 +45,8 @@ class MapMarkerService extends ChangeNotifier {
   }
 
   Future<void> _loadIcons() async {
+   Future<void> _loadIcons(BitmapDescriptor joinableGarden) async {
+    //TODO: add images for linking project
     BitmapDescriptor gardenIcon;
     BitmapDescriptor connectionProjectIcon;
 
@@ -63,6 +65,11 @@ class MapMarkerService extends ChangeNotifier {
         const ImageConfiguration(),
         'res/2.0x/gardenIcon.png',
       );
+      } else{
+        // Todo create new Icon
+        joinableGarden = await BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(), 'res/plantIcon.png', );
+      }
       connectionProjectIcon = await BitmapDescriptor.fromAssetImage(
         const ImageConfiguration(),
         'res/2.0x/methodIcon.png',
@@ -71,6 +78,11 @@ class MapMarkerService extends ChangeNotifier {
 
     _icons.putIfAbsent('garden', () => gardenIcon);
     _icons.putIfAbsent('connectionProject', () => connectionProjectIcon);
+    _icons.putIfAbsent('joinableGarden', () => joinableGarden);
+  }
+
+  void setMarker(){
+
   }
 
   /// returns a set of all markers
