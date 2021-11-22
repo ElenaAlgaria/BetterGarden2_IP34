@@ -62,8 +62,7 @@ class MapMarkerService extends ChangeNotifier {
       );
       joinableGardenIcon = await BitmapDescriptor.fromAssetImage(
         const ImageConfiguration(),
-        // TODO: change to correct icon
-        'res/plantIcon.png',
+        'res/2.0x/joinableGardenIcon.png',
       );
     } else {
       gardenIcon = await BitmapDescriptor.fromAssetImage(
@@ -111,6 +110,28 @@ class MapMarkerService extends ChangeNotifier {
     }
     return list;
   }
+
+  Future<Set<Marker>> getJoinableMarkerSet(
+      {Function(Garden element) onTapCallback}) async {
+    while (!_initialized) {
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+
+    final list = <Marker>{};
+    for (final object in _gardens) {
+      list.add(Marker(
+        markerId: MarkerId(
+            object.getLatLng().toString() + object.creationDate.toString()),
+        position: object.getLatLng(),
+        icon: _icons['joinableGarden'],
+        onTap: () {
+          onTapCallback(object);
+        },
+      ));
+    }
+    return list;
+  }
+
 
   /// returns a set of all markers
   Future<Set<Marker>> getConnectionProjectMarkerSet(
