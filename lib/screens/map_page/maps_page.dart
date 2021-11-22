@@ -67,11 +67,11 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     });
     ServiceProvider.instance.mapMarkerService.getConnectionProjectMarkerSet(
         onTapCallback: (element) {
-      setState(() {
-        _tappedConnectionProject = element;
-      });
-      displayModalBottomSheetConnectionProject(context);
-    }).then((markers) {
+          setState(() {
+            _tappedConnectionProject = element;
+          });
+          displayModalBottomSheetConnectionProject(context);
+        }).then((markers) {
       setState(() {
         _markers.addAll(markers);
       });
@@ -83,7 +83,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       duration: const Duration(milliseconds: 500),
     );
 
-    //31311e72-51cb-419f-8d92-91596f2e4b25
 
     areaProjects(ServiceProvider.instance.connectionProjectService
         .getAllConnectionProjects()
@@ -158,8 +157,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       for(Circle c in connectionProjectCircle){
         _circles.add(c);
       }
+               List<Garden> listJoinable = [];
         ServiceProvider.instance.gardenService.getAllGardens().forEach((element) {
-               otherCircles.add ( Circle(
+          otherCircles.add(Circle(
               circleId: const CircleId('circleConnectionProject'),
               radius: radius.toDouble(),
               center: LatLng(
@@ -168,28 +168,25 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                       .latitude, element
                   .getLatLng()
                   .longitude),
-                   fillColor: const Color(0x33c42241),
+              fillColor: const Color(0x33c42241),
               strokeWidth: 1));
-
+              listJoinable.add(element);
+        });
         // Problem kreis us eusem projekt, kreis vo karte
         for (Circle c in _circles) {
           for (Circle o in otherCircles) {
             if (intersectionsCircle(c, o)) {
-
-              ServiceProvider.instance.mapMarkerService.getJoinableMarkerSet(
+            ServiceProvider.instance.mapMarkerService.getJoinableMarkerSet(o,
                   onTapCallback: (element) {
-                    setState(() {
-                      _tappedGarden = element;
-                    });
-                  }).then((markers) {
-                setState(() {
-                  _markers = markers;
-                });
+                  }).then((marker) {
+              setState(() {
+                _markers.add(marker);
               });
+              });
+
+
             };
           }}});
-        });
-
     //var area = math.pi * math.pow(radius, 2) * gardens.length;
   }
 

@@ -69,10 +69,6 @@ class MapMarkerService extends ChangeNotifier {
         const ImageConfiguration(),
         'res/2.0x/gardenIcon.png',
       );
-
-      // Todo create new Icon
-      joinableGardenIcon = await BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(), 'res/plantIcon.png',);
     }
     connectionProjectIcon = await BitmapDescriptor.fromAssetImage(
       const ImageConfiguration(),
@@ -84,15 +80,12 @@ class MapMarkerService extends ChangeNotifier {
       'res/2.0x/joinableGardenIcon.png',
     );
 
-
     _icons.putIfAbsent('garden', () => gardenIcon);
     _icons.putIfAbsent('connectionProject', () => connectionProjectIcon);
     _icons.putIfAbsent('joinableGarden', () => joinableGardenIcon);
   }
 
-  void setMarker() {
-
-  }
+  void setMarker() {}
 
   /// returns a set of all markers
   Future<Set<Marker>> getGardenMarkerSet(
@@ -116,29 +109,21 @@ class MapMarkerService extends ChangeNotifier {
     return list;
   }
 
-  Future<Set<Marker>> getJoinableMarkerSet(
-      {Function(Garden element) onTapCallback}) async {
+  Future<Marker> getJoinableMarkerSet(Circle circle,
+      {Function(Circle element) onTapCallback}) async {
     while (!_initialized) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
-
-    final list = <Marker>{};
-    for (final object in _gardens) {
-      list.add(Marker(
-        markerId: MarkerId(
-            object.getLatLng().toString() + object.creationDate.toString()),
-        position: object.getLatLng(),
-        icon: _icons['joinableGarden'],
-        onTap: () {
-          onTapCallback(object);
-        },
-      ));
-    }
-    return list;
+    var marker = Marker(
+      markerId: MarkerId(circle.center.toString() + circle.toString()),
+      position: circle.center,
+      icon: _icons['joinableGarden'],
+      onTap: () {
+        onTapCallback(circle);
+      },
+    );
+    return marker;
   }
-
-
-
 
   /// returns a set of all markers
   Future<Set<Marker>> getConnectionProjectMarkerSet(
@@ -157,10 +142,9 @@ class MapMarkerService extends ChangeNotifier {
           '/' +
           object.gardens.length.toString());
       list.add(Marker(
-        markerId: MarkerId(
-            projectLatLng.toString() + object.creationDate.toString()),
-        position:
-        object.getLatLng(),
+        markerId:
+            MarkerId(projectLatLng.toString() + object.creationDate.toString()),
+        position: object.getLatLng(),
         //object.getLatLng() new LatLng(projectLatLng.latitude + 10, projectLatLng.longitude)
         icon: _icons['connectionProject'],
         onTap: () {
