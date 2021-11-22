@@ -79,6 +79,11 @@ class MapMarkerService extends ChangeNotifier {
       'res/2.0x/methodIcon.png',
     );
 
+    joinableGardenIcon = await BitmapDescriptor.fromAssetImage(
+      const ImageConfiguration(),
+      'res/2.0x/joinableGardenIcon.png',
+    );
+
 
     _icons.putIfAbsent('garden', () => gardenIcon);
     _icons.putIfAbsent('connectionProject', () => connectionProjectIcon);
@@ -131,6 +136,8 @@ class MapMarkerService extends ChangeNotifier {
     }
     return list;
   }
+
+
 
 
   /// returns a set of all markers
