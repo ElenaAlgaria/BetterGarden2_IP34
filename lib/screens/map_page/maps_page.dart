@@ -179,7 +179,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           for(Circle c in _circles) {
             if (intersectionsCircle(c, c)) {
               // Marker für circle 2 söll pflänzli werde
-              ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(
+              ServiceProvider.instance.mapMarkerService.getJoinableMarkerSet(
                   onTapCallback: (element) {
                     setState(() {
                       _tappedGarden = element;
