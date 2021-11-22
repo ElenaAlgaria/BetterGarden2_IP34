@@ -45,14 +45,16 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   final double _zoom = 14.0;
   Set<Marker> _markers = {};
 
-  Set<Circle> circles = {};
+  Set<Circle> _circles = {};
 
   List<Species> speciesList = [];
+
+  DocumentReference reference;
 
   @override
   void initState() {
     super.initState();
-    ServiceProvider.instance.mapMarkerService.getMarkerSet('garden',
+    ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(
         onTapCallback: (element) {
           setState(() {
             _tappedGarden = element;
@@ -80,10 +82,16 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
+
+    //31311e72-51cb-419f-8d92-91596f2e4b25
+    areaProjects(ServiceProvider.instance.connectionProjectService.getAllConnectionProjects()
+        .where((element) => element.reference.id == '31311e72-51cb-419f-8d92-91596f2e4b25')
+        .first.reference);
   }
 
   void modifyPermieterCircle(String name) {
     if (name != '') {
+      //Todo radius variable
       addCircle(500);
     } else {
       removeCircle();
@@ -92,22 +100,22 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
 
   void removeCircle() {
     setState(() {
-      circles = <Circle>{};
+      _circles = <Circle>{};
     });
   }
 
   void addCircle(radius) {
-    var c = Set<Circle>.from(circles);
+    var c = Set<Circle>.from(_circles);
     var lat = widget.garden.getLatLng().latitude;
     var lon = widget.garden.getLatLng().longitude;
     c.add(Circle(
-        circleId: CircleId('circleOneTest'),
+        circleId: const CircleId('circleOneTest'),
         radius: radius.toDouble(),
         center: LatLng(lat, lon),
         fillColor: Color(0x339fc476),
         strokeWidth: 10));
     setState(() {
-      circles = c;
+      _circles = c;
     });
   }
 
@@ -120,20 +128,24 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   }
 
   void areaProjects(DocumentReference reference) {
-    ConnectionProject connectionProject = ServiceProvider
+    var connectionProject = ServiceProvider
         .instance.connectionProjectService
         .getConnectionProjectByReference(reference);
-    var radius = ServiceProvider.instance.speciesService
-        .getSpeciesByName(connectionProject.targetSpecies.toString())
-        .radius;
-    List<Garden> gardens = connectionProject.gardens.map((element) {
+
+    var gardens = connectionProject.gardens.map((element) {
       return ServiceProvider.instance.gardenService
           .getGardenByReference(element);
-    });
+    }).toList();
+
+    var radius = ServiceProvider.instance.speciesService
+        .getSpeciesByReference(connectionProject.targetSpecies)
+        .radius;
+
+    List<Circle> connectionProjectCircle = [];
 
     gardens.forEach((element) {
-    var circle = Circle(
-          circleId: CircleId('circleConnectionProject'),
+      connectionProjectCircle.add(Circle(
+          circleId: const CircleId('circleConnectionProject'),
           radius: radius.toDouble(),
           center: LatLng(
               element
@@ -141,12 +153,12 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                   .latitude, element
               .getLatLng()
               .longitude),
-          fillColor: Color(0x33c47676),
-          strokeWidth: 10);
+          fillColor: const Color(0x5232d5f3),
+          strokeWidth: 1));
 
         ServiceProvider.instance.gardenService.getAllGardens().forEach((element) {
-               var circle2 = ( Circle(
-              circleId: CircleId('circleConnectionProject'),
+               connectionProjectCircle.add ( Circle(
+              circleId: const CircleId('circleConnectionProject'),
               radius: radius.toDouble(),
               center: LatLng(
                   element
@@ -154,13 +166,17 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                       .latitude, element
                   .getLatLng()
                   .longitude),
-              strokeWidth: 10));
+                   fillColor: const Color(0x33c42241),
+              strokeWidth: 1));
 
+               for(var c in connectionProjectCircle){
+                 _circles.add(c);
+               }
 
-          if (intersectionsCircle(circle, circle2)) {
+          /*
+          if (intersectionsCircle(null, null)) {
             // Marker für circle 2 söll pflänzli werde
-            ServiceProvider.instance.mapMarkerService.getMarkerSet(
-                'joinableGarden',
+            ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(
                 onTapCallback: (element) {
                   setState(() {
                     _tappedGarden = element;
@@ -171,8 +187,10 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               });
             });
           };
+           */
         });
         });
+
         //var area = math.pi * math.pow(radius, 2) * gardens.length;
   }
 
@@ -223,6 +241,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             mapToolbarEnabled: false,
             mapType: MapType.hybrid,
             markers: _markers,
+            circles: _circles,
             onCameraIdle: () {
               mapController.getVisibleRegion().then((bounds) {
                 final lat =
@@ -237,7 +256,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               Provider.of<MapInteractionContainer>(context, listen: false)
                   .selectedLocation = pos;
             },
-            circles: Set<Circle>.from(circles),
+           // circles: Set<Circle>.from(_circles),
           ),
           speciesListWidget(),
           navigateToCreateGroupButton()

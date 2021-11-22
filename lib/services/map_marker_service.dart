@@ -45,10 +45,10 @@ class MapMarkerService extends ChangeNotifier {
   }
 
   Future<void> _loadIcons() async {
-   Future<void> _loadIcons(BitmapDescriptor joinableGarden) async {
     //TODO: add images for linking project
     BitmapDescriptor gardenIcon;
     BitmapDescriptor connectionProjectIcon;
+    BitmapDescriptor joinableGardenIcon;
 
     if (defaultTargetPlatform == TargetPlatform.iOS) {
       gardenIcon = await BitmapDescriptor.fromAssetImage(
@@ -60,28 +60,33 @@ class MapMarkerService extends ChangeNotifier {
         // TODO: change to correct icon
         'res/methodIcon.png',
       );
+      joinableGardenIcon = await BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(),
+        // TODO: change to correct icon
+        'res/plantIcon.png',
+      );
     } else {
       gardenIcon = await BitmapDescriptor.fromAssetImage(
         const ImageConfiguration(),
         'res/2.0x/gardenIcon.png',
       );
-      } else{
-        // Todo create new Icon
-        joinableGarden = await BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(), 'res/plantIcon.png', );
-      }
-      connectionProjectIcon = await BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(),
-        'res/2.0x/methodIcon.png',
-      );
+
+      // Todo create new Icon
+      joinableGardenIcon = await BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(), 'res/plantIcon.png',);
     }
+    connectionProjectIcon = await BitmapDescriptor.fromAssetImage(
+      const ImageConfiguration(),
+      'res/2.0x/methodIcon.png',
+    );
+
 
     _icons.putIfAbsent('garden', () => gardenIcon);
     _icons.putIfAbsent('connectionProject', () => connectionProjectIcon);
-    _icons.putIfAbsent('joinableGarden', () => joinableGarden);
+    _icons.putIfAbsent('joinableGarden', () => joinableGardenIcon);
   }
 
-  void setMarker(){
+  void setMarker() {
 
   }
 
@@ -124,9 +129,10 @@ class MapMarkerService extends ChangeNotifier {
           '/' +
           object.gardens.length.toString());
       list.add(Marker(
-        markerId: MarkerId(projectLatLng.toString() + object.creationDate.toString()),
+        markerId: MarkerId(
+            projectLatLng.toString() + object.creationDate.toString()),
         position:
-            object.getLatLng(),
+        object.getLatLng(),
         //object.getLatLng() new LatLng(projectLatLng.latitude + 10, projectLatLng.longitude)
         icon: _icons['connectionProject'],
         onTap: () {
