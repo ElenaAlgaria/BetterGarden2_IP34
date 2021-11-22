@@ -84,9 +84,12 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     );
 
     //31311e72-51cb-419f-8d92-91596f2e4b25
+
     areaProjects(ServiceProvider.instance.connectionProjectService.getAllConnectionProjects()
         .where((element) => element.reference.id == '31311e72-51cb-419f-8d92-91596f2e4b25')
         .first.reference);
+
+
   }
 
   void modifyPermieterCircle(String name) {
@@ -132,14 +135,14 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         .instance.connectionProjectService
         .getConnectionProjectByReference(reference);
 
+    var radius = ServiceProvider.instance.speciesService
+        .getSpeciesByReference(connectionProject.targetSpecies)
+        .radius;
+
     var gardens = connectionProject.gardens.map((element) {
       return ServiceProvider.instance.gardenService
           .getGardenByReference(element);
     }).toList();
-
-    var radius = ServiceProvider.instance.speciesService
-        .getSpeciesByReference(connectionProject.targetSpecies)
-        .radius;
 
     List<Circle> connectionProjectCircle = [];
 
@@ -172,27 +175,28 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                for(var c in connectionProjectCircle){
                  _circles.add(c);
                }
-
-          /*
-          if (intersectionsCircle(null, null)) {
-            // Marker für circle 2 söll pflänzli werde
-            ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(
-                onTapCallback: (element) {
-                  setState(() {
-                    _tappedGarden = element;
-                  });
-                }).then((markers) {
-              setState(() {
-                _markers = markers;
+            // Problem kreis us eusem projekt, kreis vo karte
+          for(Circle c in _circles) {
+            if (intersectionsCircle(c, c)) {
+              // Marker für circle 2 söll pflänzli werde
+              ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(
+                  onTapCallback: (element) {
+                    setState(() {
+                      _tappedGarden = element;
+                    });
+                  }).then((markers) {
+                setState(() {
+                  _markers = markers;
+                });
               });
-            });
-          };
-           */
-        });
+            };
+          }});
         });
 
         //var area = math.pi * math.pow(radius, 2) * gardens.length;
   }
+
+
 
   void loadUserLocation() async {
     if (widget.garden == null &&
@@ -241,7 +245,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             mapToolbarEnabled: false,
             mapType: MapType.hybrid,
             markers: _markers,
-            circles: _circles,
+            circles: Set<Circle>.from(_circles),
             onCameraIdle: () {
               mapController.getVisibleRegion().then((bounds) {
                 final lat =
@@ -256,7 +260,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               Provider.of<MapInteractionContainer>(context, listen: false)
                   .selectedLocation = pos;
             },
-           // circles: Set<Circle>.from(_circles),
           ),
           speciesListWidget(),
           navigateToCreateGroupButton()
