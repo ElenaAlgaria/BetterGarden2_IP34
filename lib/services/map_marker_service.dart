@@ -106,20 +106,21 @@ class MapMarkerService extends ChangeNotifier {
         },
       ));
     }
+
     return list;
   }
 
-  Future<Marker> getJoinableMarkerSet(Circle circle,
-      {Function(Circle element) onTapCallback}) async {
+  Future<Marker> getJoinableMarkerSet(Garden garden,
+      {Function(Garden element) onTapCallback}) async {
     while (!_initialized) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
     var marker = Marker(
-      markerId: MarkerId(circle.center.toString() + circle.toString()),
-      position: circle.center,
+      markerId: MarkerId(garden.getLatLng().toString() + garden.toString()),
+      position: garden.getLatLng(),
       icon: _icons['joinableGarden'],
       onTap: () {
-        onTapCallback(circle);
+        onTapCallback(garden);
       },
     );
     return marker;
