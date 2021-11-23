@@ -17,6 +17,7 @@ class gardenDropDown extends StatefulWidget {
 class gardenDropDownState extends State<gardenDropDown> {
   Garden currentGarden;
 
+  @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
     var _gardensList =
@@ -44,8 +45,8 @@ class gardenDropDownState extends State<gardenDropDown> {
       },
       dataSource: _gardensList.map((garden) {
         return {
-          "display": garden.name,
-          "value": garden,
+          'display': garden.name,
+          'value': garden,
         };
       }).toList(),
       textField: 'display',
