@@ -54,7 +54,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           setState(() {
             _tappedGarden = element;
           });
-          // displayModalBottomSheet(context);
+          displayModalBottomSheetConnectionProject(context);
         }).then((markers) {
       setState(() {
         _markers = markers;
@@ -322,8 +322,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         });
   }
 
-  Future<Widget> displayModalBottomSheetConnectionProject(
-      BuildContext context) async {
+  Future<Widget> displayModalBottomSheetConnectionProject(BuildContext context) async {
     return await showModalBottomSheet(
         barrierColor: Colors.transparent,
         backgroundColor: Colors.white,
@@ -341,16 +340,18 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             expand: false,
             builder: (context, scrollController) {
               return Padding(
-                padding: const EdgeInsets.fromLTRB(8, 20, 8, 8),
+                padding: const EdgeInsets.fromLTRB(8, 30, 8, 20),
                 child: ListView(
                   controller: scrollController,
                   children: <Widget>[
+                    Text(
+                      "Save the Bees",
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                     TextFieldWithDescriptor(
-                        'Verbindungsprojekt', Text('Eichhörnchenfans 4')),
+                        'Name des Garten', Text(_tappedGarden.name ?? '')),
                     TextFieldWithDescriptor(
-                        'Gartentypen', Text(_tappedGarden.name ?? '')),
-                    TextFieldWithDescriptor(
-                        'Projektort', Text(_tappedGarden.gardenType ?? '')),
+                        'Gardentyp', Text(_tappedGarden.gardenType ?? '')),
                     TextFieldWithDescriptor(
                       'Besitzer',
                       FutureBuilder(
