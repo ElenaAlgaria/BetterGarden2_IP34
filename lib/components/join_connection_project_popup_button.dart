@@ -69,8 +69,11 @@ class joinConnectionProjectButton extends StatelessWidget {
                                                   _selectedGarden.reference)) {
                                             connectionProject.addGarden(
                                                 _selectedGarden.reference);
+                                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                content: Text('Du bist dem Verbindungsprojekt erfolgreich beigetreten.')));
                                             logging.log(
                                                 'Add garden \"${_selectedGarden.name}\" to connectionProject \"${connectionProject.title}\"');
+                                            Navigator.of(context).pop();
                                           } else {
                                             throw ArgumentError(
                                                 'garden already belongs to connectionProject');
