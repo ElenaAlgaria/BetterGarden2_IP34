@@ -84,12 +84,12 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     );
 
 
-    areaProjects(ServiceProvider.instance.connectionProjectService
-        .getAllConnectionProjects()
-        .where((element) =>
-            element.reference.id == '31311e72-51cb-419f-8d92-91596f2e4b25')
-        .first
-        .reference);
+    List<DocumentReference> connectionProjectReferences = [];
+    ServiceProvider.instance.connectionProjectService.getAllConnectionProjects()
+        .forEach((element) {
+      connectionProjectReferences.add(element.reference);
+    });
+    areaProjects(connectionProjectReferences);
   }
 
   void modifyPermieterCircle(String name) {
@@ -130,35 +130,39 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     return (a <= b && b <= c);
   }
 
-  void areaProjects(DocumentReference reference) {
-    var connectionProject = ServiceProvider.instance.connectionProjectService
-        .getConnectionProjectByReference(reference);
+  void areaProjects(List<DocumentReference> connectionProjectReferences) {
+    connectionProjectReferences.forEach((element) {
+      var connectionProject = ServiceProvider.instance.connectionProjectService
+          .getConnectionProjectByReference(element);
+      var radius = ServiceProvider.instance.speciesService
+          .getSpeciesByReference(connectionProject.targetSpecies)
+          .radius;
+      var gardens = connectionProject.gardens.map((element) {
+        return ServiceProvider.instance.gardenService
+            .getGardenByReference(element);
+      }).toList();
 
-    var radius = ServiceProvider.instance.speciesService
-        .getSpeciesByReference(connectionProject.targetSpecies)
-        .radius;
+      List<Circle> connectionProjectCircle = [];
+      List<Circle> otherCircles = [];
 
-    var gardens = connectionProject.gardens.map((element) {
-      return ServiceProvider.instance.gardenService
-          .getGardenByReference(element);
-    }).toList();
-
-    List<Circle> connectionProjectCircle = [];
-    List<Circle> otherCircles = [];
-
-    gardens.forEach((element) {
-      connectionProjectCircle.add(Circle(
-          circleId: const CircleId('circleConnectionProject'),
-          radius: radius.toDouble(),
-          center: LatLng(
-              element.getLatLng().latitude, element.getLatLng().longitude),
-          fillColor: const Color(0x5232d5f3),
-          strokeWidth: 1));
-      for(Circle c in connectionProjectCircle){
-        _circles.add(c);
-      }
-               List<Garden> listJoinable = [];
-        ServiceProvider.instance.gardenService.getAllGardens().forEach((element) {
+      gardens.forEach((element) {
+        connectionProjectCircle.add(Circle(
+            circleId: const CircleId('circleConnectionProject'),
+            radius: radius.toDouble(),
+            center: LatLng(
+                element
+                    .getLatLng()
+                    .latitude, element
+                .getLatLng()
+                .longitude),
+            fillColor: const Color(0x5232d5f3),
+            strokeWidth: 1));
+        for (Circle c in connectionProjectCircle) {
+          _circles.add(c);
+        }
+        List<Garden> listJoinable = [];
+        ServiceProvider.instance.gardenService.getAllGardens().forEach((
+            element) {
           otherCircles.add(Circle(
               circleId: const CircleId('circleConnectionProject'),
               radius: radius.toDouble(),
@@ -170,26 +174,25 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                   .longitude),
               fillColor: const Color(0x33c42241),
               strokeWidth: 1));
-              listJoinable.add(element);
+          listJoinable.add(element);
         });
         // Problem kreis us eusem projekt, kreis vo karte
         for (Circle c in _circles) {
           for (Circle o in otherCircles) {
             if (intersectionsCircle(c, o)) {
-            ServiceProvider.instance.mapMarkerService.getJoinableMarkerSet(o,
-                  onTapCallback: (element) {
-                  }).then((marker) {
-              setState(() {
-                _markers.add(marker);
+              ServiceProvider.instance.mapMarkerService.getJoinableMarkerSet(o,
+                  onTapCallback: (element) {}).then((marker) {
+                setState(() {
+                  _markers.add(marker);
+                });
               });
-              });
-
-
             };
-          }}});
-    //var area = math.pi * math.pow(radius, 2) * gardens.length;
+          }
+        }
+      });
+      //var area = math.pi * math.pow(radius, 2) * gardens.length;
+    });
   }
-
 
 
   void loadUserLocation() async {
