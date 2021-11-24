@@ -65,6 +65,21 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         _markers.addAll(markers);
       });
     });
+    speciesList =
+        ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
+    _fabController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+
+    List<DocumentReference> connectionProjectReferences = [];
+    ServiceProvider.instance.connectionProjectService
+        .getAllConnectionProjects()
+        .forEach((element) {
+      connectionProjectReferences.add(element.reference);
+    });
+    areaProjects(connectionProjectReferences);
+
     ServiceProvider.instance.mapMarkerService.getConnectionProjectMarkerSet(
         onTapCallback: (element) {
       setState(() {
@@ -76,20 +91,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         _markers.addAll(markers);
       });
     });
-    speciesList =
-        ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
-    _fabController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    );
 
-    areaProjects(ServiceProvider.instance.connectionProjectService
-        .getAllConnectionProjects()
-        .where((element) =>
-            element.reference.id == '31311e72-51cb-419f-8d92-91596f2e4b25')
-        .first
-        .reference);
   }
+
 
   void modifyPermieterCircle(String name) {
     if (name != '') {
@@ -129,73 +133,91 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     return (a <= b && b <= c);
   }
 
-  void areaProjects(DocumentReference reference) {
-    var connectionProject = ServiceProvider.instance.connectionProjectService
-        .getConnectionProjectByReference(reference);
+  void areaProjects(List<DocumentReference> connectionProjectReferences) {
+    connectionProjectReferences.forEach((element) {
+      var connectionProject = ServiceProvider.instance.connectionProjectService
+          .getConnectionProjectByReference(element);
 
-    var radius = ServiceProvider.instance.speciesService
-        .getSpeciesByReference(connectionProject.targetSpecies)
-        .radius;
+      var radius = ServiceProvider.instance.speciesService
+          .getSpeciesByReference(connectionProject.targetSpecies)
+          .radius;
 
-    var gardens = connectionProject.gardens.map((element) {
-      return ServiceProvider.instance.gardenService
-          .getGardenByReference(element);
-    }).toList();
+      var gardens = connectionProject.gardens.map((element) {
+        return ServiceProvider.instance.gardenService
+            .getGardenByReference(element);
+      }).toList();
 
-    List<Circle> connectionProjectCircle = [];
-    List<Circle> otherCircles = [];
 
-    gardens.forEach((element) {
-      connectionProjectCircle.add(Circle(
-          circleId: const CircleId('circleConnectionProject'),
-          radius: radius.toDouble(),
-          center: LatLng(
-              element.getLatLng().latitude, element.getLatLng().longitude),
-          fillColor: const Color(0x5232d5f3),
-          strokeWidth: 1));
-      for (Circle c in connectionProjectCircle) {
-        _circles.add(c);
-      }
-      List<Garden> listJoinable = [];
-      ServiceProvider.instance.gardenService.getAllGardens().forEach((element) {
-        otherCircles.add(Circle(
+      List<Circle> connectionProjectCircle = [];
+      List<Circle> otherCircles = [];
+
+      gardens.forEach((element) {
+        connectionProjectCircle.add(Circle(
             circleId: const CircleId('circleConnectionProject'),
             radius: radius.toDouble(),
             center: LatLng(
-                element.getLatLng().latitude, element.getLatLng().longitude),
-            fillColor: const Color(0x33c42241),
+                element
+                    .getLatLng()
+                    .latitude, element
+                .getLatLng()
+                .longitude),
+            fillColor: const Color(0x5232d5f3),
             strokeWidth: 1));
-        listJoinable.add(element);
-      });
-      // Problem kreis us eusem projekt, kreis vo karte
-
-      // zoes garden
-      var garden = ServiceProvider.instance.gardenService
-          .getAllGardens()
-          .where((element) =>
-              element.reference.id == '175d0cea-633f-4ab4-bbbd-1ebab15c3152')
-          .first;
-
-          var marker = _markers.firstWhere((marker) => marker.markerId.value ==
-                  garden.getLatLng().toString() + garden.toString(),
-              orElse: () => null);
-
-            _markers.remove(marker);
-
-      // mach ihn grüen
-      ServiceProvider.instance.mapMarkerService.getJoinableMarkerSet(garden,
-          onTapCallback: (element) {
-      }).then((marker) {
-        _markers.add(marker);
-      });
-
-      for (Circle c in _circles) {
-        for (Circle o in otherCircles) {
-          if (intersectionsCircle(c, o)) {}
-          ;
+        for (Circle c in connectionProjectCircle) {
+          _circles.add(c);
         }
-      }
-      ;
+
+        List<Garden> listJoinable = [];
+        ServiceProvider.instance.gardenService.getAllGardens().forEach((
+            element) {
+          otherCircles.add(Circle(
+              circleId: const CircleId('circleConnectionProject'),
+              radius: radius.toDouble(),
+              center: LatLng(
+                  element
+                      .getLatLng()
+                      .latitude, element
+                  .getLatLng()
+                  .longitude),
+              fillColor: const Color(0x33c42241),
+              strokeWidth: 1));
+          listJoinable.add(element);
+        });
+        // Problem kreis us eusem projekt, kreis vo karte
+
+        // zoes garden
+        var garden = ServiceProvider.instance.gardenService
+            .getAllGardens()
+            .where((element) =>
+        element.reference.id == '38dc7c0d-26a4-427f-8ff8-c0e062497d7a')
+            .first;
+
+        var marker = _markers.firstWhere((marker) =>
+        marker.markerId.value ==
+            garden.getLatLng().toString() + garden.toString(),
+            orElse: () => null);
+
+        //  _markers.remove(marker);
+
+        // mach ihn grüen
+
+        ServiceProvider.instance.mapMarkerService.getJoinableMarkerSet(garden,
+            onTapCallback: (element) {}).then((marker) {
+          _markers.add(marker);
+        });
+
+
+
+
+
+        for (Circle c in _circles) {
+          for (Circle o in otherCircles) {
+            if (intersectionsCircle(c, o)) {}
+            ;
+          }
+        }
+        ;
+      });
     });
   }
 
