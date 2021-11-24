@@ -56,22 +56,11 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     super.initState();
     ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(
         onTapCallback: (element) {
-          setState(() {
-            _tappedGarden = element;
-          });
-          displayModalBottomSheetGarden(context);
-        }).then((markers) {
       setState(() {
-        _markers.addAll(markers);
+        _tappedGarden = element;
       });
-    });
-    ServiceProvider.instance.mapMarkerService.getConnectionProjectMarkerSet(
-        onTapCallback: (element) {
-          setState(() {
-            _tappedConnectionProject = element;
-          });
-          displayModalBottomSheetConnectionProject(context);
-        }).then((markers) {
+      displayModalBottomSheetGarden(context);
+    }).then((markers) {
       setState(() {
         _markers.addAll(markers);
       });
@@ -83,14 +72,28 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       duration: const Duration(milliseconds: 500),
     );
 
-
     List<DocumentReference> connectionProjectReferences = [];
-    ServiceProvider.instance.connectionProjectService.getAllConnectionProjects()
+    ServiceProvider.instance.connectionProjectService
+        .getAllConnectionProjects()
         .forEach((element) {
       connectionProjectReferences.add(element.reference);
     });
     areaProjects(connectionProjectReferences);
+
+    ServiceProvider.instance.mapMarkerService.getConnectionProjectMarkerSet(
+        onTapCallback: (element) {
+      setState(() {
+        _tappedConnectionProject = element;
+      });
+      displayModalBottomSheetConnectionProject(context);
+    }).then((markers) {
+      setState(() {
+        _markers.addAll(markers);
+      });
+    });
+
   }
+
 
   void modifyPermieterCircle(String name) {
     if (name != '') {
@@ -134,13 +137,16 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     connectionProjectReferences.forEach((element) {
       var connectionProject = ServiceProvider.instance.connectionProjectService
           .getConnectionProjectByReference(element);
+
       var radius = ServiceProvider.instance.speciesService
           .getSpeciesByReference(connectionProject.targetSpecies)
           .radius;
+
       var gardens = connectionProject.gardens.map((element) {
         return ServiceProvider.instance.gardenService
             .getGardenByReference(element);
       }).toList();
+
 
       List<Circle> connectionProjectCircle = [];
       List<Circle> otherCircles = [];
@@ -160,6 +166,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         for (Circle c in connectionProjectCircle) {
           _circles.add(c);
         }
+
         List<Garden> listJoinable = [];
         ServiceProvider.instance.gardenService.getAllGardens().forEach((
             element) {
@@ -177,28 +184,49 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           listJoinable.add(element);
         });
         // Problem kreis us eusem projekt, kreis vo karte
+
+        // zoes garden
+        var garden = ServiceProvider.instance.gardenService
+            .getAllGardens()
+            .where((element) =>
+        element.reference.id == '38dc7c0d-26a4-427f-8ff8-c0e062497d7a')
+            .first;
+
+        var marker = _markers.firstWhere((marker) =>
+        marker.markerId.value ==
+            garden.getLatLng().toString() + garden.toString(),
+            orElse: () => null);
+
+        //  _markers.remove(marker);
+
+        // mach ihn grüen
+
+        ServiceProvider.instance.mapMarkerService.getJoinableMarkerSet(garden,
+            onTapCallback: (element) {}).then((marker) {
+          _markers.add(marker);
+        });
+
+
+
+
+
         for (Circle c in _circles) {
           for (Circle o in otherCircles) {
-            if (intersectionsCircle(c, o)) {
-              ServiceProvider.instance.mapMarkerService.getJoinableMarkerSet(o,
-                  onTapCallback: (element) {}).then((marker) {
-                setState(() {
-                  _markers.add(marker);
-                });
-              });
-            };
+            if (intersectionsCircle(c, o)) {}
+            ;
           }
         }
+        ;
       });
-      //var area = math.pi * math.pow(radius, 2) * gardens.length;
     });
   }
 
+  //var area = math.pi * math.pow(radius, 2) * gardens.length;
 
   void loadUserLocation() async {
     if (widget.garden == null &&
         Provider.of<MapInteractionContainer>(context, listen: false)
-            .selectedLocation ==
+                .selectedLocation ==
             null) {
       await Provider.of<MapInteractionContainer>(context, listen: false)
           .getLocation()
@@ -213,7 +241,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final mapInteraction =
-    Provider.of<MapInteractionContainer>(context, listen: false);
+        Provider.of<MapInteractionContainer>(context, listen: false);
     loadUserLocation();
 
     return Scaffold(
@@ -226,17 +254,17 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           GoogleMap(
             myLocationEnabled: true,
             myLocationButtonEnabled:
-            (defaultTargetPlatform == TargetPlatform.iOS) ? false : true,
+                (defaultTargetPlatform == TargetPlatform.iOS) ? false : true,
             onMapCreated: (controller) => mapController = controller,
             initialCameraPosition: (widget.garden != null)
                 ? CameraPosition(target: widget.garden.getLatLng(), zoom: _zoom)
                 : (mapInteraction.selectedLocation != null)
-                ? CameraPosition(
-                target: mapInteraction.selectedLocation, zoom: _zoom)
-                : CameraPosition(
-              target: mapInteraction.defaultLocation,
-              zoom: _zoom,
-            ),
+                    ? CameraPosition(
+                        target: mapInteraction.selectedLocation, zoom: _zoom)
+                    : CameraPosition(
+                        target: mapInteraction.defaultLocation,
+                        zoom: _zoom,
+                      ),
             zoomControlsEnabled: false,
             rotateGesturesEnabled: false,
             mapToolbarEnabled: false,
@@ -355,9 +383,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         backgroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20.0),
-              topRight: Radius.circular(20.0),
-            )),
+          topLeft: Radius.circular(20.0),
+          topRight: Radius.circular(20.0),
+        )),
         context: context,
         isScrollControlled: true,
         builder: (context) {
@@ -427,9 +455,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         backgroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20.0),
-              topRight: Radius.circular(20.0),
-            )),
+          topLeft: Radius.circular(20.0),
+          topRight: Radius.circular(20.0),
+        )),
         context: context,
         isScrollControlled: true,
         builder: (context) {
