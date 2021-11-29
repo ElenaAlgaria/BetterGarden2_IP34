@@ -40,7 +40,6 @@ class MapMarkerService extends ChangeNotifier {
     _connectionProjects.clear();
     _connectionProjects.addAll(ServiceProvider.instance.connectionProjectService
         .getAllConnectionProjects());
-    _joi
     _initialized = true;
     notifyListeners();
   }

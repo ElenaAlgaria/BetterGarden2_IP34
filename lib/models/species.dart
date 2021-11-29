@@ -25,7 +25,7 @@ class Species implements InformationObject {
   String get additionalInfo => null;
 
   @override
-  int radius;
+  final int radius;
 
   /// other species which
   final List<String> connectedTo;
