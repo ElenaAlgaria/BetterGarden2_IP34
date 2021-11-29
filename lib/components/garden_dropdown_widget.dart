@@ -1,14 +1,13 @@
 import 'package:biodiversity/components/dropdown_formfield.dart';
 import 'package:biodiversity/models/garden.dart';
-import 'package:biodiversity/models/user.dart';
-import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
 
 class gardenDropDown extends StatefulWidget {
   final ValueChanged<Garden> onGardenChanged;
+  final List<Garden> gardensList;
 
-  gardenDropDown({Key key, this.onGardenChanged}) : super(key: key);
+  gardenDropDown({Key key, this.onGardenChanged, this.gardensList})
+      : super(key: key);
 
   @override
   gardenDropDownState createState() => gardenDropDownState();
@@ -19,15 +18,10 @@ class gardenDropDownState extends State<gardenDropDown> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<User>(context);
-    var _gardensList =
-        ServiceProvider.instance.gardenService.getAllGardensFromUser(user);
-
-    if (_gardensList == null || _gardensList.isEmpty) {
-      throw ArgumentError(
-          'You have to register a garden, before creating a connection project');
+    if (widget.gardensList == null || widget.gardensList.isEmpty) {
+      throw ArgumentError('there are no gardens present for selection');
     } else {
-      currentGarden = _gardensList.first;
+      currentGarden = widget.gardensList.first;
       widget.onGardenChanged(currentGarden);
     }
 
@@ -43,7 +37,7 @@ class gardenDropDownState extends State<gardenDropDown> {
       onChanged: (value) {
         widget.onGardenChanged(value);
       },
-      dataSource: _gardensList.map((garden) {
+      dataSource: widget.gardensList.map((garden) {
         return {
           'display': garden.name,
           'value': garden,
