@@ -8,15 +8,18 @@ import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/species.dart';
+import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
 import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/src/iterable_extensions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:geolocator/geolocator.dart';
 
 /// Display the map with the markers
 class MapsPage extends StatefulWidget {
@@ -57,11 +60,11 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     super.initState();
     ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(
         onTapCallback: (element) {
-      setState(() {
-        _tappedGarden = element;
-      });
-      displayModalBottomSheetGarden(context);
-    }).then((markers) {
+          setState(() {
+            _tappedGarden = element;
+          });
+          displayModalBottomSheetGarden(context);
+        }).then((markers) {
       setState(() {
         _markers.addAll(markers);
       });
@@ -83,11 +86,11 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
 
     ServiceProvider.instance.mapMarkerService.getConnectionProjectMarkerSet(
         onTapCallback: (element) {
-      setState(() {
-        _tappedConnectionProject = element;
-      });
-      displayModalBottomSheetConnectionProject(context);
-    }).then((markers) {
+          setState(() {
+            _tappedConnectionProject = element;
+          });
+          displayModalBottomSheetConnectionProject(context);
+        }).then((markers) {
       setState(() {
         _markers.addAll(markers);
       });
@@ -111,8 +114,12 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
 
   void addCircle(radius) {
     var c = Set<Circle>.from(_circles);
-    var lat = widget.garden.getLatLng().latitude;
-    var lon = widget.garden.getLatLng().longitude;
+    var lat = widget.garden
+        .getLatLng()
+        .latitude;
+    var lon = widget.garden
+        .getLatLng()
+        .longitude;
     c.add(Circle(
         circleId: const CircleId('circleOneTest'),
         radius: radius.toDouble(),
@@ -127,12 +134,16 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   bool intersectionsCircle(Circle circle1, Circle circle2) {
     //ABS(R0 - R1) <= SQRT((x0 - x1)^2 + (y0 - y1)^2) <= (R0 + R1)
     var absRadDiff = (circle1.radius - circle2.radius).abs();
-    var xDiffPow = math.pow((circle1.center.longitude - circle2.center.longitude), 2);
-    var yDiffPow = math.pow((circle1.center.latitude - circle2.center.latitude), 2);
+    var xDiffPow =
+    math.pow((circle1.center.longitude - circle2.center.longitude), 2);
+    var yDiffPow =
+    math.pow((circle1.center.latitude - circle2.center.latitude), 2);
     var xySumSqrt = math.sqrt(xDiffPow + yDiffPow);
     var radSum = circle1.radius + circle2.radius;
 
-    return (absRadDiff <= xySumSqrt && absRadDiff <= radSum && xySumSqrt <= radSum);
+    return (absRadDiff <= xySumSqrt &&
+        absRadDiff <= radSum &&
+        xySumSqrt <= radSum);
   }
 
   void areaProjects(List<DocumentReference> connectionProjectReferences) {
@@ -150,43 +161,64 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       }).toList();
 
       List<Circle> connectionProjectCircle = [];
-      List<Circle> otherCircles = [];
 
       gardens.forEach((element) {
         connectionProjectCircle.add(Circle(
             circleId: const CircleId('circleConnectionProject'),
             radius: radius.toDouble(),
             center: LatLng(
-                element.getLatLng().latitude, element.getLatLng().longitude),
+                element
+                    .getLatLng()
+                    .latitude, element
+                .getLatLng()
+                .longitude),
             fillColor: const Color(0x5232d5f3),
             strokeWidth: 1));
         for (Circle c in connectionProjectCircle) {
           _circles.add(c);
         }
 
-        List<Garden> listJoinable = [];
+        List<Garden> otherGardens = [];
         ServiceProvider.instance.gardenService
             .getAllGardens()
             .forEach((element) {
-          otherCircles.add(Circle(
-              circleId: const CircleId('circleConnectionProject'),
-              radius: radius.toDouble(),
-              center: LatLng(
-                  element.getLatLng().latitude, element.getLatLng().longitude),
-              fillColor: const Color(0x33c42241),
-              strokeWidth: 1));
-          listJoinable.add(element);
+          if (!gardens.contains(element)) {
+            otherGardens.add(element);
+          }
         });
         // Problem kreis us eusem projekt, kreis vo karte
 
-        for (Circle c in _circles) {
-          for (Circle o in otherCircles) {
-            if (intersectionsCircle(c, o)) {}
-            ServiceProvider.instance.mapMarkerService
-                .getJoinableMarkerSet(Garden.empty(), onTapCallback: (element) {})
-                .then((marker) {
-              _markers.add(marker);
-            });
+        for (Garden c in gardens) {
+          for (Garden o in otherGardens) {
+            var distance = Geolocator.distanceBetween(
+              o
+                  .getLatLng()
+                  .latitude,
+              o
+                  .getLatLng()
+                  .longitude,
+              c
+                  .getLatLng()
+                  .latitude,
+              c
+                  .getLatLng()
+                  .longitude,
+            );
+
+            if (distance <= radius * 2 && distance != 0.0) {
+              debugPrint('Hallo Distanz' + distance.toString());
+              ServiceProvider.instance.mapMarkerService
+                  .getJoinableMarkerSet(
+                  ServiceProvider.instance.gardenService
+                      .getAllGardens()
+                      .where(
+                          (element) => element.getLatLng() == o.getLatLng())
+                      .first,
+                  onTapCallback: (element) {})
+                  .then((marker) {
+                _markers.add(marker);
+              });
+            }
           }
         }
         ;
@@ -198,8 +230,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
 
   void loadUserLocation() async {
     if (widget.garden == null &&
-        Provider.of<MapInteractionContainer>(context, listen: false)
-                .selectedLocation ==
+        Provider
+            .of<MapInteractionContainer>(context, listen: false)
+            .selectedLocation ==
             null) {
       await Provider.of<MapInteractionContainer>(context, listen: false)
           .getLocation()
@@ -214,7 +247,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final mapInteraction =
-        Provider.of<MapInteractionContainer>(context, listen: false);
+    Provider.of<MapInteractionContainer>(context, listen: false);
     loadUserLocation();
 
     return Scaffold(
@@ -227,17 +260,17 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           GoogleMap(
             myLocationEnabled: true,
             myLocationButtonEnabled:
-                (defaultTargetPlatform == TargetPlatform.iOS) ? false : true,
+            (defaultTargetPlatform == TargetPlatform.iOS) ? false : true,
             onMapCreated: (controller) => mapController = controller,
             initialCameraPosition: (widget.garden != null)
                 ? CameraPosition(target: widget.garden.getLatLng(), zoom: _zoom)
                 : (mapInteraction.selectedLocation != null)
-                    ? CameraPosition(
-                        target: mapInteraction.selectedLocation, zoom: _zoom)
-                    : CameraPosition(
-                        target: mapInteraction.defaultLocation,
-                        zoom: _zoom,
-                      ),
+                ? CameraPosition(
+                target: mapInteraction.selectedLocation, zoom: _zoom)
+                : CameraPosition(
+              target: mapInteraction.defaultLocation,
+              zoom: _zoom,
+            ),
             zoomControlsEnabled: false,
             rotateGesturesEnabled: false,
             mapToolbarEnabled: false,
@@ -255,7 +288,8 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               });
             },
             onTap: (pos) {
-              Provider.of<MapInteractionContainer>(context, listen: false)
+              Provider
+                  .of<MapInteractionContainer>(context, listen: false)
                   .selectedLocation = pos;
             },
           ),
@@ -265,7 +299,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       ),
       floatingActionButton: Row(
         mainAxisSize: MainAxisSize.min,
-        children: getWidgetListForAdvFab()
+        children: getWidgetsForAdvFab().toList()
           ..add(
             FloatingActionButton(
               heroTag: null,
@@ -315,41 +349,43 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   Widget speciesListWidget() {
     return Container(
         child:
-            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Container(
               color: const Color(0xFFDE7402),
               child: DropdownButton<String>(
-            icon: const Icon(Icons.emoji_nature, color: Colors.white),
-            hint: Text(_currentSpecies ?? 'Spezies anzeigen', style: TextStyle(color: Colors.white),
-            ),
-            iconSize: 24,
-            isExpanded: true,
-            // value: selectedPurpose,
-            items: [
-              const DropdownMenuItem<String>(
-                value: '',
-                child: Text(
-                  'Keine',
-                  style: TextStyle(fontFamily: "Gotham"),
+                icon: const Icon(Icons.emoji_nature, color: Colors.white),
+                hint: Text(
+                  _currentSpecies ?? 'Spezies anzeigen',
+                  style: TextStyle(color: Colors.white),
                 ),
-              ),
-              ...speciesList.map((species) {
-                return DropdownMenuItem<String>(
-                  value: species.name,
-                  child: Text(
-                    species.name,
-                    style: const TextStyle(fontFamily: "Gotham"),
+                iconSize: 24,
+                isExpanded: true,
+                // value: selectedPurpose,
+                items: [
+                  const DropdownMenuItem<String>(
+                    value: '',
+                    child: Text(
+                      'Keine',
+                      style: TextStyle(fontFamily: "Gotham"),
+                    ),
                   ),
-                );
-              }).toList()
-            ],
-            onChanged: (String name) {
-              modifyPermieterCircle(name);
-              setState(() {
-                _currentSpecies = name;
-              });
-            },
-          ))
+                  ...speciesList.map((species) {
+                    return DropdownMenuItem<String>(
+                      value: species.name,
+                      child: Text(
+                        species.name,
+                        style: const TextStyle(fontFamily: "Gotham"),
+                      ),
+                    );
+                  }).toList()
+                ],
+                onChanged: (String name) {
+                  modifyPermieterCircle(name);
+                  setState(() {
+                    _currentSpecies = name;
+                  });
+                },
+              ))
         ]));
   }
 
@@ -359,9 +395,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         backgroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20.0),
-          topRight: Radius.circular(20.0),
-        )),
+              topLeft: Radius.circular(20.0),
+              topRight: Radius.circular(20.0),
+            )),
         context: context,
         isScrollControlled: true,
         builder: (context) {
@@ -406,7 +442,10 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                           if (_tappedGarden.imageURL.isNotEmpty) {
                             return ImageService().getImageByUrl(
                                 _tappedGarden.imageURL,
-                                width: MediaQuery.of(context).size.width,
+                                width: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width,
                                 fit: BoxFit.fitWidth);
                           } else {
                             return const Text('');
@@ -431,9 +470,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         backgroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20.0),
-          topRight: Radius.circular(20.0),
-        )),
+              topLeft: Radius.circular(20.0),
+              topRight: Radius.circular(20.0),
+            )),
         context: context,
         isScrollControlled: true,
         builder: (context) {
@@ -452,9 +491,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                     TextFieldWithDescriptor(
                         'Tierart',
                         Text(ServiceProvider.instance.speciesService
-                                .getSpeciesByReference(
-                                    _tappedConnectionProject.targetSpecies)
-                                ?.name ??
+                            .getSpeciesByReference(
+                            _tappedConnectionProject.targetSpecies)
+                            ?.name ??
                             '')),
                     TextFieldWithDescriptor(
                         'Projektort', const Text('ToBeImplemented')),
@@ -483,7 +522,10 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                           if (_tappedGarden.imageURL.isNotEmpty) {
                             return ImageService().getImageByUrl(
                                 _tappedGarden.imageURL,
-                                width: MediaQuery.of(context).size.width,
+                                width: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width,
                                 fit: BoxFit.fitWidth);
                           } else {
                             return const Text('');
@@ -503,32 +545,38 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         });
   }
 
-  List<Widget> getWidgetListForAdvFab() {
-    return [
-      Container(
-        height: 56.0,
-        width: 75.0,
-        alignment: FractionalOffset.centerLeft,
-        child: ScaleTransition(
-          scale: CurvedAnimation(
-            parent: _fabController,
-            curve: Interval(0.0, 1.0 - 1 / icons.length / 2.0,
-                curve: Curves.easeOut),
-          ),
-          child: FloatingActionButton(
-            heroTag: null,
-            tooltip: 'Garten erstellen',
-            backgroundColor: Theme.of(context).cardColor,
-            onPressed: () {
-              ServiceProvider.instance.gardenService.handle_create_garden(
-                  context,
-                  startingPosition: _focusedLocation);
-            },
-            child: Icon(icons[1], color: Theme.of(context).backgroundColor),
-          ),
+  Iterable<Widget> getWidgetsForAdvFab() sync* {
+    yield Container(
+      height: 56.0,
+      width: 75.0,
+      alignment: FractionalOffset.centerLeft,
+      child: ScaleTransition(
+        scale: CurvedAnimation(
+          parent: _fabController,
+          curve: Interval(0.0, 1.0 - 1 / icons.length / 2.0,
+              curve: Curves.easeOut),
+        ),
+        child: FloatingActionButton(
+          heroTag: null,
+          tooltip: 'Garten erstellen',
+          backgroundColor: Theme
+              .of(context)
+              .cardColor,
+          onPressed: () {
+            ServiceProvider.instance.gardenService.handle_create_garden(context,
+                startingPosition: _focusedLocation);
+          },
+          child: Icon(icons[1], color: Theme
+              .of(context)
+              .backgroundColor),
         ),
       ),
-      Container(
+    );
+
+    if (ServiceProvider.instance.gardenService
+        .getAllGardensFromUser(Provider.of<User>(context))
+        .isNotEmpty) {
+      yield Container(
         height: 56.0,
         width: 75.0,
         alignment: FractionalOffset.center,
@@ -541,24 +589,30 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           child: FloatingActionButton(
             heroTag: null,
             tooltip: 'Vernetzungsprojekt erstellen',
-            backgroundColor: Theme.of(context).cardColor,
+            backgroundColor: Theme
+                .of(context)
+                .cardColor,
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => CreateProjectPage(),
                   settings: RouteSettings(
-                    arguments: speciesList.firstWhere(
+                    arguments: speciesList.firstWhereOrNull(
                             (element) => element.name == _currentSpecies) ??
                         speciesList[2],
                   ),
                 ),
               );
             },
-            child: Icon(icons[2], color: Theme.of(context).backgroundColor),
+            child: Icon(icons[2], color: Theme
+                .of(context)
+                .backgroundColor),
           ),
         ),
-      ),
-    ];
+      );
+    }
   }
 }
+
+
