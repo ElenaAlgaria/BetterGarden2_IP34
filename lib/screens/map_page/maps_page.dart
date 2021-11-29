@@ -265,7 +265,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       ),
       floatingActionButton: Row(
         mainAxisSize: MainAxisSize.min,
-        children: getWidgetListForAdvFab()
+        children: getWidgetsForAdvFab().toList()
           ..add(
             FloatingActionButton(
               heroTag: null,
@@ -503,32 +503,34 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         });
   }
 
-  List<Widget> getWidgetListForAdvFab() {
-    return [
-      Container(
-        height: 56.0,
-        width: 75.0,
-        alignment: FractionalOffset.centerLeft,
-        child: ScaleTransition(
-          scale: CurvedAnimation(
-            parent: _fabController,
-            curve: Interval(0.0, 1.0 - 1 / icons.length / 2.0,
-                curve: Curves.easeOut),
-          ),
-          child: FloatingActionButton(
-            heroTag: null,
-            tooltip: 'Garten erstellen',
-            backgroundColor: Theme.of(context).cardColor,
-            onPressed: () {
-              ServiceProvider.instance.gardenService.handle_create_garden(
-                  context,
-                  startingPosition: _focusedLocation);
-            },
-            child: Icon(icons[1], color: Theme.of(context).backgroundColor),
-          ),
+  Iterable<Widget> getWidgetsForAdvFab() sync* {
+    yield Container(
+      height: 56.0,
+      width: 75.0,
+      alignment: FractionalOffset.centerLeft,
+      child: ScaleTransition(
+        scale: CurvedAnimation(
+          parent: _fabController,
+          curve: Interval(0.0, 1.0 - 1 / icons.length / 2.0,
+              curve: Curves.easeOut),
+        ),
+        child: FloatingActionButton(
+          heroTag: null,
+          tooltip: 'Garten erstellen',
+          backgroundColor: Theme.of(context).cardColor,
+          onPressed: () {
+            ServiceProvider.instance.gardenService.handle_create_garden(context,
+                startingPosition: _focusedLocation);
+          },
+          child: Icon(icons[1], color: Theme.of(context).backgroundColor),
         ),
       ),
-      Container(
+    );
+
+    if (ServiceProvider.instance.gardenService
+        .getAllGardensFromUser(Provider.of<User>(context))
+        .isNotEmpty) {
+      yield Container(
         height: 56.0,
         width: 75.0,
         alignment: FractionalOffset.center,
@@ -548,7 +550,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 MaterialPageRoute(
                   builder: (context) => CreateProjectPage(),
                   settings: RouteSettings(
-                    arguments: speciesList.firstWhere(
+                    arguments: speciesList.firstWhereOrNull(
                             (element) => element.name == _currentSpecies) ??
                         speciesList[2],
                   ),
@@ -558,7 +560,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             child: Icon(icons[2], color: Theme.of(context).backgroundColor),
           ),
         ),
-      ),
-    ];
+      );
+    }
   }
 }
