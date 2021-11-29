@@ -55,27 +55,14 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
 
   DocumentReference reference;
 
+  List<Garden> joinableGardens = [];
+
+  List<Garden> otherGardens = [];
+
+
   @override
   void initState() {
     super.initState();
-    ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(
-        onTapCallback: (element) {
-          setState(() {
-            _tappedGarden = element;
-          });
-          displayModalBottomSheetGarden(context);
-        }).then((markers) {
-      setState(() {
-        _markers.addAll(markers);
-      });
-    });
-    speciesList =
-        ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
-    _fabController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    );
-
     List<DocumentReference> connectionProjectReferences = [];
     ServiceProvider.instance.connectionProjectService
         .getAllConnectionProjects()
@@ -83,6 +70,27 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       connectionProjectReferences.add(element.reference);
     });
     areaProjects(connectionProjectReferences);
+
+    for(Garden g in otherGardens){
+    ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(g,
+        onTapCallback: (element) {
+          setState(() {
+            _tappedGarden = element;
+          });
+          displayModalBottomSheetGarden(context);
+        }).then((marker) {
+      setState(() {
+        _markers.add(marker);
+      });
+    });
+    }
+    speciesList =
+        ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
+    _fabController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+
 
     ServiceProvider.instance.mapMarkerService.getConnectionProjectMarkerSet(
         onTapCallback: (element) {
@@ -155,7 +163,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           .getSpeciesByReference(connectionProject.targetSpecies)
           .radius;
 
-      var gardens = connectionProject.gardens.map((element) {
+     var  gardens = connectionProject.gardens.map((element) {
         return ServiceProvider.instance.gardenService
             .getGardenByReference(element);
       }).toList();
@@ -178,18 +186,19 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           _circles.add(c);
         }
 
-        List<Garden> otherGardens = [];
         ServiceProvider.instance.gardenService
             .getAllGardens()
             .forEach((element) {
           if (!gardens.contains(element)) {
+            joinableGardens.add(element);
+          }else{
             otherGardens.add(element);
           }
         });
         // Problem kreis us eusem projekt, kreis vo karte
 
         for (Garden c in gardens) {
-          for (Garden o in otherGardens) {
+          for (Garden o in joinableGardens) {
             var distance = Geolocator.distanceBetween(
               o
                   .getLatLng()

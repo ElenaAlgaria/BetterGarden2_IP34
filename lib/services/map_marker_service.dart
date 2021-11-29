@@ -88,27 +88,24 @@ class MapMarkerService extends ChangeNotifier {
   void setMarker() {}
 
   /// returns a set of all markers
-  Future<Set<Marker>> getGardenMarkerSet(
+  Future<Marker> getGardenMarkerSet(Garden garden,
       {Function(Garden element) onTapCallback}) async {
     while (!_initialized) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
-
-    final list = <Marker>{};
-    for (final object in _gardens) {
-      list.add(Marker(
+      var marker = (Marker(
         markerId: MarkerId(
-            object.getLatLng().toString() + object.creationDate.toString()),
-        position: object.getLatLng(),
+            garden.getLatLng().toString() + garden.creationDate.toString()),
+        position: garden.getLatLng(),
         icon: _icons['garden'],
         onTap: () {
-          onTapCallback(object);
+          onTapCallback(garden);
         },
       ));
-    }
 
-    return list;
+    return marker;
   }
+
 
   Future<Marker> getJoinableMarkerSet(Garden garden,
       {Function(Garden element) onTapCallback}) async {
