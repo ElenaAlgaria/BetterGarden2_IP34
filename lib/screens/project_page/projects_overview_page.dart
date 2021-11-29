@@ -52,6 +52,14 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage> with Ticker
     return Scaffold(
       appBar: AppBar(title: const Text('Vernetzungsprojekte')),
       drawer: MyDrawer(),
+      body: Stack(
+        children: [
+          Text('Meine Vernetzungsprojekte',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              textAlign: TextAlign.center,
+          ),
+        ],
+      ),
       floatingActionButton: Row(
         mainAxisSize: MainAxisSize.min,
         children: getWidgetListTest()
