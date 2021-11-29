@@ -8,18 +8,32 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class joinConnectionProjectButton extends StatelessWidget {
+class joinConnectionProjectButton extends StatefulWidget {
   final ConnectionProject connectionProject;
 
   joinConnectionProjectButton({Key key, this.connectionProject})
       : super(key: key);
+
+  @override
+  joinConnectionProjectButtonState createState() => joinConnectionProjectButtonState();
+}
+
+class joinConnectionProjectButtonState extends State<joinConnectionProjectButton> {
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User>(context);
+    var _gardensList = ServiceProvider
+        .instance.gardenService
+        .getAllGardensFromUser(user);
+
+    // TODO: disable when no
+    var _disabled = false;
+    // var _disabled = _gardensList.any((element) => );
+
     return ElevatedButton.icon(
-      onPressed: () {
-        final user = Provider.of<User>(context, listen: false);
+      onPressed: _disabled ? null : () {
         showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -58,9 +72,7 @@ class joinConnectionProjectButton extends StatelessWidget {
                                     onGardenChanged: (selectedGarden) {
                                       _selectedGarden = selectedGarden;
                                     },
-                                    gardensList: ServiceProvider
-                                        .instance.gardenService
-                                        .getAllGardensFromUser(user),
+                                    gardensList: _gardensList,
                                   ),
                                 ),
                                 Container(
@@ -71,15 +83,15 @@ class joinConnectionProjectButton extends StatelessWidget {
                                         if (!_formKey.currentState.validate()) {
                                           return;
                                         } else {
-                                          if (!connectionProject.gardens
+                                          if (!widget.connectionProject.gardens
                                               .contains(
                                                   _selectedGarden.reference)) {
-                                            connectionProject.addGarden(
+                                            widget.connectionProject.addGarden(
                                                 _selectedGarden.reference);
                                             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                                 content: Text('Du bist dem Verbindungsprojekt erfolgreich beigetreten.')));
                                             logging.log(
-                                                'Add garden \"${_selectedGarden.name}\" to connectionProject \"${connectionProject.title}\"');
+                                                'Add garden \"${_selectedGarden.name}\" to connectionProject \"${widget.connectionProject.title}\"');
                                             Navigator.of(context).pop();
                                           } else {
                                             throw ArgumentError(

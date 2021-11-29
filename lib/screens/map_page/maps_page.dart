@@ -493,7 +493,8 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                         }
                       },
                     ),
-                    joinConnectionProjectButton(connectionProject: _tappedConnectionProject),
+                    joinConnectionProjectButton(
+                        connectionProject: _tappedConnectionProject),
                   ],
                 ),
               );
