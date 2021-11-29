@@ -91,9 +91,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         _markers.addAll(markers);
       });
     });
-
   }
-
 
   void modifyPermieterCircle(String name) {
     if (name != '') {
@@ -147,7 +145,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             .getGardenByReference(element);
       }).toList();
 
-
       List<Circle> connectionProjectCircle = [];
       List<Circle> otherCircles = [];
 
@@ -156,11 +153,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             circleId: const CircleId('circleConnectionProject'),
             radius: radius.toDouble(),
             center: LatLng(
-                element
-                    .getLatLng()
-                    .latitude, element
-                .getLatLng()
-                .longitude),
+                element.getLatLng().latitude, element.getLatLng().longitude),
             fillColor: const Color(0x5232d5f3),
             strokeWidth: 1));
         for (Circle c in connectionProjectCircle) {
@@ -168,52 +161,28 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         }
 
         List<Garden> listJoinable = [];
-        ServiceProvider.instance.gardenService.getAllGardens().forEach((
-            element) {
+        ServiceProvider.instance.gardenService
+            .getAllGardens()
+            .forEach((element) {
           otherCircles.add(Circle(
               circleId: const CircleId('circleConnectionProject'),
               radius: radius.toDouble(),
               center: LatLng(
-                  element
-                      .getLatLng()
-                      .latitude, element
-                  .getLatLng()
-                  .longitude),
+                  element.getLatLng().latitude, element.getLatLng().longitude),
               fillColor: const Color(0x33c42241),
               strokeWidth: 1));
           listJoinable.add(element);
         });
         // Problem kreis us eusem projekt, kreis vo karte
 
-        // zoes garden
-        var garden = ServiceProvider.instance.gardenService
-            .getAllGardens()
-            .where((element) =>
-        element.reference.id == '38dc7c0d-26a4-427f-8ff8-c0e062497d7a')
-            .first;
-
-        var marker = _markers.firstWhere((marker) =>
-        marker.markerId.value ==
-            garden.getLatLng().toString() + garden.toString(),
-            orElse: () => null);
-
-        //  _markers.remove(marker);
-
-        // mach ihn grüen
-
-        ServiceProvider.instance.mapMarkerService.getJoinableMarkerSet(garden,
-            onTapCallback: (element) {}).then((marker) {
-          _markers.add(marker);
-        });
-
-
-
-
-
         for (Circle c in _circles) {
           for (Circle o in otherCircles) {
             if (intersectionsCircle(c, o)) {}
-            ;
+            ServiceProvider.instance.mapMarkerService
+                .getJoinableMarkerSet(null, onTapCallback: (element) {})
+                .then((marker) {
+              _markers.add(marker);
+            });
           }
         }
         ;
