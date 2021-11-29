@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:math';
+import 'dart:developer' as logging;
 
 import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
@@ -131,24 +133,46 @@ class MapMarkerService extends ChangeNotifier {
     }
 
     final list = <Marker>{};
-    for (final object in _connectionProjects) {
-      // TODO: implement getting center of project with multiple gardens
-      var projectLatLng = ServiceProvider.instance.gardenService
-          .getGardenByReference(object.gardens?.first)
-          ?.getLatLng();
-      debugPrint(object.creationDate.toString() +
+    _connectionProjects.forEach((project) {
+      var allGardenCoordinates = project.gardens.map((e) => ServiceProvider
+          .instance.gardenService
+          .getGardenByReference(e)
+          .coordinates);
+
+      var midLat;
+      var midLng;
+
+      if (allGardenCoordinates.length > 1) {
+        var maxLat = allGardenCoordinates.map((e) => e.latitude).reduce(max);
+        var minLat = allGardenCoordinates.map((e) => e.latitude).reduce(min);
+        var maxLng = allGardenCoordinates.map((e) => e.longitude).reduce(max);
+        var minLng = allGardenCoordinates.map((e) => e.longitude).reduce(min);
+        midLat = (maxLat + minLat) / 2;
+        midLng = (maxLng + minLng) / 2;
+      } else {
+        midLat = allGardenCoordinates.elementAt(0).latitude - 0.0002;
+        midLng = allGardenCoordinates.elementAt(0).longitude - 0.0002;
+      }
+
+      logging.log('Create connection project marker at ' +
+          midLat.toString() +
           '/' +
-          object.gardens.length.toString());
+          midLng.toString() +
+          '/' +
+          project.creationDate.toString() +
+          '/' +
+          project.gardens.length.toString());
       list.add(Marker(
-        markerId:
-            MarkerId(projectLatLng.toString() + object.creationDate.toString()),
-        position: LatLng(projectLatLng.latitude - 0.0003, projectLatLng.longitude),
+        markerId: MarkerId(midLat.toString() +
+            midLng.toString() +
+            project.creationDate.toString()),
+        position: LatLng(midLat, midLng),
         icon: _icons['connectionProject'],
         onTap: () {
-          onTapCallback(object);
+          onTapCallback(project);
         },
       ));
-    }
+    });
     return list;
   }
 }
