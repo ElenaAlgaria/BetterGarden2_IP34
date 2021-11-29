@@ -124,11 +124,14 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   }
 
   bool intersectionsCircle(Circle circle1, Circle circle2) {
-    var a = math.pow(((circle1.radius * 2) - circle2.radius), 2);
-    var b = math.pow((circle1.center.longitude - circle2.center.longitude), 2) +
-        math.pow((circle1.center.latitude - circle2.center.latitude), 2);
-    var c = math.pow(((circle1.radius * 2) + circle2.radius), 2);
-    return (a <= b && b <= c);
+    //ABS(R0 - R1) <= SQRT((x0 - x1)^2 + (y0 - y1)^2) <= (R0 + R1)
+    var absRadDiff = (circle1.radius - circle2.radius).abs();
+    var xDiffPow = math.pow((circle1.center.longitude - circle2.center.longitude), 2);
+    var yDiffPow = math.pow((circle1.center.latitude - circle2.center.latitude), 2);
+    var xySumSqrt = math.sqrt(xDiffPow + yDiffPow);
+    var radSum = circle1.radius + circle2.radius;
+
+    return (absRadDiff <= xySumSqrt && absRadDiff <= radSum && xySumSqrt <= radSum);
   }
 
   void areaProjects(List<DocumentReference> connectionProjectReferences) {
