@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:biodiversity/components/circlesOverview.dart';
 import 'package:biodiversity/components/drawer.dart';
+import 'package:biodiversity/components/join_connection_project_popup_button.dart';
 import 'package:biodiversity/components/text_field_with_descriptor.dart';
 import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
@@ -182,7 +183,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           for (Circle o in otherCircles) {
             if (intersectionsCircle(c, o)) {}
             ServiceProvider.instance.mapMarkerService
-                .getJoinableMarkerSet(null, onTapCallback: (element) {})
+                .getJoinableMarkerSet(Garden.empty(), onTapCallback: (element) {})
                 .then((marker) {
               _markers.add(marker);
             });
@@ -492,6 +493,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                         }
                       },
                     ),
+                    joinConnectionProjectButton(connectionProject: _tappedConnectionProject),
                   ],
                 ),
               );

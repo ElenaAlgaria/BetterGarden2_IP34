@@ -2,8 +2,11 @@ import 'dart:developer' as logging;
 
 import 'package:biodiversity/components/garden_dropdown_widget.dart';
 import 'package:biodiversity/models/connection_project.dart';
+import 'package:biodiversity/models/user.dart';
+import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class joinConnectionProjectButton extends StatelessWidget {
   final ConnectionProject connectionProject;
@@ -16,6 +19,7 @@ class joinConnectionProjectButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
       onPressed: () {
+        final user = Provider.of<User>(context, listen: false);
         showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -54,6 +58,9 @@ class joinConnectionProjectButton extends StatelessWidget {
                                     onGardenChanged: (selectedGarden) {
                                       _selectedGarden = selectedGarden;
                                     },
+                                    gardensList: ServiceProvider
+                                        .instance.gardenService
+                                        .getAllGardensFromUser(user),
                                   ),
                                 ),
                                 Container(

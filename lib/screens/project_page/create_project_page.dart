@@ -8,7 +8,6 @@ import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/services/service_provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -41,7 +40,9 @@ class _CreateProjectPageState extends State<CreateProjectPage>
 
   @override
   Widget build(BuildContext context) {
-    if(ModalRoute.of(context).settings.arguments != '' && _currentSpecies == null) {
+    final user = Provider.of<User>(context);
+    if (ModalRoute.of(context).settings.arguments != '' &&
+        _currentSpecies == null) {
       _currentSpecies = ModalRoute.of(context).settings.arguments as Species;
     } else {
       _currentSpecies ??= _speciesList[2];
@@ -101,9 +102,13 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                                 Container(
                                   margin:
                                       const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
-                                  child: gardenDropDown(onGardenChanged: (selectedGarden) {
-                                    _selectedGarden = selectedGarden;
-                                  },),
+                                  child: gardenDropDown(
+                                      onGardenChanged: (selectedGarden) {
+                                        _selectedGarden = selectedGarden;
+                                      },
+                                      gardensList: ServiceProvider
+                                          .instance.gardenService
+                                          .getAllGardensFromUser(user)),
                                 ),
                                 ElevatedButton.icon(
                                   onPressed: () {
@@ -120,7 +125,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                             )))))));
   }
 
- void saveProject() {
+  void saveProject() {
     var newConnectionProject = ConnectionProject.empty();
     newConnectionProject.title = _titleController.text;
     newConnectionProject.description = _descriptionController.text;
