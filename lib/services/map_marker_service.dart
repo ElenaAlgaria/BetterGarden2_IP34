@@ -145,8 +145,7 @@ class MapMarkerService extends ChangeNotifier {
       list.add(Marker(
         markerId:
             MarkerId(projectLatLng.toString() + object.creationDate.toString()),
-        position: object.getLatLng(),
-        //object.getLatLng() new LatLng(projectLatLng.latitude + 10, projectLatLng.longitude)
+        position: LatLng(projectLatLng.latitude - 0.0003, projectLatLng.longitude),
         icon: _icons['connectionProject'],
         onTap: () {
           onTapCallback(object);

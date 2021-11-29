@@ -16,6 +16,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:geolocator/geolocator.dart';
 
 /// Display the map with the markers
 class MapsPage extends StatefulWidget {
@@ -126,12 +127,16 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   bool intersectionsCircle(Circle circle1, Circle circle2) {
     //ABS(R0 - R1) <= SQRT((x0 - x1)^2 + (y0 - y1)^2) <= (R0 + R1)
     var absRadDiff = (circle1.radius - circle2.radius).abs();
-    var xDiffPow = math.pow((circle1.center.longitude - circle2.center.longitude), 2);
-    var yDiffPow = math.pow((circle1.center.latitude - circle2.center.latitude), 2);
+    var xDiffPow =
+        math.pow((circle1.center.longitude - circle2.center.longitude), 2);
+    var yDiffPow =
+        math.pow((circle1.center.latitude - circle2.center.latitude), 2);
     var xySumSqrt = math.sqrt(xDiffPow + yDiffPow);
     var radSum = circle1.radius + circle2.radius;
 
-    return (absRadDiff <= xySumSqrt && absRadDiff <= radSum && xySumSqrt <= radSum);
+    return (absRadDiff <= xySumSqrt &&
+        absRadDiff <= radSum &&
+        xySumSqrt <= radSum);
   }
 
   void areaProjects(List<DocumentReference> connectionProjectReferences) {
@@ -149,7 +154,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       }).toList();
 
       List<Circle> connectionProjectCircle = [];
-      List<Circle> otherCircles = [];
 
       gardens.forEach((element) {
         connectionProjectCircle.add(Circle(
@@ -163,29 +167,35 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           _circles.add(c);
         }
 
-        List<Garden> listJoinable = [];
+        List<Garden> otherGardens = [];
         ServiceProvider.instance.gardenService
             .getAllGardens()
             .forEach((element) {
-          otherCircles.add(Circle(
-              circleId: const CircleId('circleConnectionProject'),
-              radius: radius.toDouble(),
-              center: LatLng(
-                  element.getLatLng().latitude, element.getLatLng().longitude),
-              fillColor: const Color(0x33c42241),
-              strokeWidth: 1));
-          listJoinable.add(element);
+          if (!gardens.contains(element)) {
+            otherGardens.add(element);
+          }
         });
         // Problem kreis us eusem projekt, kreis vo karte
 
-        for (Circle c in _circles) {
-          for (Circle o in otherCircles) {
-            if (intersectionsCircle(c, o)) {}
-            ServiceProvider.instance.mapMarkerService
-                .getJoinableMarkerSet(null, onTapCallback: (element) {})
-                .then((marker) {
-              _markers.add(marker);
-            });
+        for (Garden c in gardens) {
+          for (Garden o in otherGardens) {
+            var distance = Geolocator.distanceBetween(o.getLatLng().latitude,
+                o.getLatLng().longitude, c.getLatLng().latitude, c.getLatLng().longitude,);
+
+            if (distance <= radius*2 && distance != 0.0) {
+              debugPrint('Hallo Distanz' + distance.toString());
+              ServiceProvider.instance.mapMarkerService
+                  .getJoinableMarkerSet(
+                      ServiceProvider.instance.gardenService
+                          .getAllGardens()
+                          .where(
+                              (element) => element.getLatLng() == o.getLatLng())
+                          .first,
+                      onTapCallback: (element) {})
+                  .then((marker) {
+                _markers.add(marker);
+              });
+            }
           }
         }
         ;
@@ -315,11 +325,13 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     return Container(
         child:
             Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Container(
-              color: const Color(0xFFDE7402),
-              child: DropdownButton<String>(
+      Container(
+          color: const Color(0xFFDE7402),
+          child: DropdownButton<String>(
             icon: const Icon(Icons.emoji_nature, color: Colors.white),
-            hint: Text(_currentSpecies ?? 'Spezies anzeigen', style: TextStyle(color: Colors.white),
+            hint: Text(
+              _currentSpecies ?? 'Spezies anzeigen',
+              style: TextStyle(color: Colors.white),
             ),
             iconSize: 24,
             isExpanded: true,
@@ -349,7 +361,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               });
             },
           ))
-        ]));
+    ]));
   }
 
   Future<Widget> displayModalBottomSheetGarden(BuildContext context) async {
