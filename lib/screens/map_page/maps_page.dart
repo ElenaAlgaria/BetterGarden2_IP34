@@ -313,40 +313,43 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
 
   Widget speciesListWidget() {
     return Container(
-        padding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
-        child: Container(
-            color: Colors.white,
-            child: DropdownButton<String>(
-              // value: selectedPurpose,
-              hint: Text(
-                _currentSpecies ?? 'Spezies auswählen',
-                style: TextStyle(fontFamily: "Gotham"),
-              ),
-              items: [
-                const DropdownMenuItem<String>(
-                  value: '',
-                  child: Text(
-                    'Keine',
-                    style: TextStyle(fontFamily: "Gotham"),
-                  ),
+        child:
+            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          Container(
+              color: const Color(0xFFDE7402),
+              child: DropdownButton<String>(
+            icon: const Icon(Icons.emoji_nature, color: Colors.white),
+            hint: Text(_currentSpecies ?? 'Spezies anzeigen', style: TextStyle(color: Colors.white),
+            ),
+            iconSize: 24,
+            isExpanded: true,
+            // value: selectedPurpose,
+            items: [
+              const DropdownMenuItem<String>(
+                value: '',
+                child: Text(
+                  'Keine',
+                  style: TextStyle(fontFamily: "Gotham"),
                 ),
-                ...speciesList.map((species) {
-                  return DropdownMenuItem<String>(
-                    value: species.name,
-                    child: Text(
-                      species.name,
-                      style: const TextStyle(fontFamily: "Gotham"),
-                    ),
-                  );
-                }).toList()
-              ],
-              onChanged: (String name) {
-                modifyPermieterCircle(name);
-                setState(() {
-                  _currentSpecies = name;
-                });
-              },
-            )));
+              ),
+              ...speciesList.map((species) {
+                return DropdownMenuItem<String>(
+                  value: species.name,
+                  child: Text(
+                    species.name,
+                    style: const TextStyle(fontFamily: "Gotham"),
+                  ),
+                );
+              }).toList()
+            ],
+            onChanged: (String name) {
+              modifyPermieterCircle(name);
+              setState(() {
+                _currentSpecies = name;
+              });
+            },
+          ))
+        ]));
   }
 
   Future<Widget> displayModalBottomSheetGarden(BuildContext context) async {
