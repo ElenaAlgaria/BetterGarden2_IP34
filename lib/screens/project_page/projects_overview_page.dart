@@ -78,7 +78,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage> with Ticker
                 builder: (context, child) {
                   return Transform(
                     transform:
-                        Matrix4.rotationZ(_fabController.value * 0.9 * math.pi),
+                        Matrix4.rotationZ(_fabController.value * 1.25 * math.pi),
                     alignment: FractionalOffset.center,
                     child: Icon(
                       _fabController.isDismissed ? Icons.add : Icons.add,
