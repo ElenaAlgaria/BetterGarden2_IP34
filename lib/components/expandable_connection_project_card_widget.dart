@@ -248,7 +248,7 @@ class _ExpandableConnectionProjectCardState
             childrenPadding: const EdgeInsets.all(15),
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 5),
+                padding: const EdgeInsets.only(left: 5, bottom: 10),
                 child: Text(
                   widget.object.description,
                   softWrap: true,
@@ -259,12 +259,11 @@ class _ExpandableConnectionProjectCardState
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   const Padding(
-                    padding: EdgeInsets.only(bottom: 10.0),
+                    padding: EdgeInsets.only(left: 5, top: 20),
                   ),
-                  Text(
-                    '',
-                    textAlign: TextAlign.center,
-                  )
+                  Text(ServiceProvider.instance.speciesService
+                      .getSpeciesByReference(widget.object.targetSpecies)
+                      ?.name ?? ''),
                 ],
               ),
             ],
