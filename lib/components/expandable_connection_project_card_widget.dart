@@ -245,26 +245,31 @@ class _ExpandableConnectionProjectCardState
               ),
             ),
             expandedCrossAxisAlignment: CrossAxisAlignment.start,
-            childrenPadding: const EdgeInsets.all(15),
+           // childrenPadding: const EdgeInsets.all(0),
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(left: 16, bottom: 0),
+                  ),
+                  Text(ServiceProvider.instance.speciesService
+                      .getSpeciesByReference(widget.object.targetSpecies)
+                      ?.name ?? '',
+                    style: const TextStyle(
+                      color: Colors.blueAccent,
+                      fontWeight: FontWeight.bold,
+                      )
+                  )
+                ],
+              ),
               Padding(
-                padding: const EdgeInsets.only(left: 5, bottom: 10),
+                padding: const EdgeInsets.only(left: 16, bottom: 15),
                 child: Text(
                   widget.object.description,
                   softWrap: true,
                   textAlign: TextAlign.left,
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(left: 5, top: 20),
-                  ),
-                  Text(ServiceProvider.instance.speciesService
-                      .getSpeciesByReference(widget.object.targetSpecies)
-                      ?.name ?? ''),
-                ],
               ),
             ],
           ),
