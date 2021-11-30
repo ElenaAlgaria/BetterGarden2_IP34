@@ -16,9 +16,6 @@ class ConnectionProjectListWidget extends StatefulWidget {
   /// if this flag is set, the buttons hinzufügen and merken will be removed
   final bool hideLikeAndAdd;
 
-  /// if this flag is set, the buttons bearbeiten and löschen will be removed
-  final bool showDeleteAndEdit;
-
   /// A list of ConnectionProjects which should be displayed
   final List<ConnectionProject> objects;
 
@@ -36,7 +33,6 @@ class ConnectionProjectListWidget extends StatefulWidget {
   ConnectionProjectListWidget(
       {Key key,
         this.objects,
-        this.showDeleteAndEdit = false,
         this.useSimpleCard = false,
         this.hideLikeAndAdd = false,
         this.arrangeLikeAndAddAsRow = false,
@@ -178,7 +174,6 @@ class _ConnectionProjectListWidgetState
                           element,
                                 hideLikeAndAdd: widget.hideLikeAndAdd,
                                 additionalInfo: element.description,
-                                showDeleteAndEdit: widget.showDeleteAndEdit,
                                 serviceProvider: widget._serviceProvider,
                                 arrangeLikeAndAddAsRow: widget.arrangeLikeAndAddAsRow,
                   );

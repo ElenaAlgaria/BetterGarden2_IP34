@@ -22,9 +22,6 @@ class ExpandableConnectionProjectCard extends StatefulWidget {
   /// this has no effect if the screen size is too small
   final bool arrangeLikeAndAddAsRow;
 
-  /// if this flag is set, the buttons bearbeiten and löschen will be removed
-  final bool showDeleteAndEdit;
-
   /// if this flag is set, the card is used for species and hinzufügen and merken will be changed to Aktivitätsradius and merken
   final bool isSpecies;
 
@@ -37,7 +34,6 @@ class ExpandableConnectionProjectCard extends StatefulWidget {
   /// show a card to the provided ConnectionProject
   ExpandableConnectionProjectCard(this.object,
       {hideLikeAndAdd = false,
-        this.showDeleteAndEdit = false,
         this.additionalInfo,
         arrangeLikeAndAddAsRow = false,
         ServiceProvider serviceProvider,
@@ -117,10 +113,6 @@ class _ExpandableConnectionProjectCardState
                               fontWeight: FontWeight.bold, fontSize: 16),
                           softWrap: true,
                         ),
-                        if (widget.showDeleteAndEdit)
-                          Text(garden.ownedObjects[widget.object.title]
-                              .toString() +
-                              ' $_unit'),
                       ],
                     ),
                   ),
