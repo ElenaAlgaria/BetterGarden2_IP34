@@ -49,60 +49,53 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   final double _zoom = 14.0;
   Set<Marker> _markers = {};
 
-  Set<Circle> _circles = {};
+  List<Circle> _circles = [];
 
   List<Species> speciesList = [];
 
   DocumentReference reference;
 
-  List<Garden> joinableGardens = [];
-
-  List<Garden> otherGardens = [];
-
+  List<Garden> _allGardens = [];
 
   @override
   void initState() {
     super.initState();
-    List<DocumentReference> connectionProjectReferences = [];
-    ServiceProvider.instance.connectionProjectService
-        .getAllConnectionProjects()
-        .forEach((element) {
-      connectionProjectReferences.add(element.reference);
-    });
-    areaProjects(connectionProjectReferences);
 
-    for(Garden g in otherGardens){
-    ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(g,
+    _allGardens = ServiceProvider.instance.gardenService.getAllGardens();
+    for (Garden g in _allGardens) {
+      debugPrint('Test Orange');
+      ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(g,
+          onTapCallback: (element) {
+            setState(() {
+              _tappedGarden = element;
+            });
+            displayModalBottomSheetGarden(context);
+          }).then((marker) {
+        setState(() {
+          _markers.add(marker);
+        });
+      });
+    }
+
+    ServiceProvider.instance.mapMarkerService.getConnectionProjectMarkerSet(
         onTapCallback: (element) {
           setState(() {
-            _tappedGarden = element;
-          });
-          displayModalBottomSheetGarden(context);
-        }).then((marker) {
+            _tappedConnectionProject = element;
+      });
+      displayModalBottomSheetConnectionProject(context);
+      displayConnectionProjectGardensWithCircles(element.reference);
+    }).then((markers) {
       setState(() {
-        _markers.add(marker);
+        _markers.addAll(markers);
       });
     });
-    }
+
     speciesList =
         ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
     _fabController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-
-
-    ServiceProvider.instance.mapMarkerService.getConnectionProjectMarkerSet(
-        onTapCallback: (element) {
-          setState(() {
-            _tappedConnectionProject = element;
-          });
-          displayModalBottomSheetConnectionProject(context);
-        }).then((markers) {
-      setState(() {
-        _markers.addAll(markers);
-      });
-    });
   }
 
   void modifyPermieterCircle(String name) {
@@ -116,18 +109,14 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
 
   void removeCircle() {
     setState(() {
-      _circles = <Circle>{};
+      _circles = [];
     });
   }
 
   void addCircle(radius) {
-    var c = Set<Circle>.from(_circles);
-    var lat = widget.garden
-        .getLatLng()
-        .latitude;
-    var lon = widget.garden
-        .getLatLng()
-        .longitude;
+    var c = List<Circle>.from(_circles);
+    var lat = widget.garden.getLatLng().latitude;
+    var lon = widget.garden.getLatLng().longitude;
     c.add(Circle(
         circleId: const CircleId('circleOneTest'),
         radius: radius.toDouble(),
@@ -143,9 +132,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     //ABS(R0 - R1) <= SQRT((x0 - x1)^2 + (y0 - y1)^2) <= (R0 + R1)
     var absRadDiff = (circle1.radius - circle2.radius).abs();
     var xDiffPow =
-    math.pow((circle1.center.longitude - circle2.center.longitude), 2);
+        math.pow((circle1.center.longitude - circle2.center.longitude), 2);
     var yDiffPow =
-    math.pow((circle1.center.latitude - circle2.center.latitude), 2);
+        math.pow((circle1.center.latitude - circle2.center.latitude), 2);
     var xySumSqrt = math.sqrt(xDiffPow + yDiffPow);
     var radSum = circle1.radius + circle2.radius;
 
@@ -154,94 +143,68 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         xySumSqrt <= radSum);
   }
 
-  void areaProjects(List<DocumentReference> connectionProjectReferences) {
-    connectionProjectReferences.forEach((element) {
-      var connectionProject = ServiceProvider.instance.connectionProjectService
-          .getConnectionProjectByReference(element);
+  void displayConnectionProjectGardensWithCircles(
+      DocumentReference connectionProjectReferences) {
+    var connectionProject = ServiceProvider.instance.connectionProjectService
+        .getConnectionProjectByReference(connectionProjectReferences);
 
-      var radius = ServiceProvider.instance.speciesService
-          .getSpeciesByReference(connectionProject.targetSpecies)
-          .radius;
+    var radius = ServiceProvider.instance.speciesService
+        .getSpeciesByReference(connectionProject.targetSpecies)
+        .radius;
 
-     var  gardens = connectionProject.gardens.map((element) {
-        return ServiceProvider.instance.gardenService
-            .getGardenByReference(element);
-      }).toList();
+    var gardensOfConnectionProject = connectionProject.gardens.map((element) {
+      return ServiceProvider.instance.gardenService
+          .getGardenByReference(element);
+    }).toList();
 
-      List<Circle> connectionProjectCircle = [];
+    var allGardensNotInProject = _allGardens.where(
+            (element) => !gardensOfConnectionProject.contains(element)).toList();
 
-      gardens.forEach((element) {
-        connectionProjectCircle.add(Circle(
-            circleId: const CircleId('circleConnectionProject'),
-            radius: radius.toDouble(),
-            center: LatLng(
-                element
-                    .getLatLng()
-                    .latitude, element
-                .getLatLng()
-                .longitude),
-            fillColor: const Color(0x5232d5f3),
-            strokeWidth: 1));
-        for (Circle c in connectionProjectCircle) {
-          _circles.add(c);
-        }
+    gardensOfConnectionProject.forEach((element) {
+      _circles.add(Circle(
+          circleId: const CircleId('circleConnectionProject'),
+          radius: radius.toDouble(),
+          center: LatLng(
+              element.getLatLng().latitude, element.getLatLng().longitude),
+          fillColor: const Color(0x5232d5f3),
+          strokeWidth: 1));
 
-        ServiceProvider.instance.gardenService
-            .getAllGardens()
-            .forEach((element) {
-          if (!gardens.contains(element)) {
-            joinableGardens.add(element);
-          }else{
-            otherGardens.add(element);
-          }
-        });
-        // Problem kreis us eusem projekt, kreis vo karte
-
-        for (Garden c in gardens) {
-          for (Garden o in joinableGardens) {
-            var distance = Geolocator.distanceBetween(
-              o
-                  .getLatLng()
-                  .latitude,
-              o
-                  .getLatLng()
-                  .longitude,
-              c
-                  .getLatLng()
-                  .latitude,
-              c
-                  .getLatLng()
-                  .longitude,
-            );
-
-            if (distance <= radius * 2 && distance != 0.0) {
-              debugPrint('Hallo Distanz' + distance.toString());
-              ServiceProvider.instance.mapMarkerService
-                  .getJoinableMarkerSet(
-                  ServiceProvider.instance.gardenService
-                      .getAllGardens()
-                      .where(
-                          (element) => element.getLatLng() == o.getLatLng())
-                      .first,
-                  onTapCallback: (element) {})
-                  .then((marker) {
-                _markers.add(marker);
-              });
-            }
-          }
-        }
-        ;
-      });
+      setJoinableMarkers(
+          element,
+          allGardensNotInProject,
+          radius);
     });
   }
 
-  //var area = math.pi * math.pow(radius, 2) * gardens.length;
+  void setJoinableMarkers(Garden gardenOfConnectionProject,
+      List<Garden> gardensToCompareWith, int radius) {
+    // Iterate through all gardens to compare them with the garden of the connectionProject
+    for (Garden o in gardensToCompareWith) {
+      var distance = Geolocator.distanceBetween(
+        o.getLatLng().latitude,
+        o.getLatLng().longitude,
+        gardenOfConnectionProject.getLatLng().latitude,
+        gardenOfConnectionProject.getLatLng().longitude,
+      );
+
+      if (distance <= radius * 2 && distance != 0.0) {
+        ServiceProvider.instance.mapMarkerService.getJoinableMarker(o,
+            onTapCallback: (element) {
+          setState(() {
+            _tappedGarden = element;
+          });
+          displayModalBottomSheetGarden(context);
+        }).then((marker) {
+          _markers.add(marker);
+        });
+      }
+    }
+  }
 
   void loadUserLocation() async {
     if (widget.garden == null &&
-        Provider
-            .of<MapInteractionContainer>(context, listen: false)
-            .selectedLocation ==
+        Provider.of<MapInteractionContainer>(context, listen: false)
+                .selectedLocation ==
             null) {
       await Provider.of<MapInteractionContainer>(context, listen: false)
           .getLocation()
@@ -256,7 +219,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final mapInteraction =
-    Provider.of<MapInteractionContainer>(context, listen: false);
+        Provider.of<MapInteractionContainer>(context, listen: false);
     loadUserLocation();
 
     return Scaffold(
@@ -269,23 +232,23 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           GoogleMap(
             myLocationEnabled: true,
             myLocationButtonEnabled:
-            (defaultTargetPlatform == TargetPlatform.iOS) ? false : true,
+                (defaultTargetPlatform == TargetPlatform.iOS) ? false : true,
             onMapCreated: (controller) => mapController = controller,
             initialCameraPosition: (widget.garden != null)
                 ? CameraPosition(target: widget.garden.getLatLng(), zoom: _zoom)
                 : (mapInteraction.selectedLocation != null)
-                ? CameraPosition(
-                target: mapInteraction.selectedLocation, zoom: _zoom)
-                : CameraPosition(
-              target: mapInteraction.defaultLocation,
-              zoom: _zoom,
-            ),
+                    ? CameraPosition(
+                        target: mapInteraction.selectedLocation, zoom: _zoom)
+                    : CameraPosition(
+                        target: mapInteraction.defaultLocation,
+                        zoom: _zoom,
+                      ),
             zoomControlsEnabled: false,
             rotateGesturesEnabled: false,
             mapToolbarEnabled: false,
             mapType: MapType.hybrid,
             markers: _markers,
-            circles: Set<Circle>.from(_circles),
+            circles: _circles.toSet(),
             onCameraIdle: () {
               mapController.getVisibleRegion().then((bounds) {
                 final lat =
@@ -297,8 +260,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               });
             },
             onTap: (pos) {
-              Provider
-                  .of<MapInteractionContainer>(context, listen: false)
+              Provider.of<MapInteractionContainer>(context, listen: false)
                   .selectedLocation = pos;
             },
           ),
@@ -358,44 +320,44 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   Widget speciesListWidget() {
     return Container(
         child:
-        Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Container(
-              color: const Color(0xFFDE7402),
-              child: DropdownButton<String>(
-                icon: const Icon(Icons.emoji_nature, color: Colors.white),
-                hint: Text(
-                  _currentSpecies ?? 'Spezies anzeigen',
-                  style: TextStyle(color: Colors.white),
+            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      Container(
+          color: const Color(0xFFDE7402),
+          child: DropdownButton<String>(
+            icon: const Icon(Icons.emoji_nature, color: Colors.white),
+            hint: Text(
+              _currentSpecies ?? 'Spezies anzeigen',
+              style: TextStyle(color: Colors.white),
+            ),
+            iconSize: 24,
+            isExpanded: true,
+            // value: selectedPurpose,
+            items: [
+              const DropdownMenuItem<String>(
+                value: '',
+                child: Text(
+                  'Keine',
+                  style: TextStyle(fontFamily: "Gotham"),
                 ),
-                iconSize: 24,
-                isExpanded: true,
-                // value: selectedPurpose,
-                items: [
-                  const DropdownMenuItem<String>(
-                    value: '',
-                    child: Text(
-                      'Keine',
-                      style: TextStyle(fontFamily: "Gotham"),
-                    ),
+              ),
+              ...speciesList.map((species) {
+                return DropdownMenuItem<String>(
+                  value: species.name,
+                  child: Text(
+                    species.name,
+                    style: const TextStyle(fontFamily: "Gotham"),
                   ),
-                  ...speciesList.map((species) {
-                    return DropdownMenuItem<String>(
-                      value: species.name,
-                      child: Text(
-                        species.name,
-                        style: const TextStyle(fontFamily: "Gotham"),
-                      ),
-                    );
-                  }).toList()
-                ],
-                onChanged: (String name) {
-                  modifyPermieterCircle(name);
-                  setState(() {
-                    _currentSpecies = name;
-                  });
-                },
-              ))
-        ]));
+                );
+              }).toList()
+            ],
+            onChanged: (String name) {
+              modifyPermieterCircle(name);
+              setState(() {
+                _currentSpecies = name;
+              });
+            },
+          ))
+    ]));
   }
 
   Future<Widget> displayModalBottomSheetGarden(BuildContext context) async {
@@ -404,9 +366,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         backgroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20.0),
-              topRight: Radius.circular(20.0),
-            )),
+          topLeft: Radius.circular(20.0),
+          topRight: Radius.circular(20.0),
+        )),
         context: context,
         isScrollControlled: true,
         builder: (context) {
@@ -451,10 +413,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                           if (_tappedGarden.imageURL.isNotEmpty) {
                             return ImageService().getImageByUrl(
                                 _tappedGarden.imageURL,
-                                width: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width,
+                                width: MediaQuery.of(context).size.width,
                                 fit: BoxFit.fitWidth);
                           } else {
                             return const Text('');
@@ -479,78 +438,41 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         backgroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20.0),
-              topRight: Radius.circular(20.0),
-            )),
+          topLeft: Radius.circular(20.0),
+          topRight: Radius.circular(20.0),
+        )),
         context: context,
         isScrollControlled: true,
         builder: (context) {
           return DraggableScrollableSheet(
-            initialChildSize: 0.4,
-            minChildSize: 0.1,
-            expand: false,
-            builder: (context, scrollController) {
-              return Padding(
-                padding: const EdgeInsets.fromLTRB(8, 20, 8, 8),
-                child: ListView(
-                  controller: scrollController,
-                  children: <Widget>[
-                    TextFieldWithDescriptor('Verbindungsprojekt',
-                        Text(_tappedConnectionProject.title ?? '')),
-                    TextFieldWithDescriptor(
-                        'Tierart',
-                        Text(ServiceProvider.instance.speciesService
-                            .getSpeciesByReference(
-                            _tappedConnectionProject.targetSpecies)
-                            ?.name ??
-                            '')),
-                    TextFieldWithDescriptor(
-                        'Projektort', const Text('ToBeImplemented')),
-                    TextFieldWithDescriptor(
-                      'Besitzer',
-                      FutureBuilder(
-                        future: ServiceProvider.instance.gardenService
-                            .getNicknameOfOwner(_tappedGarden),
-                        builder: (context, owner) {
-                          if (owner.hasData) {
-                            return Text(owner.data);
-                          } else {
-                            return const Text('');
-                          }
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 25.0),
-                    CirclesOverview(context, _tappedGarden),
-                    const SizedBox(height: 25.0),
-                    FutureBuilder(
-                      future: _tappedGarden.isShowImageOnGarden(),
-                      builder: (context, showGardenImageOnMap) {
-                        if (showGardenImageOnMap.hasData &&
-                            showGardenImageOnMap.data) {
-                          if (_tappedGarden.imageURL.isNotEmpty) {
-                            return ImageService().getImageByUrl(
-                                _tappedGarden.imageURL,
-                                width: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width,
-                                fit: BoxFit.fitWidth);
-                          } else {
-                            return const Text('');
-                          }
-                        } else {
-                          return const Text('');
-                        }
-                      },
-                    ),
-                    joinConnectionProjectButton(
-                        connectionProject: _tappedConnectionProject),
-                  ],
-                ),
-              );
-            },
-          );
+              initialChildSize: 0.4,
+              minChildSize: 0.1,
+              expand: false,
+              builder: (context, scrollController) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 20, 8, 8),
+                  child: ListView(
+                    controller: scrollController,
+                    children: <Widget>[
+                      TextFieldWithDescriptor('Verbindungsprojekt',
+                          Text(_tappedConnectionProject.title ?? '')),
+                      TextFieldWithDescriptor(
+                          'Tierart',
+                          Text(ServiceProvider.instance.speciesService
+                                  .getSpeciesByReference(
+                                      _tappedConnectionProject.targetSpecies)
+                                  ?.name ??
+                              '')),
+                      TextFieldWithDescriptor(
+                          'Projektort', const Text('ToBeImplemented')),
+                      joinConnectionProjectButton(
+                          connectionProject: _tappedConnectionProject),
+                    ],
+                  ),
+                );
+              });
+        }).whenComplete(() => {
+          // TODO hier grüne gärten wieder ausblenden
         });
   }
 
@@ -568,16 +490,12 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         child: FloatingActionButton(
           heroTag: null,
           tooltip: 'Garten erstellen',
-          backgroundColor: Theme
-              .of(context)
-              .cardColor,
+          backgroundColor: Theme.of(context).cardColor,
           onPressed: () {
             ServiceProvider.instance.gardenService.handle_create_garden(context,
                 startingPosition: _focusedLocation);
           },
-          child: Icon(icons[1], color: Theme
-              .of(context)
-              .backgroundColor),
+          child: Icon(icons[1], color: Theme.of(context).backgroundColor),
         ),
       ),
     );
@@ -598,9 +516,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           child: FloatingActionButton(
             heroTag: null,
             tooltip: 'Vernetzungsprojekt erstellen',
-            backgroundColor: Theme
-                .of(context)
-                .cardColor,
+            backgroundColor: Theme.of(context).cardColor,
             onPressed: () {
               Navigator.push(
                 context,
@@ -614,14 +530,10 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 ),
               );
             },
-            child: Icon(icons[2], color: Theme
-                .of(context)
-                .backgroundColor),
+            child: Icon(icons[2], color: Theme.of(context).backgroundColor),
           ),
         ),
       );
     }
   }
 }
-
-

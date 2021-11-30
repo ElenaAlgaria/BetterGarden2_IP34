@@ -47,7 +47,6 @@ class MapMarkerService extends ChangeNotifier {
   }
 
   Future<void> _loadIcons() async {
-    //TODO: add images for linking project
     BitmapDescriptor gardenIcon;
     BitmapDescriptor connectionProjectIcon;
     BitmapDescriptor joinableGardenIcon;
@@ -95,28 +94,27 @@ class MapMarkerService extends ChangeNotifier {
     while (!_initialized) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
-      var marker = (Marker(
-        markerId: MarkerId(
-            garden.getLatLng().toString() + garden.creationDate.toString()),
-        position: garden.getLatLng(),
-        icon: _icons['garden'],
-        onTap: () {
-          onTapCallback(garden);
-        },
-      ));
+    var marker = (Marker(
+      markerId: MarkerId(
+          garden.getLatLng().toString() + garden.creationDate.toString()),
+      position: garden.getLatLng(),
+      icon: _icons['garden'],
+      onTap: () {
+        onTapCallback(garden);
+      },
+    ));
 
     return marker;
   }
 
-
-  Future<Marker> getJoinableMarkerSet(Garden garden,
+  Future<Marker> getJoinableMarker(Garden garden,
       {Function(Garden element) onTapCallback}) async {
     while (!_initialized) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
     var marker = Marker(
       markerId: MarkerId(garden.getLatLng().toString() + garden.toString()),
-      position: garden.getLatLng(),
+      position: LatLng(garden.getLatLng().latitude + 0.2, garden.getLatLng().longitude),
       icon: _icons['joinableGarden'],
       onTap: () {
         onTapCallback(garden);
@@ -125,7 +123,7 @@ class MapMarkerService extends ChangeNotifier {
     return marker;
   }
 
-  /// returns a set of all markers
+  /// returns a set of all ConnectionProjectMarkers
   Future<Set<Marker>> getConnectionProjectMarkerSet(
       {Function(ConnectionProject element) onTapCallback}) async {
     while (!_initialized) {
