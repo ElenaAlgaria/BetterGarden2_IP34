@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:biodiversity/components/expandable_connection_project_card_widget.dart';
 import 'package:biodiversity/components/expandable_information_object_card_widget.dart';
 import 'package:biodiversity/components/simple_connection_project_card_widget.dart';
 import 'package:biodiversity/components/simple_information_object_card_widget.dart';
@@ -204,10 +205,19 @@ class _ConnectionProjectListWidgetState
                 itemCount: filteredItems.length,
                 itemBuilder: (context, index) {
                   final element = filteredItems.elementAt(index);
-                  return SimpleConnectionProjectCard(
-                    element,
-                    additionalInfo: element.description,
-                    serviceProvider: widget._serviceProvider,
+                  return widget.useSimpleCard
+                      ? SimpleConnectionProjectCard(
+                          element,
+                          //additionalInfo: element.description,
+                          serviceProvider: widget._serviceProvider,
+                  )
+                      : ExpandableConnectionProjectCard(
+                          element,
+                                hideLikeAndAdd: widget.hideLikeAndAdd,
+                                additionalInfo: element.description,
+                                showDeleteAndEdit: widget.showDeleteAndEdit,
+                                serviceProvider: widget._serviceProvider,
+                                arrangeLikeAndAddAsRow: widget.arrangeLikeAndAddAsRow,
                   );
                 },
                 separatorBuilder: (context, index) {

@@ -25,7 +25,7 @@ class SimpleConnectionProjectCard extends StatelessWidget {
   final Function onTapHandler;
 
   /// additional Info to be displayed
-  final String additionalInfo;
+  //final String additionalInfo;
 
   final ServiceProvider _serviceProvider;
 
@@ -35,7 +35,7 @@ class SimpleConnectionProjectCard extends StatelessWidget {
   /// Non expandable ListTile, displaying a [BiodiversityMeasure]
   SimpleConnectionProjectCard(this.project,
       {this.onTapHandler,
-        this.additionalInfo,
+        //this.additionalInfo,
         this.amountLocked = false,
         this.amount,
         ServiceProvider serviceProvider,
@@ -114,13 +114,13 @@ class SimpleConnectionProjectCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (additionalInfo != null)
+                  /*if (additionalInfo != null)
                     Text(
                       additionalInfo,
                       softWrap: true,
                       maxLines: 4,
                       overflow: TextOverflow.fade,
-                    ),
+                    ),*/
                 ],
               ),
             ),
