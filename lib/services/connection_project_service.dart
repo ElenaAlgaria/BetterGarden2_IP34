@@ -55,6 +55,7 @@ class ConnectionProjectService extends ChangeNotifier {
   //   }
   // }
 
+
   /// Returns a list of all registered ConnectionProjects
   List<ConnectionProject> getAllConnectionProjects() {
     return _connectionProjects;

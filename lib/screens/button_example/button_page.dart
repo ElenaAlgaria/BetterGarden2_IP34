@@ -19,7 +19,9 @@ class ButtonPage extends StatelessWidget {
         const SizedBox(height: 30),
         Padding(
           padding: const EdgeInsets.all(25.0),
-          child: joinConnectionProjectButton(connectionProject: testProj),
+          child: joinConnectionProjectButton(
+            connectionProject: testProj,
+          ),
         ),
       ]),
     );
