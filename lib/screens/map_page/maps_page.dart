@@ -66,11 +66,11 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       debugPrint('Test Orange');
       ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(g,
           onTapCallback: (element) {
-            setState(() {
-              _tappedGarden = element;
-            });
-            displayModalBottomSheetGarden(context);
-          }).then((marker) {
+        setState(() {
+          _tappedGarden = element;
+        });
+        displayModalBottomSheetGarden(context);
+      }).then((marker) {
         setState(() {
           _markers.add(marker);
         });
@@ -79,8 +79,8 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
 
     ServiceProvider.instance.mapMarkerService.getConnectionProjectMarkerSet(
         onTapCallback: (element) {
-          setState(() {
-            _tappedConnectionProject = element;
+      setState(() {
+        _tappedConnectionProject = element;
       });
       displayModalBottomSheetConnectionProject(context);
       displayConnectionProjectGardensWithCircles(element.reference);
@@ -128,21 +128,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     });
   }
 
-  bool intersectionsCircle(Circle circle1, Circle circle2) {
-    //ABS(R0 - R1) <= SQRT((x0 - x1)^2 + (y0 - y1)^2) <= (R0 + R1)
-    var absRadDiff = (circle1.radius - circle2.radius).abs();
-    var xDiffPow =
-        math.pow((circle1.center.longitude - circle2.center.longitude), 2);
-    var yDiffPow =
-        math.pow((circle1.center.latitude - circle2.center.latitude), 2);
-    var xySumSqrt = math.sqrt(xDiffPow + yDiffPow);
-    var radSum = circle1.radius + circle2.radius;
-
-    return (absRadDiff <= xySumSqrt &&
-        absRadDiff <= radSum &&
-        xySumSqrt <= radSum);
-  }
-
   void displayConnectionProjectGardensWithCircles(
       DocumentReference connectionProjectReferences) {
     var connectionProject = ServiceProvider.instance.connectionProjectService
@@ -157,22 +142,25 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           .getGardenByReference(element);
     }).toList();
 
-    var allGardensNotInProject = _allGardens.where(
-            (element) => !gardensOfConnectionProject.contains(element)).toList();
+    var allGardensNotInProject = _allGardens
+        .where((element) => !gardensOfConnectionProject.contains(element))
+        .toList();
+
+    debugPrint('allGardensNotInProject.length' +
+        allGardensNotInProject.length.toString());
+    debugPrint('gardensOfConnectionProject.length' +
+        gardensOfConnectionProject.length.toString());
 
     gardensOfConnectionProject.forEach((element) {
       _circles.add(Circle(
-          circleId: const CircleId('circleConnectionProject'),
+          circleId: CircleId(element.reference.id),
           radius: radius.toDouble(),
           center: LatLng(
               element.getLatLng().latitude, element.getLatLng().longitude),
           fillColor: const Color(0x5232d5f3),
           strokeWidth: 1));
 
-      setJoinableMarkers(
-          element,
-          allGardensNotInProject,
-          radius);
+      setJoinableMarkers(element, allGardensNotInProject, radius);
     });
   }
 

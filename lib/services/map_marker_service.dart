@@ -114,7 +114,8 @@ class MapMarkerService extends ChangeNotifier {
     }
     var marker = Marker(
       markerId: MarkerId(garden.getLatLng().toString() + garden.toString()),
-      position: LatLng(garden.getLatLng().latitude + 0.2, garden.getLatLng().longitude),
+      position: LatLng(
+          garden.getLatLng().latitude, garden.getLatLng().longitude + 0.00005),
       icon: _icons['joinableGarden'],
       onTap: () {
         onTapCallback(garden);
