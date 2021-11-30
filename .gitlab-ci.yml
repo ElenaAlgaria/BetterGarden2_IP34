@@ -118,7 +118,6 @@ analyze.sonarqube.frontend:
   allow_failure: false
   script:
     - sonar-scanner -Dsonar.host.url=https://www.cs.technik.fhnw.ch/sonarqube
-      -Dsonar.sources=.
       -Dsonar.language=flutter
       -Dsonar.login=$CI_SONARQUBE_TOKEN
       -Dsonar.projectKey=BetterGardensv2
