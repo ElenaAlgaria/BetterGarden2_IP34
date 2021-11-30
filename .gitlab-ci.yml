@@ -1,4 +1,5 @@
 stages:
+  - analyze
   - test
   - package
   - test_deployment
