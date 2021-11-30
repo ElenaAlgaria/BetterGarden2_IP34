@@ -1,3 +1,4 @@
+import 'package:biodiversity/components/connection_project_list_widget.dart';
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/information_object_list_widget.dart';
 import 'package:biodiversity/services/service_provider.dart';
@@ -58,6 +59,9 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage> with Ticker
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               textAlign: TextAlign.center,
           ),
+          ConnectionProjectListWidget(
+            objects: ServiceProvider.instance.connectionProjectService.getAllConnectionProjects(),
+          )
         ],
       ),
       floatingActionButton: Row(
