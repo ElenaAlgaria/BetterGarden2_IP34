@@ -95,8 +95,7 @@ class MapMarkerService extends ChangeNotifier {
       await Future.delayed(const Duration(milliseconds: 100));
     }
     var marker = (Marker(
-      markerId: MarkerId(
-          garden.getLatLng().toString() + garden.creationDate.toString()),
+      markerId: MarkerId('garden' + garden.reference.id),
       position: garden.getLatLng(),
       icon: _icons['garden'],
       onTap: () {
@@ -113,9 +112,9 @@ class MapMarkerService extends ChangeNotifier {
       await Future.delayed(const Duration(milliseconds: 100));
     }
     var marker = Marker(
-      markerId: MarkerId(garden.getLatLng().toString() + garden.toString()),
+      markerId: MarkerId('joinableGarden' + garden.reference.id.toString()),
       position: LatLng(
-          garden.getLatLng().latitude, garden.getLatLng().longitude + 0.00005),
+          garden.getLatLng().latitude, garden.getLatLng().longitude),
       icon: _icons['joinableGarden'],
       onTap: () {
         onTapCallback(garden);
