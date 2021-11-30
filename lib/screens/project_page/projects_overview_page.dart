@@ -55,10 +55,6 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage> with Ticker
       drawer: MyDrawer(),
       body: Stack(
         children: [
-          Text('Meine Vernetzungsprojekte',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              textAlign: TextAlign.center,
-          ),
           ConnectionProjectListWidget(
             objects: ServiceProvider.instance.connectionProjectService.getAllConnectionProjects(),
           )

@@ -49,13 +49,13 @@ class SimpleConnectionProjectCard extends StatelessWidget {
     String _unit;
     if (project.runtimeType == BiodiversityMeasure) {
       final biodiversityObject = project as BiodiversityMeasure;
-      if (biodiversityObject.dimension == 'Fläche') {
+      /*if (biodiversityObject.dimension == 'Fläche') {
         _unit = 'm\u00B2';
       } else if (biodiversityObject.dimension == 'Linie') {
         _unit = 'm';
       } else {
         _unit = 'Stück';
-      }
+      }*/
     }
 
     return InkWell(
@@ -90,30 +90,30 @@ class SimpleConnectionProjectCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  SizedBox(
-                    height: 40,
-                    width: 100,
-                    child: Form(
-                      key: formKey,
-                      child: TextFormField(
-                        readOnly: amountLocked,
-                        initialValue: amount != null ? amount.toString() : '1',
-                        decoration: InputDecoration(
-                            labelText: _unit,
-                            border: const OutlineInputBorder()),
-                        keyboardType: TextInputType.number,
-                        onSaved: (value) =>
-                            Provider.of<ConnectionProjectAmountContainer>(
-                                context,
-                                listen: false)
-                                .amounts
-                                .putIfAbsent(project, () => int.tryParse(value)),
-                        inputFormatters: <TextInputFormatter>[
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                      ),
-                    ),
-                  ),
+                  // SizedBox(
+                  //   height: 40,
+                  //   width: 100,
+                  //   child: Form(
+                  //     key: formKey,
+                  //     child: TextFormField(
+                  //       readOnly: amountLocked,
+                  //       initialValue: amount != null ? amount.toString() : '1',
+                  //       decoration: InputDecoration(
+                  //           labelText: _unit,
+                  //           border: const OutlineInputBorder()),
+                  //       keyboardType: TextInputType.number,
+                  //       onSaved: (value) =>
+                  //           Provider.of<ConnectionProjectAmountContainer>(
+                  //               context,
+                  //               listen: false)
+                  //               .amounts
+                  //               .putIfAbsent(project, () => int.tryParse(value)),
+                  //       inputFormatters: <TextInputFormatter>[
+                  //         FilteringTextInputFormatter.digitsOnly
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                   /*if (additionalInfo != null)
                     Text(
                       additionalInfo,
@@ -124,14 +124,14 @@ class SimpleConnectionProjectCard extends StatelessWidget {
                 ],
               ),
             ),
-            ClipRRect(
+           /* ClipRRect(
               borderRadius: const BorderRadius.only(
                   topRight: Radius.circular(3),
                   bottomRight: Radius.circular(3)),
               child: _serviceProvider.imageService.getImage(
                   project.title, project.title,
                   height: 60, width: 60, fit: BoxFit.cover),
-            ),
+            ),*/
           ],
         ),
       ),

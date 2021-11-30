@@ -208,7 +208,6 @@ class _ConnectionProjectListWidgetState
                   return widget.useSimpleCard
                       ? SimpleConnectionProjectCard(
                           element,
-                          //additionalInfo: element.description,
                           serviceProvider: widget._serviceProvider,
                   )
                       : ExpandableConnectionProjectCard(

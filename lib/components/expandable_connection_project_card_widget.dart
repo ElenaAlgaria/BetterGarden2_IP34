@@ -256,17 +256,17 @@ class _ExpandableConnectionProjectCardState
                         ],
                       );
                     }),
-                  if (widget.additionalInfo != null)
+                  /*if (widget.additionalInfo != null)
                     Text(
                       widget.additionalInfo,
                       softWrap: true,
                       maxLines: 4,
                       overflow: TextOverflow.fade,
-                    ),
+                    ),*/
                   const SizedBox(width: 4),
-                  widget._serviceProvider.imageService.getImage(
+                  /*widget._serviceProvider.imageService.getImage(
                       widget.object.title, widget.object.title,
-                      height: 60, width: 60, fit: BoxFit.cover),
+                      height: 60, width: 60, fit: BoxFit.cover),*/
                 ],
               ),
               // expanded card
