@@ -1,21 +1,17 @@
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
-import 'package:biodiversity/models/information_object.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/user.dart';
-import 'package:biodiversity/screens/detailview_page/detailview_page_information_object.dart';
-import 'package:biodiversity/screens/information_list_page/add_element_to_garden_amount_page.dart';
-import 'package:biodiversity/screens/information_list_page/delete_element_garden_page.dart';
-import 'package:biodiversity/screens/information_list_page/edit_element_to_garden_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
+import 'package:biodiversity/services/services_library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-/// an unspecific expandable card which displays an InformationObject
+/// an unspecific expandable card which displays a ConnectionProject
 class ExpandableConnectionProjectCard extends StatefulWidget {
-  /// which element the cards shows
+  /// which ConnectionProject the cards shows
   final ConnectionProject object;
 
   /// if this flag is set, the buttons hinzufügen and merken will be removed
@@ -38,7 +34,7 @@ class ExpandableConnectionProjectCard extends StatefulWidget {
 
   final ServiceProvider _serviceProvider;
 
-  /// show a card to the provided InformationObject
+  /// show a card to the provided ConnectionProject
   ExpandableConnectionProjectCard(this.object,
       {hideLikeAndAdd = false,
         this.showDeleteAndEdit = false,
@@ -128,52 +124,6 @@ class _ExpandableConnectionProjectCardState
                       ],
                     ),
                   ),
-                  if (widget.showDeleteAndEdit)
-                    /*Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TextButton.icon(
-                          icon: const Icon(
-                            Icons.delete_forever,
-                            color: Colors.black,
-                            size: 20,
-                          ),
-                          label: const Text('löschen'),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => DeleteElementGardenPage(
-                                    object: widget.object,
-                                  )),
-                            );
-                          },
-                          style: const ButtonStyle(
-                              visualDensity: VisualDensity.compact),
-                        ),
-                        TextButton.icon(
-                          icon: const Icon(
-                            Icons.edit,
-                            color: Colors.black,
-                            size: 20,
-                          ),
-                          label: const Text('bearbeiten'),
-                          //EditElementPage
-                          onPressed: () => {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => EditElementPage(
-                                    object: widget.object,
-                                  )),
-                            ),
-                          },
-                          style: const ButtonStyle(
-                              visualDensity: VisualDensity.compact),
-                        ),
-                      ],
-                    )*/
                   if (!widget.hideLikeAndAdd &&
                       (!widget.arrangeLikeAndAddAsRow || _screenWidth < 400))
                     Column(
@@ -194,16 +144,6 @@ class _ExpandableConnectionProjectCardState
                             style: const ButtonStyle(
                                 visualDensity: VisualDensity.compact),
                           ),
-                        // TextButton.icon(
-                        //   icon: const Icon(
-                        //     Icons.add_circle_outline_outlined,
-                        //     size: 20,
-                        //   ),
-                        //    label: const Text('aktivitätsradius'),
-                        //    onPressed: null,
-                        //    style: const ButtonStyle(
-                        //        visualDensity: VisualDensity.compact),
-                        //  ),
                         TextButton.icon(
                           icon: Icon(
                             Icons.favorite,
@@ -256,17 +196,7 @@ class _ExpandableConnectionProjectCardState
                         ],
                       );
                     }),
-                  /*if (widget.additionalInfo != null)
-                    Text(
-                      widget.additionalInfo,
-                      softWrap: true,
-                      maxLines: 4,
-                      overflow: TextOverflow.fade,
-                    ),*/
                   const SizedBox(width: 4),
-                  /*widget._serviceProvider.imageService.getImage(
-                      widget.object.title, widget.object.title,
-                      height: 60, width: 60, fit: BoxFit.cover),*/
                 ],
               ),
               // expanded card
@@ -311,48 +241,6 @@ class _ExpandableConnectionProjectCardState
                         ],
                       );
                     }),
-                  //if (widget.showDeleteAndEdit)
-                    /*Consumer<User>(builder: (context, user, child) {
-                      if (user == null) {
-                        return const Text('');
-                      }
-                      return Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: const Icon(
-                              Icons.delete_forever,
-                              color: Colors.black,
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        DeleteElementGardenPage(
-                                          object: widget.object,
-                                        )),
-                              );
-                            },
-                          ),
-                          IconButton(
-                            icon: const Icon(
-                              Icons.edit,
-                              color: Colors.black,
-                            ),
-                            onPressed: () => {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => EditElementPage(
-                                      object: widget.object,
-                                    )),
-                              ),
-                            },
-                          ),
-                        ],
-                      );
-                    }),*/
                 ],
               ),
             ),
@@ -370,31 +258,13 @@ class _ExpandableConnectionProjectCardState
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10.0),
-                    // child: TextButton(
-                    //   onPressed: () {
-                    //     if (_expanded) {
-                    //       // Navigator.push(
-                    //       //   context,
-                    //       //   MaterialPageRoute(
-                    //       //       builder: (context) =>
-                    //       //           DetailViewPageInformationObject(
-                    //       //             widget.object,
-                    //       //             hideLikeAndAdd: widget.hideLikeAndAdd,
-                    //       //             showDeleteAndEdit:
-                    //       //             widget.showDeleteAndEdit,
-                    //       //             isSpecies: widget.isSpecies,
-                    //       //           )),
-                    //       // );
-                    //     }
-                    //   },
-                    //   child: const Text(
-                    //     'Weitere Infos',
-                    //     style: TextStyle(decoration: TextDecoration.underline),
-                    //   ),
-                    // ),
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: 10.0),
                   ),
+                  Text(
+                    '',
+                    textAlign: TextAlign.center,
+                  )
                 ],
               ),
             ],
@@ -421,12 +291,6 @@ class _ExpandableConnectionProjectCardState
       if (ServiceProvider.instance.gardenService
           .getAllGardensFromUser(Provider.of<User>(context, listen: false))
           .isNotEmpty) {
-        // Navigator.push(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (context) => AddElementToGardenAmountPage(
-        //           object: widget.object,
-        //         )));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text('Bitte erstelle zuerst einen Garten')));
