@@ -25,7 +25,7 @@ test:
     - flutter test --machine > tests.output
     - flutter test --coverage
     - genhtml coverage/lcov.info --output=coverage
-    - metrics lib -r codeclimate  > gl-code-quality-report.json
+    - metrics lib -r codeclimate  > coverage/gl-code-quality-report.json
   artifacts:
     paths:
       - coverage/
