@@ -48,8 +48,8 @@ class _RegisterFacebookPageState extends State<RegisterFacebookPage> {
     final result = await Provider.of<User>(context, listen: false)
         .registerWithFacebook(context);
     if (result == null) {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => MyGarden()));
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) => MyGarden()));
     } else {
       setState(() {
         _errorText = result;

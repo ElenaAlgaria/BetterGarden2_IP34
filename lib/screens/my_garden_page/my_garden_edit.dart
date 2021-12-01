@@ -66,7 +66,7 @@ class _MyGardenEditState extends State<MyGardenEdit> {
         if (_saveRequested) {
           garden.imageURL = await ServiceProvider.instance.imageService
               .uploadImage(_toSaveImage, 'gardenpictures',
-              filename: '${garden.name}_${const Uuid().v4()}');
+                  filename: '${garden.name}_${const Uuid().v4()}');
         }
         if (_deleteRequested) {
           ServiceProvider.instance.imageService
@@ -94,7 +94,7 @@ class _MyGardenEditState extends State<MyGardenEdit> {
 
               Padding(
                 padding:
-                const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
                 child: TextFormField(
                   initialValue: garden.name,
                   decoration: const InputDecoration(
@@ -142,7 +142,7 @@ class _MyGardenEditState extends State<MyGardenEdit> {
 
               Padding(
                 padding:
-                const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
                 child: TextFormField(
                   key: Key(mapInteractions.lastSelectedAddress),
                   initialValue:

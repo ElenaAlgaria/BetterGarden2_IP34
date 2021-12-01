@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uuid/uuid.dart';
 
-
 // TODO update coordinates of a connectionProject
 // TODO and implement the logic.
 /// Container class for the connection project
@@ -86,8 +85,8 @@ class ConnectionProject extends ChangeNotifier {
       'title': title,
       'description': description,
       'targetSpecies': targetSpecies,
-      'coordinates' : coordinates,
-      'creationDate' : creationDate,
+      'coordinates': coordinates,
+      'creationDate': creationDate,
       'gardens': gardens
     });
   }
@@ -123,14 +122,12 @@ class ConnectionProject extends ChangeNotifier {
     }
   }
 
-
-
   /// is true if this connectionproject is an empty placeholder
   bool get isEmpty => _isEmpty;
 
   /// returns a [LatLng] object of the coordinates. Used for google Maps
   LatLng getLatLng() {
-    if(coordinates == null) {
+    if (coordinates == null) {
       return const LatLng(0, 0);
     } else {
       return LatLng(coordinates.latitude, coordinates.longitude);

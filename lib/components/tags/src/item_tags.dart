@@ -358,7 +358,7 @@ class _ItemTagsState extends State<ItemTags> {
             );
           return Flexible(
             flex: widget.combine == ItemTagsCombine.withTextAfter ||
-                list.length == 1
+                    list.length == 1
                 ? 1
                 : 0,
             child: list[i],
@@ -391,8 +391,8 @@ class _ItemTagsState extends State<ItemTags> {
                         margin: widget.removeButton.margin ??
                             EdgeInsets.only(left: 5),
                         padding:
-                        (widget.removeButton.padding ?? EdgeInsets.all(2)) *
-                            (widget.textStyle.fontSize / 14),
+                            (widget.removeButton.padding ?? EdgeInsets.all(2)) *
+                                (widget.textStyle.fontSize / 14),
                         decoration: BoxDecoration(
                           color: widget.removeButton.backgroundColor ??
                               Colors.black,

@@ -8,6 +8,7 @@ import 'package:biodiversity/screens/information_list_page/biodiversity_elements
 import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
+import 'package:biodiversity/screens/project_page/projects_overview_page.dart';
 import 'package:biodiversity/screens/species_list_page/species_list_page.dart';
 import 'package:biodiversity/screens/take_home_message_page/take_home_messages.dart';
 import 'package:flutter/material.dart';
@@ -115,6 +116,21 @@ class MyDrawer extends StatelessWidget {
                                             LoginPage())),
                                   );
                                 }
+                              },
+                            ),
+                            ListTile(
+                              title: const Text('Vernetzungsprojekte'),
+                              onTap: () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ProjectsOverviewPage(),
+                                    settings: const RouteSettings(
+                                      arguments: '',
+                                    ),
+                                  ),
+                                );
                               },
                             ),
                             ListTile(

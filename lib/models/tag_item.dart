@@ -2,6 +2,7 @@
 class TagItem {
   /// title of the tag
   String title;
+
   /// show weather the tag is active or not
   bool active;
 

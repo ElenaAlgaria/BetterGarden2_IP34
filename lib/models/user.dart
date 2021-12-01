@@ -8,6 +8,7 @@ import 'package:biodiversity/models/login_result.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/storage_provider.dart';
 import 'package:biodiversity/services/service_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -21,6 +22,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 class User extends ChangeNotifier {
   final StorageProvider _storage;
   Set<String> _gardens;
+  Set<DocumentReference> _gardenReferences;
   Set<String> _favoredObjects;
   bool _loggedIn;
 
@@ -50,6 +52,7 @@ class User extends ChangeNotifier {
       : _storage = storageProvider ??= StorageProvider.instance,
         _loggedIn = false,
         _gardens = <String>{},
+        _gardenReferences = <DocumentReference>{},
         _favoredObjects = <String>{},
         nickname = '',
         name = '',
@@ -96,6 +99,10 @@ class User extends ChangeNotifier {
     if (map.containsKey('gardens') && map['gardens'] is List) {
       _gardens = Set.from(map['gardens']);
     }
+    if (map.containsKey('gardenReferences') &&
+        map['gardenReferences'] is List) {
+      _gardenReferences = Set.from(map['gardenReferences']);
+    }
     if (map.containsKey('favoredObjects') && map['favoredObjects'] is List) {
       _favoredObjects = Set.from(map['favoredObjects']);
     }
@@ -129,6 +136,7 @@ class User extends ChangeNotifier {
       'mail': mail,
       'imageURL': imageURL,
       'gardens': _gardens.toList(),
+      'gardenReferences': _gardenReferences.toList(),
       'favoredObjects': _favoredObjects.toList(),
       'showNameOnMap': showNameOnMap,
       'showGardenImageOnMap': showGardenImageOnMap,
@@ -237,11 +245,14 @@ class User extends ChangeNotifier {
       throw ArgumentError('Garden must have a name');
     }
     _gardens.add(garden.name);
+    _gardenReferences.add(garden.reference);
     saveUser();
   }
 
   /// Returns a list of all names from owned gardens
   List<String> get gardens => _gardens.toList();
+
+  List<DocumentReference> get gardenReferences => _gardenReferences.toList();
 
   /// signs the user out, saves all data to the database.
   /// Afterwards all fields are reset to empty fields.
@@ -259,6 +270,7 @@ class User extends ChangeNotifier {
     imageURL = '';
     mail = '';
     _gardens = <String>{};
+    _gardenReferences = <DocumentReference>{};
     _favoredObjects = <String>{};
     _loggedIn = false;
     showNameOnMap = true;
@@ -583,6 +595,7 @@ class User extends ChangeNotifier {
   /// Remove a garden from the owned gardens
   void deleteGarden(Garden garden) {
     _gardens.remove(garden.name);
+    _gardenReferences.remove(garden.reference);
     saveUser();
     notifyListeners();
   }

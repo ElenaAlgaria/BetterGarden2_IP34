@@ -90,7 +90,6 @@ class Species implements InformationObject {
   /// which go well together with this
   String getConnectedTo() => _getCommaSeparatedString(connectedTo);
 
-
   String _getCommaSeparatedString(Iterable<String> elements) {
     final string = StringBuffer();
     for (final s in elements) {

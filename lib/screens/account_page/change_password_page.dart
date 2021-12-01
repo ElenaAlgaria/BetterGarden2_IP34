@@ -31,8 +31,7 @@ class _ChangePasswordPage extends State<ChangePasswordPage> {
           _formKey.currentState.save();
           if (_firstPassword != _secondPassword) {
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text(
-                    'Die neuen Passwörter stimmen nicht überein')));
+                content: Text('Die neuen Passwörter stimmen nicht überein')));
           } else {
             final _responseAnswer =
                 await Provider.of<User>(context, listen: false).changePassword(
@@ -44,8 +43,8 @@ class _ChangePasswordPage extends State<ChangePasswordPage> {
                       builder: (context) => WhiteRedirectPage(
                           'Das neue Passwort wurde gesetzt', AccountPage())));
             } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('$_responseAnswer')));
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text('$_responseAnswer')));
             }
           }
         }

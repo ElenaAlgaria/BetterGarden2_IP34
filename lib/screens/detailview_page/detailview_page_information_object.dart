@@ -110,27 +110,27 @@ class _DetailViewPageInformationObjectState
               return Row(
                 children: [
                   if (!widget.isSpecies)
-                      IconButton(
-                          icon: const Icon(
-                            Icons.add,
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      AddElementToGardenAmountPage(
-                                        object: widget.object,
-                                      )),
-                            );
-                          },
-                        ),
-                      // : const IconButton(
-                      //     icon: Icon(
-                      //       Icons.add_circle_outline_outlined,
-                      //     ),
-                      //     onPressed: null,
-                      //   ),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.add,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  AddElementToGardenAmountPage(
+                                    object: widget.object,
+                                  )),
+                        );
+                      },
+                    ),
+                  // : const IconButton(
+                  //     icon: Icon(
+                  //       Icons.add_circle_outline_outlined,
+                  //     ),
+                  //     onPressed: null,
+                  //   ),
                   IconButton(
                     icon: user.doesLikeElement(widget.object.name)
                         ? const Icon(Icons.favorite)
