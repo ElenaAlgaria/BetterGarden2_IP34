@@ -18,6 +18,7 @@ analyze.sonarqube:
   image: ichlaffterlalu/sonar-scanner-flutter-cli:latest
   allow_failure: false
   script:
+    - flutter channel stable
     - flutter upgrade
     - flutter pub get
     - flutter test
