@@ -1,6 +1,7 @@
 import 'package:biodiversity/components/white_redirect_page.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/account_page/account_page.dart';
+import 'package:biodiversity/screens/button_example/button_page.dart';
 import 'package:biodiversity/screens/favored_list_page/favored_list_page.dart';
 import 'package:biodiversity/screens/impressum_page/impressum_page.dart';
 import 'package:biodiversity/screens/information_list_page/biodiversity_elements_list_page.dart';
@@ -30,7 +31,9 @@ class MyDrawer extends StatelessWidget {
             textTheme: TextTheme(
               bodyText1: TextStyle(
                   color: Theme.of(context).colorScheme.onPrimary, fontSize: 16),
-            ), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.white30)),
+            ),
+            colorScheme:
+                ColorScheme.fromSwatch().copyWith(secondary: Colors.white30)),
         child: Scaffold(
           appBar: AppBar(
             actions: [
@@ -108,7 +111,8 @@ class MyDrawer extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => WhiteRedirectPage(
-                                            'Bitte melde Dich zuerst an', LoginPage())),
+                                            'Bitte melde Dich zuerst an',
+                                            LoginPage())),
                                   );
                                 }
                               },
@@ -192,6 +196,20 @@ class MyDrawer extends StatelessWidget {
                                 );
                               },
                             ),
+
+                            ListTile(
+                              title: const Text(
+                                'Button',
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              onTap: () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ButtonPage()),
+                                );
+                              },
+                            ),
                           ],
                         ),
                       ),
@@ -232,7 +250,6 @@ class MyDrawer extends StatelessWidget {
               content: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
                     style: ButtonStyle(
@@ -248,8 +265,8 @@ class MyDrawer extends StatelessWidget {
                           MaterialPageRoute(builder: (context) => LoginPage()));
                     },
                     style: ButtonStyle(
-                      backgroundColor:
-                      MaterialStateProperty.all<Color>(const Color(0xFFC05410)),
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          const Color(0xFFC05410)),
                     ),
                     child: const Text('Ausloggen'),
                   ),
