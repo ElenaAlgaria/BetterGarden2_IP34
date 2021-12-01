@@ -20,19 +20,20 @@ test:
     - pub global activate dart_code_metrics
     - export PATH="$PATH":"$HOME/.pub-cache/bin"
   script:
-    - flutter pub get
-    - flutter test
-    - flutter test --machine > tests.output
-    - flutter test --coverage
-    - genhtml coverage/lcov.info --output=coverage
-    - metrics lib -r codeclimate  > coverage/gl-code-quality-report.json
+    - flutter build aot
+    - flutter analyze
+    - flutter test --machine | tojunit -o report.xml
+    - flutter test --coverage ./lib
+    - lcov -r coverage/lcov.info '*/__test*__/*' -o coverage/lcov_cleaned.info
+    - genhtml coverage/lcov_cleaned.info --output=coverage
   artifacts:
+    when: always
     paths:
-      - coverage/
+      - rspec.xml
+      - coverage
     reports:
-      codequality:  gl-code-quality-report.json
-    expire_in: 5 days
-
+      junit:
+        - report.xml
 
 analyze.sonarqube:
   stage: analyze
