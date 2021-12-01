@@ -25,18 +25,17 @@ test:
     - export PATH="$PATH":"$HOME/.pub-cache/bin"
   script:
     - flutter build
-    - flutter test --machine | tojunit -o machine/report.xml
+    - flutter test --machine | tojunit -o report.xml
     - flutter test --coverage ./lib
     - lcov -r coverage/lcov.info '*/__test*__/*' -o coverage/lcov_cleaned.info
     - genhtml coverage/lcov_cleaned.info --output=coverage
   artifacts:
     when: always
     paths:
-      - machine
       - coverage
     reports:
       junit:
-        - machine/report.xml
+        - report.xml
 
 analyze.sonarqube:
   stage: analyze
