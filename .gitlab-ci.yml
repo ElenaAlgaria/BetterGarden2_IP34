@@ -13,16 +13,30 @@ stages:
 .android_docker_image:
   image: cirrusci/flutter:latest
 
-analyze.sonarqube:
-  stage: analyze
-  image: ichlaffterlalu/sonar-scanner-flutter-cli:latest
-  allow_failure: false
+test:
+  extends: .android_docker_image
+  stage: test
+  before_script:
+    - pub global activate dart_code_metrics
+    - export PATH="$PATH":"$HOME/.pub-cache/bin"
   script:
-    - flutter channel stable
-    - flutter upgrade
     - flutter pub get
     - flutter test
     - flutter test --machine > tests.output
     - flutter test --coverage
     - genhtml coverage/lcov.info --output=coverage
+    - metrics lib -r codeclimate  > gl-code-quality-report.json
+  artifacts:
+    paths:
+      - coverage/
+    reports:
+      codequality:  gl-code-quality-report.json
+    expire_in: 5 days
+
+
+analyze.sonarqube:
+  stage: analyze
+  image: ichlaffterlalu/sonar-scanner-flutter-cli:latest
+  allow_failure: false
+  script:
     - sonar-scanner -Dsonar.host.url=https://www.cs.technik.fhnw.ch/sonarqube -Dsonar.language=flutter -Dsonar.sources=lib -Dsonar.tests=test -Dsonar.login=$CI_SONARQUBE_TOKEN -Dsonar.projectKey=BetterGardensv2 -Dsonar.projectName=BetterGardensv2
