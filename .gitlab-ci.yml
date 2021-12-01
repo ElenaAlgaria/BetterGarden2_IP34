@@ -20,7 +20,7 @@ test:
     - pub global activate dart_code_metrics
     - export PATH="$PATH":"$HOME/.pub-cache/bin"
   script:
-    - flutter build aot
+    - flutter build
     - flutter analyze
     - flutter test --machine | tojunit -o machine/report.xml
     - flutter test --coverage ./lib
