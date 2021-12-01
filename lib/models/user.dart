@@ -100,7 +100,7 @@ class User extends ChangeNotifier {
       _gardens = Set.from(map['gardens']);
     }
     if (map.containsKey('gardenReferences') && map['gardenReferences'] is List) {
-      _gardenReferences = Set.from(map['gardens']);
+      _gardenReferences = Set.from(map['gardenReferences']);
     }
     if (map.containsKey('favoredObjects') && map['favoredObjects'] is List) {
       _favoredObjects = Set.from(map['favoredObjects']);

@@ -128,7 +128,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage> with Ticker
 
   List<ConnectionProject> getJoinedConnectionProjects() {
     return ServiceProvider.instance.connectionProjectService.getAllConnectionProjects()
-        .where((element) => element.gardens.any((element) => Provider.of<User>(context).gardenReferences.contains(element)));
+        .where((element) => element.gardens.any((element) => Provider.of<User>(context).gardenReferences.contains(element))).toList();
   }
 
 
