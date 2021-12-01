@@ -17,7 +17,9 @@ test:
   extends: .android_docker_image
   stage: test
   script:
-    - flutter test --coverage
+    - flutter pub get
+    - flutter test
+    - flutter test --machine --coverage > tests.output
     - genhtml coverage/lcov.info --output=coverage
   artifacts:
     paths:
