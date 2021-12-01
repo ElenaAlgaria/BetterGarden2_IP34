@@ -1,5 +1,6 @@
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/join_connection_project_popup_button.dart';
+import 'package:biodiversity/components/leave_connection_project_button.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
 
@@ -8,6 +9,8 @@ class ButtonPage extends StatelessWidget {
 
   var testProj = ServiceProvider.instance.connectionProjectService
       .getAllConnectionProjects()
+      .where((element) =>
+          element.reference.id == '31311e72-51cb-419f-8d92-91596f2e4b25')
       .first;
 
   @override
@@ -18,9 +21,15 @@ class ButtonPage extends StatelessWidget {
       body: ListView(children: <Widget>[
         const SizedBox(height: 30),
         Padding(
-          padding: const EdgeInsets.all(25.0),
-          child: joinConnectionProjectButton(connectionProject: testProj),
-        ),
+            padding: const EdgeInsets.all(25.0),
+            child: Column(children: [
+              leaveConnectionProjectButton(
+                connectionProject: testProj,
+              ),
+              joinConnectionProjectButton(
+                connectionProject: testProj,
+              ),
+            ]))
       ]),
     );
   }

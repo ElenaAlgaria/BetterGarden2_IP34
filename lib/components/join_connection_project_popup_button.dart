@@ -2,20 +2,38 @@ import 'dart:developer' as logging;
 
 import 'package:biodiversity/components/garden_dropdown_widget.dart';
 import 'package:biodiversity/models/connection_project.dart';
+import 'package:biodiversity/models/user.dart';
+import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class joinConnectionProjectButton extends StatelessWidget {
+class joinConnectionProjectButton extends StatefulWidget {
   final ConnectionProject connectionProject;
 
   joinConnectionProjectButton({Key key, this.connectionProject})
       : super(key: key);
+
+  @override
+  joinConnectionProjectButtonState createState() => joinConnectionProjectButtonState();
+}
+
+class joinConnectionProjectButtonState extends State<joinConnectionProjectButton> {
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User>(context);
+    var _gardensList = ServiceProvider
+        .instance.gardenService
+        .getAllGardensFromUser(user);
+
+    // TODO: disable when no
+    var _disabled = false;
+    // var _disabled = _gardensList.any((element) => );
+
     return ElevatedButton.icon(
-      onPressed: () {
+      onPressed: _disabled ? null : () {
         showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -32,7 +50,7 @@ class joinConnectionProjectButton extends StatelessWidget {
                           Navigator.of(context).pop();
                         },
                         child: const CircleAvatar(
-                          backgroundColor: Colors.red,
+                          backgroundColor: Color(0xFFE36F00),
                           child: Icon(Icons.close),
                         ),
                       ),
@@ -51,6 +69,7 @@ class joinConnectionProjectButton extends StatelessWidget {
                                   margin:
                                       const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
                                   child: gardenDropDown(
+                                    gardensList: _gardensList,
                                     onGardenChanged: (selectedGarden) {
                                       _selectedGarden = selectedGarden;
                                     },
@@ -64,15 +83,15 @@ class joinConnectionProjectButton extends StatelessWidget {
                                         if (!_formKey.currentState.validate()) {
                                           return;
                                         } else {
-                                          if (!connectionProject.gardens
+                                          if (!widget.connectionProject.gardens
                                               .contains(
                                                   _selectedGarden.reference)) {
-                                            connectionProject.addGarden(
+                                            widget.connectionProject.addGarden(
                                                 _selectedGarden.reference);
                                             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                                 content: Text('Du bist dem Verbindungsprojekt erfolgreich beigetreten.')));
                                             logging.log(
-                                                'Add garden \"${_selectedGarden.name}\" to connectionProject \"${connectionProject.title}\"');
+                                                'Add garden \"${_selectedGarden.name}\" to connectionProject \"${widget.connectionProject.title}\"');
                                             Navigator.of(context).pop();
                                           } else {
                                             throw ArgumentError(
