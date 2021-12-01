@@ -30,12 +30,12 @@ class SimpleConnectionProjectCard extends StatelessWidget {
   /// Non expandable ListTile, displaying a [BiodiversityMeasure]
   SimpleConnectionProjectCard(this.project,
       {this.onTapHandler,
-        //this.additionalInfo,
-        this.amountLocked = false,
-        this.amount,
-        ServiceProvider serviceProvider,
-        this.formKey,
-        Key key})
+      //this.additionalInfo,
+      this.amountLocked = false,
+      this.amount,
+      ServiceProvider serviceProvider,
+      this.formKey,
+      Key key})
       : _serviceProvider = serviceProvider ?? ServiceProvider.instance,
         super(key: key);
 

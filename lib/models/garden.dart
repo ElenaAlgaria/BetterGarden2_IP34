@@ -72,7 +72,6 @@ class Garden extends ChangeNotifier {
     }
   }
 
-
   /// creates a Garden from the provided Map.
   /// Used for database loading and testing
   Garden.fromMap(Map<String, dynamic> map,

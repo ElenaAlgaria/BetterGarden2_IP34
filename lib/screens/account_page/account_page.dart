@@ -103,7 +103,7 @@ class _AccountPage extends State<AccountPage> {
                     ],
                   ),
                 ),
-                PopupMenuItem(
+              PopupMenuItem(
                 value: 'DeleteAccountPage',
                 child: Row(
                   children: [
@@ -152,31 +152,22 @@ class _AccountPage extends State<AccountPage> {
     switch (value) {
       case 'EditProfilePage':
         {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      EditProfilePage()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => EditProfilePage()));
           break;
         }
       case 'ChangePasswordPage':
         {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      ChangePasswordPage()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => ChangePasswordPage()));
           break;
         }
       case 'DeleteAccountPage':
-      {
-        Navigator.push(
-          context,
-           MaterialPageRoute(
-             builder: (context) =>
-              MyAccountDelete()));
-            break;
-      }
+        {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => MyAccountDelete()));
+          break;
+        }
     }
   }
 }

@@ -271,7 +271,7 @@ class _InformationObjectListWidgetState
                                 serviceProvider: widget._serviceProvider,
                               )
                             : ExpandableInformationObjectCard(
-                          element,
+                                element,
                                 hideLikeAndAdd: widget.hideLikeAndAdd,
                                 additionalInfo: element.additionalInfo,
                                 showDeleteAndEdit: widget.showDeleteAndEdit,

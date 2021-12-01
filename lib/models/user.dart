@@ -99,7 +99,8 @@ class User extends ChangeNotifier {
     if (map.containsKey('gardens') && map['gardens'] is List) {
       _gardens = Set.from(map['gardens']);
     }
-    if (map.containsKey('gardenReferences') && map['gardenReferences'] is List) {
+    if (map.containsKey('gardenReferences') &&
+        map['gardenReferences'] is List) {
       _gardenReferences = Set.from(map['gardenReferences']);
     }
     if (map.containsKey('favoredObjects') && map['favoredObjects'] is List) {
@@ -250,6 +251,7 @@ class User extends ChangeNotifier {
 
   /// Returns a list of all names from owned gardens
   List<String> get gardens => _gardens.toList();
+
   List<DocumentReference> get gardenReferences => _gardenReferences.toList();
 
   /// signs the user out, saves all data to the database.

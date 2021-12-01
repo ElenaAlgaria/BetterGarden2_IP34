@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:math';
 import 'dart:developer' as logging;
+import 'dart:math';
 
 import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
@@ -113,8 +113,8 @@ class MapMarkerService extends ChangeNotifier {
     }
     var marker = Marker(
       markerId: MarkerId('joinableGarden' + garden.reference.id.toString()),
-      position: LatLng(
-          garden.getLatLng().latitude, garden.getLatLng().longitude),
+      position:
+          LatLng(garden.getLatLng().latitude, garden.getLatLng().longitude),
       icon: _icons['joinableGarden'],
       onTap: () {
         onTapCallback(garden);

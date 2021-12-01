@@ -299,6 +299,7 @@ class DataList extends ValueNotifier implements Item {
   }
 
   bool _showDuplicate;
+
   set showDuplicate(bool a) {
     _showDuplicate = a;
     // rebuild only the specific Item that changes its value
@@ -307,6 +308,7 @@ class DataList extends ValueNotifier implements Item {
 
   get active => _active;
   bool _active;
+
   set active(bool a) {
     _active = a;
     // rebuild only the specific Item that changes its value

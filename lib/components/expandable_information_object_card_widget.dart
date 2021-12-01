@@ -122,7 +122,7 @@ class _ExpandableInformationObjectCardState
                         ),
                         if (widget.showDeleteAndEdit)
                           Text(garden.ownedObjects[widget.object.name]
-                              .toString() +
+                                  .toString() +
                               ' $_unit'),
                       ],
                     ),
@@ -144,8 +144,8 @@ class _ExpandableInformationObjectCardState
                               context,
                               MaterialPageRoute(
                                   builder: (context) => DeleteElementGardenPage(
-                                    object: widget.object,
-                                  )),
+                                        object: widget.object,
+                                      )),
                             );
                           },
                           style: const ButtonStyle(
@@ -207,7 +207,7 @@ class _ExpandableInformationObjectCardState
                           icon: Icon(
                             Icons.favorite,
                             color: Provider.of<User>(context)
-                                .doesLikeElement(widget.object.name)
+                                    .doesLikeElement(widget.object.name)
                                 ? Colors.red
                                 : Colors.black,
                             size: 20,
@@ -344,8 +344,8 @@ class _ExpandableInformationObjectCardState
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => EditElementPage(
-                                      object: widget.object,
-                                    )),
+                                          object: widget.object,
+                                        )),
                               ),
                             },
                           ),
@@ -382,7 +382,7 @@ class _ExpandableInformationObjectCardState
                                       widget.object,
                                       hideLikeAndAdd: widget.hideLikeAndAdd,
                                       showDeleteAndEdit:
-                                      widget.showDeleteAndEdit,
+                                          widget.showDeleteAndEdit,
                                       isSpecies: widget.isSpecies,
                                     )),
                           );

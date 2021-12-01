@@ -12,7 +12,8 @@ void main() {
     expect(garden.name, '', reason: 'name was not empty');
     expect(garden.owner, '', reason: 'owner was not empty');
     expect(garden.street, '', reason: 'street was not empty');
-    expect(garden.coordinates, const GeoPoint(0, 0), reason: 'coordinates was not (0,0))');
+    expect(garden.coordinates, const GeoPoint(0, 0),
+        reason: 'coordinates was not (0,0))');
   });
 
   test('Valid garden creation', () {
@@ -37,9 +38,6 @@ void main() {
       expect(garden.ownedObjects, containsPair(item.key, item.value),
           reason: 'ownedObjects was not set correctly');
     }
-    expect(garden.ownedConnectionProjects,
-        containsAll(gardenAttributes['ownedLinkingProjects']),
-        reason: 'ownedLinkingProjects was not set correctly');
   });
 
   test('save garden', () async {
@@ -80,13 +78,7 @@ void main() {
     garden.addOwnedObject('another', 6);
     expect(garden.ownedObjects, containsPair('another', 6),
         reason: 'addOwnedObject does not add an object');
-    garden.addLinkingProject('linkingProject');
-    expect(garden.ownedConnectionProjects, contains('linkingProject'),
-        reason: 'addLinkingProject does not add a LinkingProject');
 
-    garden.removeFromLinkingProjects('linkingProject');
-    expect(garden.ownedConnectionProjects, isNot(contains('linkingProject')),
-        reason: 'addLinkingProject does not remove a LinkingProject');
     garden.removeFromOwnedObjects('another');
     expect(garden.ownedObjects, isNot(containsPair('another', 6)),
         reason: 'addOwnedObject does not remove an object');

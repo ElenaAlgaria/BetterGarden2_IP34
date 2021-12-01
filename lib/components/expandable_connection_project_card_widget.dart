@@ -34,10 +34,10 @@ class ExpandableConnectionProjectCard extends StatefulWidget {
   /// show a card to the provided ConnectionProject
   ExpandableConnectionProjectCard(this.object,
       {hideLikeAndAdd = false,
-        this.additionalInfo,
-        arrangeLikeAndAddAsRow = false,
-        ServiceProvider serviceProvider,
-        Key key})
+      this.additionalInfo,
+      arrangeLikeAndAddAsRow = false,
+      ServiceProvider serviceProvider,
+      Key key})
       : _serviceProvider = serviceProvider ??= ServiceProvider.instance,
         hideLikeAndAdd = hideLikeAndAdd || additionalInfo != null,
         arrangeLikeAndAddAsRow =
@@ -140,7 +140,7 @@ class _ExpandableConnectionProjectCardState
                           icon: Icon(
                             Icons.favorite,
                             color: Provider.of<User>(context)
-                                .doesLikeElement(widget.object.title)
+                                    .doesLikeElement(widget.object.title)
                                 ? Colors.red
                                 : Colors.black,
                             size: 20,
@@ -237,7 +237,7 @@ class _ExpandableConnectionProjectCardState
               ),
             ),
             expandedCrossAxisAlignment: CrossAxisAlignment.start,
-           // childrenPadding: const EdgeInsets.all(0),
+            // childrenPadding: const EdgeInsets.all(0),
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -245,14 +245,16 @@ class _ExpandableConnectionProjectCardState
                   const Padding(
                     padding: EdgeInsets.only(left: 16, bottom: 0),
                   ),
-                  Text(ServiceProvider.instance.speciesService
-                      .getSpeciesByReference(widget.object.targetSpecies)
-                      ?.name ?? '',
-                    style: const TextStyle(
-                      color: Colors.blueAccent,
-                      fontWeight: FontWeight.bold,
-                      )
-                  )
+                  Text(
+                      ServiceProvider.instance.speciesService
+                              .getSpeciesByReference(
+                                  widget.object.targetSpecies)
+                              ?.name ??
+                          '',
+                      style: const TextStyle(
+                        color: Colors.blueAccent,
+                        fontWeight: FontWeight.bold,
+                      ))
                 ],
               ),
               Padding(

@@ -1,6 +1,5 @@
 import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
-import 'package:biodiversity/models/information_object.dart';
 import 'package:flutter/cupertino.dart';
 
 /// Container to keep track of the amount of InformationObjects added to someones garden.<br>

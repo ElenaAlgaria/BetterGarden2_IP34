@@ -18,7 +18,9 @@ Future<bool> confirm(
     builder: (_) => WillPopScope(
       child: AlertDialog(
         title: title,
-        content: (content != null) ? content : const Text('Bist du sicher, dass du fortfahren willst?'),
+        content: (content != null)
+            ? content
+            : const Text('Bist du sicher, dass du fortfahren willst?'),
         actions: <Widget>[
           TextButton(
             child: textCancel ?? const Text('Abbrechen'),

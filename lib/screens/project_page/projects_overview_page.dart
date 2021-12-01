@@ -1,25 +1,16 @@
+import 'dart:math' as math;
+
 import 'package:biodiversity/components/connection_project_list_widget.dart';
 import 'package:biodiversity/components/drawer.dart';
-import 'package:biodiversity/components/information_object_list_widget.dart';
 import 'package:biodiversity/models/connection_project.dart';
-import 'package:biodiversity/models/user.dart';
-import 'package:biodiversity/services/service_provider.dart';
-import 'package:flutter/material.dart';
-import 'package:biodiversity/components/circlesOverview.dart';
-import 'package:biodiversity/components/drawer.dart';
-import 'package:biodiversity/components/text_field_with_descriptor.dart';
-import 'package:biodiversity/models/garden.dart';
-import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/species.dart';
+import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
-import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'dart:math' as math;
 
 /// Displays an overview of all ConnectionProjects
 class ProjectsOverviewPage extends StatefulWidget {
@@ -30,7 +21,8 @@ class ProjectsOverviewPage extends StatefulWidget {
   _ProjectsOverviewPageState createState() => _ProjectsOverviewPageState();
 }
 
-class _ProjectsOverviewPageState extends State<ProjectsOverviewPage> with TickerProviderStateMixin{
+class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
+    with TickerProviderStateMixin {
   AnimationController _fabController;
   List<Species> speciesList = [];
 
@@ -57,51 +49,48 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage> with Ticker
       drawer: MyDrawer(),
       body: SingleChildScrollView(
         child: Column(
-        children: [
-          ConnectionProjectListWidget(
-            objects: getJoinedConnectionProjects(),
-          ),
-          ConnectionProjectListWidget(
-            objects: getJoinableConnectionProjects(),
-          ),
-    ],
-    ),
-
+          children: [
+            ConnectionProjectListWidget(
+              objects: getJoinedConnectionProjects(),
+            ),
+            ConnectionProjectListWidget(
+              objects: getJoinableConnectionProjects(),
+            ),
+          ],
+        ),
       ),
       floatingActionButton: Row(
         mainAxisSize: MainAxisSize.min,
         children: getWidgetListTest()
-          ..add(
-            FloatingActionButton(
-              heroTag: null,
-              onPressed: () {
-                if(_fabController.isDismissed) {
-                  _fabController.forward();
-                } else {
-                  _fabController.reverse();
-                }
+          ..add(FloatingActionButton(
+            heroTag: null,
+            onPressed: () {
+              if (_fabController.isDismissed) {
+                _fabController.forward();
+              } else {
+                _fabController.reverse();
+              }
+            },
+            child: AnimatedBuilder(
+              animation: _fabController,
+              builder: (context, child) {
+                return Transform(
+                  transform:
+                      Matrix4.rotationZ(_fabController.value * 1.25 * math.pi),
+                  alignment: FractionalOffset.center,
+                  child: Icon(
+                    _fabController.isDismissed ? Icons.add : Icons.add,
+                    size: 30,
+                  ),
+                );
               },
-              child: AnimatedBuilder(
-                animation: _fabController,
-                builder: (context, child) {
-                  return Transform(
-                    transform:
-                        Matrix4.rotationZ(_fabController.value * 1.25 * math.pi),
-                    alignment: FractionalOffset.center,
-                    child: Icon(
-                      _fabController.isDismissed ? Icons.add : Icons.add,
-                      size: 30,
-                    ),
-                  );
-                },
-              ),
-            )
-          ),
+            ),
+          )),
       ),
-      );
+    );
   }
 
-  List<Widget> getWidgetListTest(){
+  List<Widget> getWidgetListTest() {
     return [
       Container(
         height: 56.0,
@@ -133,14 +122,18 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage> with Ticker
   }
 
   List<ConnectionProject> getJoinedConnectionProjects() {
-    return ServiceProvider.instance.connectionProjectService.getAllConnectionProjects()
-        .where((element) => element.gardens.any((element) => Provider.of<User>(context).gardenReferences.contains(element))).toList();
+    return ServiceProvider.instance.connectionProjectService
+        .getAllConnectionProjects()
+        .where((element) => element.gardens.any((element) =>
+            Provider.of<User>(context).gardenReferences.contains(element)))
+        .toList();
   }
 
   List<ConnectionProject> getJoinableConnectionProjects() {
-    return ServiceProvider.instance.connectionProjectService.getAllConnectionProjects()
-        .where((element) => element.gardens.any((element) => !Provider.of<User>(context).gardenReferences.contains(element))).toList();
+    return ServiceProvider.instance.connectionProjectService
+        .getAllConnectionProjects()
+        .where((element) => element.gardens.any((element) =>
+            !Provider.of<User>(context).gardenReferences.contains(element)))
+        .toList();
   }
-
-
 }

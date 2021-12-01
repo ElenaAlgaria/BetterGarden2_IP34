@@ -32,12 +32,12 @@ class ConnectionProjectListWidget extends StatefulWidget {
   /// Creates a List Widget displaying all provided ConnectionProjects
   ConnectionProjectListWidget(
       {Key key,
-        this.objects,
-        this.useSimpleCard = false,
-        this.hideLikeAndAdd = false,
-        this.arrangeLikeAndAddAsRow = false,
-        this.physics = const ScrollPhysics(),
-        ServiceProvider serviceProvider})
+      this.objects,
+      this.useSimpleCard = false,
+      this.hideLikeAndAdd = false,
+      this.arrangeLikeAndAddAsRow = false,
+      this.physics = const ScrollPhysics(),
+      ServiceProvider serviceProvider})
       : _serviceProvider = serviceProvider ?? ServiceProvider.instance,
         super(key: key);
 
@@ -107,7 +107,7 @@ class _ConnectionProjectListWidgetState
                       prefixIcon: Icon(Icons.search),
                       border: UnderlineInputBorder(
                           borderRadius:
-                          BorderRadius.all(Radius.circular(5.0)))),
+                              BorderRadius.all(Radius.circular(5.0)))),
                 ),
               ],
             ),
@@ -132,9 +132,7 @@ class _ConnectionProjectListWidgetState
                   padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    children: [
-
-                    ],
+                    children: [],
                   ),
                 ),
               ),
@@ -144,44 +142,45 @@ class _ConnectionProjectListWidgetState
               padding: const EdgeInsets.all(8.0),
               child: filteredItems.isEmpty
                   ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text(
-                      'Leider keine Einträge vorhanden',
-                      textScaleFactor: 2,
-                      textAlign: TextAlign.center,
-                    ),
-                    Icon(
-                      Icons.emoji_nature,
-                      size: 80,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Text(
+                            'Leider keine Einträge vorhanden',
+                            textScaleFactor: 2,
+                            textAlign: TextAlign.center,
+                          ),
+                          Icon(
+                            Icons.emoji_nature,
+                            size: 80,
+                          )
+                        ],
+                      ),
                     )
-                  ],
-                ),
-              )
                   : ListView.separated(
-                physics: widget.physics,
-                shrinkWrap: true,
-                itemCount: filteredItems.length,
-                itemBuilder: (context, index) {
-                  final element = filteredItems.elementAt(index);
-                  return widget.useSimpleCard
-                      ? SimpleConnectionProjectCard(
-                          element,
-                          serviceProvider: widget._serviceProvider,
-                  )
-                      : ExpandableConnectionProjectCard(
-                          element,
+                      physics: widget.physics,
+                      shrinkWrap: true,
+                      itemCount: filteredItems.length,
+                      itemBuilder: (context, index) {
+                        final element = filteredItems.elementAt(index);
+                        return widget.useSimpleCard
+                            ? SimpleConnectionProjectCard(
+                                element,
+                                serviceProvider: widget._serviceProvider,
+                              )
+                            : ExpandableConnectionProjectCard(
+                                element,
                                 hideLikeAndAdd: widget.hideLikeAndAdd,
                                 additionalInfo: element.description,
                                 serviceProvider: widget._serviceProvider,
-                                arrangeLikeAndAddAsRow: widget.arrangeLikeAndAddAsRow,
-                  );
-                },
-                separatorBuilder: (context, index) {
-                  return const SizedBox(height: 5);
-                },
-              ),
+                                arrangeLikeAndAddAsRow:
+                                    widget.arrangeLikeAndAddAsRow,
+                              );
+                      },
+                      separatorBuilder: (context, index) {
+                        return const SizedBox(height: 5);
+                      },
+                    ),
             ),
           ),
         ],

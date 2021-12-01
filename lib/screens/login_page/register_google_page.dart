@@ -49,8 +49,8 @@ class _RegisterGooglePageState extends State<RegisterGooglePage> {
     final registerMessage = await Provider.of<User>(context, listen: false)
         .registerWithGoogle(context);
     if (registerMessage == null) {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => MyGarden()));
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) => MyGarden()));
     } else {
       setState(() {
         _errorText = registerMessage;
