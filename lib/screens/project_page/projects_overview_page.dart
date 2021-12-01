@@ -55,12 +55,18 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage> with Ticker
     return Scaffold(
       appBar: AppBar(title: const Text('Vernetzungsprojekte')),
       drawer: MyDrawer(),
-      body: Stack(
+      body: SingleChildScrollView(
+        child: Column(
         children: [
           ConnectionProjectListWidget(
             objects: getJoinedConnectionProjects(),
-          )
-        ],
+          ),
+          ConnectionProjectListWidget(
+            objects: getJoinableConnectionProjects(),
+          ),
+    ],
+    ),
+
       ),
       floatingActionButton: Row(
         mainAxisSize: MainAxisSize.min,
@@ -129,6 +135,11 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage> with Ticker
   List<ConnectionProject> getJoinedConnectionProjects() {
     return ServiceProvider.instance.connectionProjectService.getAllConnectionProjects()
         .where((element) => element.gardens.any((element) => Provider.of<User>(context).gardenReferences.contains(element))).toList();
+  }
+
+  List<ConnectionProject> getJoinableConnectionProjects() {
+    return ServiceProvider.instance.connectionProjectService.getAllConnectionProjects()
+        .where((element) => element.gardens.any((element) => !Provider.of<User>(context).gardenReferences.contains(element))).toList();
   }
 
 
