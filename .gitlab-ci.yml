@@ -11,11 +11,10 @@ stages:
   - notification
 
 .android_docker_image:
-  image: xetics/flutter:1.5.4-stable
+  image: cirrusci/flutter:latest
   tags:
     - flutter-android
 
-    - bundle install
 test:
   extends: .android_docker_image
   stage: test
