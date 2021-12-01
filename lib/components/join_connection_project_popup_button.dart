@@ -50,7 +50,7 @@ class joinConnectionProjectButtonState extends State<joinConnectionProjectButton
                           Navigator.of(context).pop();
                         },
                         child: const CircleAvatar(
-                          backgroundColor: Colors.red,
+                          backgroundColor: Color(0xFFE36F00),
                           child: Icon(Icons.close),
                         ),
                       ),
