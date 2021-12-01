@@ -17,6 +17,10 @@ test:
   extends: .android_docker_image
   stage: test
   before_script:
+    - flutter pub get
+    - flutter clean
+    - flutter --version
+    - flutter pub global activate junitreport
     - pub global activate dart_code_metrics
     - export PATH="$PATH":"$HOME/.pub-cache/bin"
   script:
