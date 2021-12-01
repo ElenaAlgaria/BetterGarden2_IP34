@@ -12,8 +12,6 @@ stages:
 
 .android_docker_image:
   image: cirrusci/flutter:latest
-  tags:
-    - flutter-android
 
 test:
   extends: .android_docker_image
