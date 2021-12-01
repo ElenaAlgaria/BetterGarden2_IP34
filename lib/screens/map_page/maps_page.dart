@@ -459,7 +459,8 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                                   ?.name ??
                               '')),
                       TextFieldWithDescriptor(
-                          'Projektort', const Text('ToBeImplemented')),
+                          'Projektbeschreibung', Text(_tappedConnectionProject.description ?? '')
+                      ),
                       joinConnectionProjectButton(
                           connectionProject: _tappedConnectionProject),
                     ],
