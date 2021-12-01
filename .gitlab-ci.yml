@@ -112,13 +112,15 @@ android_play_store_internal_and_alpha_deployment:
 #  when: manual
 #  allow_failure: false
 
-analyze.sonarqube.frontend:
+analyze.sonarqube:
   stage: analyze
   image: sonarsource/sonar-scanner-cli:latest
   allow_failure: false
   script:
     - sonar-scanner -Dsonar.host.url=https://www.cs.technik.fhnw.ch/sonarqube
       -Dsonar.language=flutter
+      -Dsonar.sources=lib
+      -Dsonar.tests=test
       -Dsonar.login=$CI_SONARQUBE_TOKEN
       -Dsonar.projectKey=BetterGardensv2
       -Dsonar.projectName=BetterGardensv2
