@@ -27,15 +27,6 @@ test:
       - coverage/
     expire_in: 5 days
 
-build_android:
-  stage: package
-  extends: .android_key_store
-  script: flutter build apk --release --build-number=$CI_PIPELINE_ID
-  artifacts:
-    paths:
-      - build/app/outputs/apk/release/app-release.apk
-    expire_in: 1 day
-
 analyze.sonarqube:
   stage: analyze
   image: sonarsource/sonar-scanner-cli:latest
