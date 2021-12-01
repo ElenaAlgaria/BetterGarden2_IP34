@@ -19,7 +19,8 @@ test:
   script:
     - flutter pub get
     - flutter test
-    - flutter test --machine --coverage > tests.output
+    - flutter test --machine > tests.output
+    - flutter test --coverage
     - genhtml coverage/lcov.info --output=coverage
   artifacts:
     paths:
