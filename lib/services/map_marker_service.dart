@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:math';
+import 'dart:developer' as logging;
 
 import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
@@ -45,7 +47,6 @@ class MapMarkerService extends ChangeNotifier {
   }
 
   Future<void> _loadIcons() async {
-    //TODO: add images for linking project
     BitmapDescriptor gardenIcon;
     BitmapDescriptor connectionProjectIcon;
     BitmapDescriptor joinableGardenIcon;
@@ -88,36 +89,32 @@ class MapMarkerService extends ChangeNotifier {
   void setMarker() {}
 
   /// returns a set of all markers
-  Future<Set<Marker>> getGardenMarkerSet(
+  Future<Marker> getGardenMarkerSet(Garden garden,
       {Function(Garden element) onTapCallback}) async {
     while (!_initialized) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
+    var marker = (Marker(
+      markerId: MarkerId('garden' + garden.reference.id),
+      position: garden.getLatLng(),
+      icon: _icons['garden'],
+      onTap: () {
+        onTapCallback(garden);
+      },
+    ));
 
-    final list = <Marker>{};
-    for (final object in _gardens) {
-      list.add(Marker(
-        markerId: MarkerId(
-            object.getLatLng().toString() + object.creationDate.toString()),
-        position: object.getLatLng(),
-        icon: _icons['garden'],
-        onTap: () {
-          onTapCallback(object);
-        },
-      ));
-    }
-
-    return list;
+    return marker;
   }
 
-  Future<Marker> getJoinableMarkerSet(Garden garden,
+  Future<Marker> getJoinableMarker(Garden garden,
       {Function(Garden element) onTapCallback}) async {
     while (!_initialized) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
     var marker = Marker(
-      markerId: MarkerId(garden.getLatLng().toString() + garden.toString()),
-      position: garden.getLatLng(),
+      markerId: MarkerId('joinableGarden' + garden.reference.id.toString()),
+      position: LatLng(
+          garden.getLatLng().latitude, garden.getLatLng().longitude),
       icon: _icons['joinableGarden'],
       onTap: () {
         onTapCallback(garden);
@@ -126,7 +123,7 @@ class MapMarkerService extends ChangeNotifier {
     return marker;
   }
 
-  /// returns a set of all markers
+  /// returns a set of all ConnectionProjectMarkers
   Future<Set<Marker>> getConnectionProjectMarkerSet(
       {Function(ConnectionProject element) onTapCallback}) async {
     while (!_initialized) {
@@ -134,25 +131,46 @@ class MapMarkerService extends ChangeNotifier {
     }
 
     final list = <Marker>{};
-    for (final object in _connectionProjects) {
-      // TODO: implement getting center of project with multiple gardens
-      var projectLatLng = ServiceProvider.instance.gardenService
-          .getGardenByReference(object.gardens?.first)
-          ?.getLatLng();
-      debugPrint(object.creationDate.toString() +
+    _connectionProjects.forEach((project) {
+      var allGardenCoordinates = project.gardens.map((e) => ServiceProvider
+          .instance.gardenService
+          .getGardenByReference(e)
+          .coordinates);
+
+      var midLat;
+      var midLng;
+
+      if (allGardenCoordinates.length > 1) {
+        var maxLat = allGardenCoordinates.map((e) => e.latitude).reduce(max);
+        var minLat = allGardenCoordinates.map((e) => e.latitude).reduce(min);
+        var maxLng = allGardenCoordinates.map((e) => e.longitude).reduce(max);
+        var minLng = allGardenCoordinates.map((e) => e.longitude).reduce(min);
+        midLat = (maxLat + minLat) / 2;
+        midLng = (maxLng + minLng) / 2;
+      } else {
+        midLat = allGardenCoordinates.elementAt(0).latitude - 0.0002;
+        midLng = allGardenCoordinates.elementAt(0).longitude - 0.0002;
+      }
+
+      logging.log('Create connection project marker at ' +
+          midLat.toString() +
           '/' +
-          object.gardens.length.toString());
+          midLng.toString() +
+          '/' +
+          project.creationDate.toString() +
+          '/' +
+          project.gardens.length.toString());
       list.add(Marker(
-        markerId:
-            MarkerId(projectLatLng.toString() + object.creationDate.toString()),
-        position: object.getLatLng(),
-        //object.getLatLng() new LatLng(projectLatLng.latitude + 10, projectLatLng.longitude)
+        markerId: MarkerId(midLat.toString() +
+            midLng.toString() +
+            project.creationDate.toString()),
+        position: LatLng(midLat, midLng),
         icon: _icons['connectionProject'],
         onTap: () {
-          onTapCallback(object);
+          onTapCallback(project);
         },
       ));
-    }
+    });
     return list;
   }
 }

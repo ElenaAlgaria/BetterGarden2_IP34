@@ -19,6 +19,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:geolocator/geolocator.dart';
 
 /// Display the map with the markers
 class MapsPage extends StatefulWidget {
@@ -47,41 +48,35 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   var _currentSpecies;
   final double _zoom = 14.0;
   Set<Marker> _markers = {};
+  Set<Marker> _markersHistory = {};
 
-  Set<Circle> _circles = {};
+  List<Circle> _circles = [];
 
   List<Species> speciesList = [];
 
   DocumentReference reference;
 
+  List<Garden> _allGardens = [];
+
   @override
   void initState() {
     super.initState();
-    ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(
-        onTapCallback: (element) {
-      setState(() {
-        _tappedGarden = element;
-      });
-      displayModalBottomSheetGarden(context);
-    }).then((markers) {
-      setState(() {
-        _markers.addAll(markers);
-      });
-    });
-    speciesList =
-        ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
-    _fabController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    );
 
-    List<DocumentReference> connectionProjectReferences = [];
-    ServiceProvider.instance.connectionProjectService
-        .getAllConnectionProjects()
-        .forEach((element) {
-      connectionProjectReferences.add(element.reference);
-    });
-    areaProjects(connectionProjectReferences);
+    _allGardens = ServiceProvider.instance.gardenService.getAllGardens();
+    for (var g in _allGardens) {
+      debugPrint('Test Orange');
+      ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(g,
+          onTapCallback: (element) {
+        setState(() {
+          _tappedGarden = element;
+        });
+        displayModalBottomSheetGarden(context);
+      }).then((marker) {
+        setState(() {
+          _markers.add(marker);
+        });
+      });
+    }
 
     ServiceProvider.instance.mapMarkerService.getConnectionProjectMarkerSet(
         onTapCallback: (element) {
@@ -89,14 +84,22 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         _tappedConnectionProject = element;
       });
       displayModalBottomSheetConnectionProject(context);
+      displayConnectionProjectGardensWithCircles(element.reference);
     }).then((markers) {
       setState(() {
         _markers.addAll(markers);
       });
     });
+
+    speciesList =
+        ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
+    _fabController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
   }
 
-  void modifyPermieterCircle(String name) {
+  void modifyPerimeterCircle(String name) {
     if (name != '') {
       //Todo radius variable
       addCircle(500);
@@ -107,101 +110,91 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
 
   void removeCircle() {
     setState(() {
-      _circles = <Circle>{};
+      _circles = [];
     });
   }
 
   void addCircle(radius) {
-    var c = Set<Circle>.from(_circles);
+    var c = List<Circle>.from(_circles);
     var lat = widget.garden.getLatLng().latitude;
     var lon = widget.garden.getLatLng().longitude;
     c.add(Circle(
         circleId: const CircleId('circleOneTest'),
         radius: radius.toDouble(),
         center: LatLng(lat, lon),
-        fillColor: Color(0x339fc476),
+        fillColor: const Color(0x339fc476),
         strokeWidth: 10));
     setState(() {
       _circles = c;
     });
   }
 
-  bool intersectionsCircle(Circle circle1, Circle circle2) {
-    //ABS(R0 - R1) <= SQRT((x0 - x1)^2 + (y0 - y1)^2) <= (R0 + R1)
-    var absRadDiff = (circle1.radius - circle2.radius).abs();
-    var xDiffPow =
-        math.pow((circle1.center.longitude - circle2.center.longitude), 2);
-    var yDiffPow =
-        math.pow((circle1.center.latitude - circle2.center.latitude), 2);
-    var xySumSqrt = math.sqrt(xDiffPow + yDiffPow);
-    var radSum = circle1.radius + circle2.radius;
+  void displayConnectionProjectGardensWithCircles(
+      DocumentReference connectionProjectReferences) {
+    _markersHistory = Set<Marker>.of(_markers);
 
-    return (absRadDiff <= xySumSqrt &&
-        absRadDiff <= radSum &&
-        xySumSqrt <= radSum);
-  }
+    var connectionProject = ServiceProvider.instance.connectionProjectService
+        .getConnectionProjectByReference(connectionProjectReferences);
 
-  void areaProjects(List<DocumentReference> connectionProjectReferences) {
-    connectionProjectReferences.forEach((element) {
-      var connectionProject = ServiceProvider.instance.connectionProjectService
-          .getConnectionProjectByReference(element);
+    var radius = ServiceProvider.instance.speciesService
+        .getSpeciesByReference(connectionProject.targetSpecies)
+        .radius;
 
-      var radius = ServiceProvider.instance.speciesService
-          .getSpeciesByReference(connectionProject.targetSpecies)
-          .radius;
+    var gardensOfConnectionProject = connectionProject.gardens.map((element) {
+      return ServiceProvider.instance.gardenService
+          .getGardenByReference(element);
+    }).toList();
 
-      var gardens = connectionProject.gardens.map((element) {
-        return ServiceProvider.instance.gardenService
-            .getGardenByReference(element);
-      }).toList();
+    var allGardensNotInProject = _allGardens
+        .where((element) => !gardensOfConnectionProject.contains(element))
+        .toList();
 
-      List<Circle> connectionProjectCircle = [];
-      List<Circle> otherCircles = [];
+    debugPrint('allGardensNotInProject.length' +
+        allGardensNotInProject.length.toString());
+    debugPrint('gardensOfConnectionProject.length' +
+        gardensOfConnectionProject.length.toString());
 
-      gardens.forEach((element) {
-        connectionProjectCircle.add(Circle(
-            circleId: const CircleId('circleConnectionProject'),
-            radius: radius.toDouble(),
-            center: LatLng(
-                element.getLatLng().latitude, element.getLatLng().longitude),
-            fillColor: const Color(0x5232d5f3),
-            strokeWidth: 1));
-        for (Circle c in connectionProjectCircle) {
-          _circles.add(c);
-        }
+    gardensOfConnectionProject.forEach((element) {
+      _circles.add(Circle(
+          circleId: CircleId(element.reference.id),
+          radius: radius.toDouble(),
+          center: LatLng(
+              element.getLatLng().latitude, element.getLatLng().longitude),
+          fillColor: const Color(0x5232d5f3),
+          strokeWidth: 1));
 
-        List<Garden> listJoinable = [];
-        ServiceProvider.instance.gardenService
-            .getAllGardens()
-            .forEach((element) {
-          otherCircles.add(Circle(
-              circleId: const CircleId('circleConnectionProject'),
-              radius: radius.toDouble(),
-              center: LatLng(
-                  element.getLatLng().latitude, element.getLatLng().longitude),
-              fillColor: const Color(0x33c42241),
-              strokeWidth: 1));
-          listJoinable.add(element);
-        });
-        // Problem kreis us eusem projekt, kreis vo karte
-
-        for (Circle c in _circles) {
-          for (Circle o in otherCircles) {
-            if (intersectionsCircle(c, o)) {}
-            ServiceProvider.instance.mapMarkerService
-                .getJoinableMarkerSet(Garden.empty(),
-                    onTapCallback: (element) {})
-                .then((marker) {
-              _markers.add(marker);
-            });
-          }
-        }
-        ;
-      });
+      setJoinableMarkers(element, allGardensNotInProject, radius);
     });
   }
 
-  //var area = math.pi * math.pow(radius, 2) * gardens.length;
+  void setJoinableMarkers(Garden gardenOfConnectionProject,
+      List<Garden> gardensToCompareWith, int radius) {
+    // Iterate through all gardens to compare them with the garden of the connectionProject
+    for (var o in gardensToCompareWith) {
+      var distance = Geolocator.distanceBetween(
+        o.getLatLng().latitude,
+        o.getLatLng().longitude,
+        gardenOfConnectionProject.getLatLng().latitude,
+        gardenOfConnectionProject.getLatLng().longitude,
+      );
+
+      if (distance <= radius * 2 && distance != 0.0) {
+        ServiceProvider.instance.mapMarkerService.getJoinableMarker(o,
+            onTapCallback: (element) {
+          setState(() {
+            _tappedGarden = element;
+          });
+          displayModalBottomSheetGarden(context);
+        }).then((marker) {
+          setState(() {
+            _markers.removeWhere((element) =>
+                element.markerId.value == 'garden' + o.reference.id);
+            _markers.add(marker);
+          });
+        });
+      }
+    }
+  }
 
   void loadUserLocation() async {
     if (widget.garden == null &&
@@ -250,7 +243,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             mapToolbarEnabled: false,
             mapType: MapType.hybrid,
             markers: _markers,
-            circles: Set<Circle>.from(_circles),
+            circles: _circles.toSet(),
             onCameraIdle: () {
               mapController.getVisibleRegion().then((bounds) {
                 final lat =
@@ -305,7 +298,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
 
   Widget navigateToCreateGroupButton() {
     return Container(
-        margin: EdgeInsets.fromLTRB(250, 0, 0, 0),
+        margin: const EdgeInsets.fromLTRB(250, 0, 0, 0),
         color: Colors.white,
         child: IconButton(
           icon: const Icon(Icons.add),
@@ -329,7 +322,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             icon: const Icon(Icons.emoji_nature, color: Colors.white),
             hint: Text(
               _currentSpecies ?? 'Spezies anzeigen',
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
             iconSize: 24,
             isExpanded: true,
@@ -353,7 +346,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               }).toList()
             ],
             onChanged: (String name) {
-              modifyPermieterCircle(name);
+              modifyPerimeterCircle(name);
               setState(() {
                 _currentSpecies = name;
               });
@@ -447,73 +440,43 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         isScrollControlled: true,
         builder: (context) {
           return DraggableScrollableSheet(
-            initialChildSize: 0.4,
-            minChildSize: 0.1,
-            expand: false,
-            builder: (context, scrollController) {
-              return Padding(
-                padding: const EdgeInsets.fromLTRB(8, 20, 8, 8),
-                child: ListView(
-                  controller: scrollController,
-                  children: <Widget>[
-                    TextFieldWithDescriptor('Verbindungsprojekt',
-                        Text(_tappedConnectionProject.title ?? '')),
-                    TextFieldWithDescriptor(
-                        'Tierart',
-                        Text(ServiceProvider.instance.speciesService
-                                .getSpeciesByReference(
-                                    _tappedConnectionProject.targetSpecies)
-                                ?.name ??
-                            '')),
-                    TextFieldWithDescriptor(
-                        'Projektort', const Text('ToBeImplemented')),
-                    TextFieldWithDescriptor(
-                      'Besitzer',
-                      FutureBuilder(
-                        future: ServiceProvider.instance.gardenService
-                            .getNicknameOfOwner(_tappedGarden),
-                        builder: (context, owner) {
-                          if (owner.hasData) {
-                            return Text(owner.data);
-                          } else {
-                            return const Text('');
-                          }
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 25.0),
-                    CirclesOverview(context, _tappedGarden),
-                    const SizedBox(height: 25.0),
-                    FutureBuilder(
-                      future: _tappedGarden.isShowImageOnGarden(),
-                      builder: (context, showGardenImageOnMap) {
-                        if (showGardenImageOnMap.hasData &&
-                            showGardenImageOnMap.data) {
-                          if (_tappedGarden.imageURL.isNotEmpty) {
-                            return ImageService().getImageByUrl(
-                                _tappedGarden.imageURL,
-                                width: MediaQuery.of(context).size.width,
-                                fit: BoxFit.fitWidth);
-                          } else {
-                            return const Text('');
-                          }
-                        } else {
-                          return const Text('');
-                        }
-                      },
-                    ),
-                    joinConnectionProjectButton(
-                        connectionProject: _tappedConnectionProject),
-                  ],
-                ),
-              );
-            },
-          );
+              initialChildSize: 0.4,
+              minChildSize: 0.1,
+              expand: false,
+              builder: (context, scrollController) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 20, 8, 8),
+                  child: ListView(
+                    controller: scrollController,
+                    children: <Widget>[
+                      TextFieldWithDescriptor('Verbindungsprojekt',
+                          Text(_tappedConnectionProject.title ?? '')),
+                      TextFieldWithDescriptor(
+                          'Tierart',
+                          Text(ServiceProvider.instance.speciesService
+                                  .getSpeciesByReference(
+                                      _tappedConnectionProject.targetSpecies)
+                                  ?.name ??
+                              '')),
+                      TextFieldWithDescriptor(
+                          'Projektort', const Text('ToBeImplemented')),
+                      joinConnectionProjectButton(
+                          connectionProject: _tappedConnectionProject),
+                    ],
+                  ),
+                );
+              });
+        }).whenComplete(() => {
+          setState(() {
+            _markers = Set<Marker>.of(_markersHistory);
+            _circles.clear();
+          })
         });
   }
 
-  Iterable<Widget> getWidgetsForAdvFab() sync* {
-    yield Container(
+  List<Widget> getWidgetsForAdvFab() {
+    var containers = <Widget>[];
+    containers.add(Container(
       height: 56.0,
       width: 75.0,
       alignment: FractionalOffset.centerLeft,
@@ -534,12 +497,12 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           child: Icon(icons[1], color: Theme.of(context).backgroundColor),
         ),
       ),
-    );
+    ));
 
     if (ServiceProvider.instance.gardenService
         .getAllGardensFromUser(Provider.of<User>(context))
         .isNotEmpty) {
-      yield Container(
+      containers.add(Container(
         height: 56.0,
         width: 75.0,
         alignment: FractionalOffset.center,
@@ -569,7 +532,8 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             child: Icon(icons[2], color: Theme.of(context).backgroundColor),
           ),
         ),
-      );
+      ));
     }
+    return containers;
   }
 }
