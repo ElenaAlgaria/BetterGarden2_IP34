@@ -69,10 +69,10 @@ class joinConnectionProjectButtonState extends State<joinConnectionProjectButton
                                   margin:
                                       const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
                                   child: gardenDropDown(
+                                    gardensList: _gardensList,
                                     onGardenChanged: (selectedGarden) {
                                       _selectedGarden = selectedGarden;
                                     },
-                                    gardensList: _gardensList,
                                   ),
                                 ),
                                 Container(
