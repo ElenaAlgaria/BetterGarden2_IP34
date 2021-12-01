@@ -21,7 +21,6 @@ test:
     - export PATH="$PATH":"$HOME/.pub-cache/bin"
   script:
     - flutter build
-    - flutter analyze
     - flutter test --machine | tojunit -o machine/report.xml
     - flutter test --coverage ./lib
     - lcov -r coverage/lcov.info '*/__test*__/*' -o coverage/lcov_cleaned.info
