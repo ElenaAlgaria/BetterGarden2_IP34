@@ -32,4 +32,5 @@ analyze.sonarqube:
   image: sonarsource/sonar-scanner-cli:latest
   allow_failure: false
   script:
+    - flutter pub add analyzer
     - sonar-scanner -Dsonar.host.url=https://www.cs.technik.fhnw.ch/sonarqube -Dsonar.language=flutter -Dsonar.sources=lib -Dsonar.tests=test -Dsonar.login=$CI_SONARQUBE_TOKEN -Dsonar.projectKey=BetterGardensv2 -Dsonar.projectName=BetterGardensv2
