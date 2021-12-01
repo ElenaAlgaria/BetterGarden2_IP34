@@ -52,7 +52,7 @@ class Garden extends ChangeNotifier {
     gardenType = '';
     gardenType = '';
     ownedObjects = {};
-    ownedLinkingProjects = [];
+    ownedConnectionProjects = [];
     coordinates = const GeoPoint(0, 0);
     creationDate = DateTime.now();
     _isEmpty = true;
@@ -75,7 +75,8 @@ class Garden extends ChangeNotifier {
 
   /// which Vernetzungsprojekte are contained in this garden
   //TODO: Implement Vernetzungsprojekte and switch String to Vernetzungsprojekt
-  List<String> ownedLinkingProjects;
+  List<String> ownedConnectionProjects;
+
 
   /// creates a Garden from the provided Map.
   /// Used for database loading and testing
@@ -90,7 +91,7 @@ class Garden extends ChangeNotifier {
         ownedObjects = map.containsKey('ownedObjects')
             ? Map<String, int>.from(map['ownedObjects'] as Map)
             : {},
-        ownedLinkingProjects = map.containsKey('ownedLinkingProjects')
+        ownedConnectionProjects = map.containsKey('ownedLinkingProjects')
             ? List<String>.from(map['ownedLinkingProjects'] as Iterable)
             : [],
         coordinates = map.containsKey('coordinates')
@@ -123,7 +124,7 @@ class Garden extends ChangeNotifier {
       'ownedObjects': ownedObjects,
       'coordinates': coordinates,
       'creationDate': creationDate,
-      'ownedLinkingProjects': ownedLinkingProjects,
+      'ownedLinkingProjects': ownedConnectionProjects,
       'imageURL': imageURL,
     });
   }
@@ -135,8 +136,8 @@ class Garden extends ChangeNotifier {
     owner = garden.owner;
     ownedObjects.clear();
     ownedObjects.addAll(garden.ownedObjects);
-    ownedLinkingProjects.clear();
-    ownedLinkingProjects.addAll(garden.ownedLinkingProjects);
+    ownedConnectionProjects.clear();
+    ownedConnectionProjects.addAll(garden.ownedConnectionProjects);
     coordinates = garden.coordinates;
     gardenType = garden.gardenType;
     creationDate = garden.creationDate;
@@ -166,8 +167,8 @@ class Garden extends ChangeNotifier {
   void addLinkingProject(String linkingProject) {
     if (linkingProject != null &&
         linkingProject.isNotEmpty &&
-        !ownedLinkingProjects.contains(linkingProject)) {
-      ownedLinkingProjects.add(linkingProject);
+        !ownedConnectionProjects.contains(linkingProject)) {
+      ownedConnectionProjects.add(linkingProject);
       saveGarden();
     }
   }
@@ -182,8 +183,8 @@ class Garden extends ChangeNotifier {
 
   /// removes a element from the garden, changes are saved automatically
   void removeFromLinkingProjects(String object) {
-    if (ownedLinkingProjects.contains(object)) {
-      ownedLinkingProjects.remove(object);
+    if (ownedConnectionProjects.contains(object)) {
+      ownedConnectionProjects.remove(object);
       saveGarden();
     }
   }

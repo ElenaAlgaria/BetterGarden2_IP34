@@ -37,7 +37,7 @@ void main() {
       expect(garden.ownedObjects, containsPair(item.key, item.value),
           reason: 'ownedObjects was not set correctly');
     }
-    expect(garden.ownedLinkingProjects,
+    expect(garden.ownedConnectionProjects,
         containsAll(gardenAttributes['ownedLinkingProjects']),
         reason: 'ownedLinkingProjects was not set correctly');
   });
@@ -81,11 +81,11 @@ void main() {
     expect(garden.ownedObjects, containsPair('another', 6),
         reason: 'addOwnedObject does not add an object');
     garden.addLinkingProject('linkingProject');
-    expect(garden.ownedLinkingProjects, contains('linkingProject'),
+    expect(garden.ownedConnectionProjects, contains('linkingProject'),
         reason: 'addLinkingProject does not add a LinkingProject');
 
     garden.removeFromLinkingProjects('linkingProject');
-    expect(garden.ownedLinkingProjects, isNot(contains('linkingProject')),
+    expect(garden.ownedConnectionProjects, isNot(contains('linkingProject')),
         reason: 'addLinkingProject does not remove a LinkingProject');
     garden.removeFromOwnedObjects('another');
     expect(garden.ownedObjects, isNot(containsPair('another', 6)),
