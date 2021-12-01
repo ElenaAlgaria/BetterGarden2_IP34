@@ -50,8 +50,22 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
       body: SingleChildScrollView(
         child: Column(
           children: [
+            const Padding(
+              padding: EdgeInsets.all(20),
+              child: Text(
+                'Meine Vernetzungsprojekte',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+              ),
+            ),
             ConnectionProjectListWidget(
               objects: getJoinedConnectionProjects(),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(20),
+              child: Text(
+                'Verfügbare Vernetzungsprojekte',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+              ),
             ),
             ConnectionProjectListWidget(
               objects: getJoinableConnectionProjects(),
