@@ -8,10 +8,12 @@ import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/species.dart';
+import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
 import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/src/iterable_extensions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -127,12 +129,16 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   bool intersectionsCircle(Circle circle1, Circle circle2) {
     //ABS(R0 - R1) <= SQRT((x0 - x1)^2 + (y0 - y1)^2) <= (R0 + R1)
     var absRadDiff = (circle1.radius - circle2.radius).abs();
-    var xDiffPow = math.pow((circle1.center.longitude - circle2.center.longitude), 2);
-    var yDiffPow = math.pow((circle1.center.latitude - circle2.center.latitude), 2);
+    var xDiffPow =
+        math.pow((circle1.center.longitude - circle2.center.longitude), 2);
+    var yDiffPow =
+        math.pow((circle1.center.latitude - circle2.center.latitude), 2);
     var xySumSqrt = math.sqrt(xDiffPow + yDiffPow);
     var radSum = circle1.radius + circle2.radius;
 
-    return (absRadDiff <= xySumSqrt && absRadDiff <= radSum && xySumSqrt <= radSum);
+    return (absRadDiff <= xySumSqrt &&
+        absRadDiff <= radSum &&
+        xySumSqrt <= radSum);
   }
 
   void areaProjects(List<DocumentReference> connectionProjectReferences) {
@@ -183,7 +189,8 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           for (Circle o in otherCircles) {
             if (intersectionsCircle(c, o)) {}
             ServiceProvider.instance.mapMarkerService
-                .getJoinableMarkerSet(Garden.empty(), onTapCallback: (element) {})
+                .getJoinableMarkerSet(Garden.empty(),
+                    onTapCallback: (element) {})
                 .then((marker) {
               _markers.add(marker);
             });
@@ -316,11 +323,13 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     return Container(
         child:
             Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Container(
-              color: const Color(0xFFDE7402),
-              child: DropdownButton<String>(
+      Container(
+          color: const Color(0xFFDE7402),
+          child: DropdownButton<String>(
             icon: const Icon(Icons.emoji_nature, color: Colors.white),
-            hint: Text(_currentSpecies ?? 'Spezies anzeigen', style: TextStyle(color: Colors.white),
+            hint: Text(
+              _currentSpecies ?? 'Spezies anzeigen',
+              style: TextStyle(color: Colors.white),
             ),
             iconSize: 24,
             isExpanded: true,
@@ -350,7 +359,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               });
             },
           ))
-        ]));
+    ]));
   }
 
   Future<Widget> displayModalBottomSheetGarden(BuildContext context) async {
