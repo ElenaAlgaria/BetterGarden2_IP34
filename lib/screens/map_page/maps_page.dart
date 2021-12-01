@@ -440,7 +440,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         isScrollControlled: true,
         builder: (context) {
           return DraggableScrollableSheet(
-              initialChildSize: 0.4,
+              initialChildSize: 0.18,
               minChildSize: 0.1,
               expand: false,
               builder: (context, scrollController) {
