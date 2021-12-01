@@ -24,7 +24,7 @@ test:
     - pub global activate dart_code_metrics
     - export PATH="$PATH":"$HOME/.pub-cache/bin"
   script:
-    - flutter build
+    - flutter build bundle
     - flutter test --coverage --machine | tojunit > testreport.xml
   artifacts:
     reports:
