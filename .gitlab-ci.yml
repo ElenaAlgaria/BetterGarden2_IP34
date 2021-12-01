@@ -22,18 +22,18 @@ test:
   script:
     - flutter build aot
     - flutter analyze
-    - flutter test --machine | tojunit -o report.xml
+    - flutter test --machine | tojunit -o machine/report.xml
     - flutter test --coverage ./lib
     - lcov -r coverage/lcov.info '*/__test*__/*' -o coverage/lcov_cleaned.info
     - genhtml coverage/lcov_cleaned.info --output=coverage
   artifacts:
     when: always
     paths:
-      - rspec.xml
+      - machine
       - coverage
     reports:
       junit:
-        - report.xml
+        - machine/report.xml
 
 analyze.sonarqube:
   stage: analyze
