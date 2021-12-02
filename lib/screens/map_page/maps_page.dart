@@ -453,7 +453,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                   child: ListView(
                     controller: scrollController,
                     children: <Widget>[
-                      Icon(
+                      const Icon(
                         Icons.horizontal_rule_rounded,
                         color: Color(0xFFE36F00),
                         size: 34.0,
@@ -472,13 +472,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                           Text(_tappedConnectionProject.description ?? '')),
                       joinConnectionProjectButton(
                           connectionProject: _tappedConnectionProject),
-                      ServiceProvider.instance.gardenService
-                          .getAllGardensFromUser(Provider.of<User>(context))
-                          .any((element) => _tappedConnectionProject.gardens
-                          .contains(element.reference)) ?
-                          leaveConnectionProjectButton(
-                            connectionProject: _tappedConnectionProject,
-                          ) : null,
+                      leaveConnectionProjectButton(
+                        connectionProject: _tappedConnectionProject,
+                      )
                     ],
                   ),
                 );
