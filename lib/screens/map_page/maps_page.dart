@@ -66,7 +66,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
 
     _allGardens = ServiceProvider.instance.gardenService.getAllGardens();
     for (var g in _allGardens) {
-      debugPrint('Test Orange');
       ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(g,
           onTapCallback: (element) {
         setState(() {
