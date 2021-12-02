@@ -17,22 +17,20 @@ test:
   extends: .android_docker_image
   stage: test
   before_script:
+    - flutter pub get
+    - flutter clean
+    - flutter --version
+    - flutter pub global activate junitreport
     - pub global activate dart_code_metrics
     - export PATH="$PATH":"$HOME/.pub-cache/bin"
   script:
-    - flutter pub get
-    - flutter test
-    - flutter test --machine > tests.output
-    - flutter test --coverage
-    - genhtml coverage/lcov.info --output=coverage
-    - metrics lib -r codeclimate  > coverage/gl-code-quality-report.json
+    - flutter build bundle
+    - flutter test --coverage --machine | tojunit > testreport.xml
   artifacts:
-    paths:
-      - coverage/
     reports:
-      codequality:  gl-code-quality-report.json
-    expire_in: 5 days
-
+      junit: testreport.xml
+    paths:
+      - coverage
 
 analyze.sonarqube:
   stage: analyze
