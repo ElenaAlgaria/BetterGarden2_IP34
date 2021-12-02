@@ -39,34 +39,12 @@ stages:
 #    paths:
 #      - build/app/outputs/
 
-analyze:sonarqube:
+analyze.sonarqube:
   stage: analyze
-  image: sonarsource/sonar-scanner-cli:latest
-  before_script:
-    - export PATH="$PATH:/usr/share/sonar-scanner/bin"
-    - export PATH="$PATH:/usr/lib/dart/bin"
-    - flutter pub upgrade
-  allow_failure: true
-  only:
-    - master
-    - release
-    - dev
-    - development
-    - sonar-cube
-    - more_testing
+  image: ichlaffterlalu/sonar-scanner-flutter-cli:latest
+  allow_failure: false
   script:
-    - flutter pub get # Download dependencies
-    - flutter test --machine > tests.output # Run tests
-    - flutter test --coverage # Compute coverage
-    - sonar-scanner -Dsonar.qualitygate.wait=true
-variables:
-  SONAR_HOST_URL: ${CI_SONARQUBE_HOST_URL}
-  SONAR_TOKEN: ${CI_SONARQUBE_TOKEN}
-  #SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar" # Defines the location of the analysis task cache
-cache:
-  key: ${CI_JOB_NAME}
-  paths:
-    - .sonar/cache
+    - sonar-scanner -Dsonar.host.url=https://www.cs.technik.fhnw.ch/sonarqube -Dsonar.language=flutter -Dsonar.sources=lib -Dsonar.tests=test -Dsonar.login=$CI_SONARQUBE_TOKEN -Dsonar.projectKey=BetterGardensv2 -Dsonar.projectName=BetterGardensv2
 
 pages:
   stage: deploy
