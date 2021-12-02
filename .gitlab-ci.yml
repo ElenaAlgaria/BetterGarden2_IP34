@@ -17,14 +17,15 @@ setup_phase:
     - flutter doctor -v
     - flutter pub outdated
 
-#flutter_test:
-#  stage: test
-#  before_script:
-#    - flutter clean
-#    - flutter pub upgrade
-#    - flutter pub get
-#  script:
-#    - flutter test --no-null-assertions
+flutter_test:
+  stage: test
+  allow_failure: true
+  before_script:
+    - flutter clean
+    - flutter pub upgrade
+    - flutter pub get
+  script:
+    - flutter test --no-null-assertions
 
 build_android_release:
   stage: build
