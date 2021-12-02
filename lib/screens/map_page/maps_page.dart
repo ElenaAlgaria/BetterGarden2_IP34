@@ -456,6 +456,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                         Icons.horizontal_rule_rounded,
                         color: Color(0xFFE36F00),
                         size: 34.0,
+
                       ),
                       TextFieldWithDescriptor('Verbindungsprojekt',
                           Text(_tappedConnectionProject.title ?? '')),

@@ -133,4 +133,11 @@ class ConnectionProject extends ChangeNotifier {
       return LatLng(coordinates.latitude, coordinates.longitude);
     }
   }
+
+  Future<void> deleteConnectionProject(DocumentReference connectionProjectReference) async {
+    logging.log('Delete ConnectionProject $title');
+    final path = connectionProjectReference.path;
+    debugPrint(path.toString());
+    await _storage.database.doc(path).delete();
+  }
 }

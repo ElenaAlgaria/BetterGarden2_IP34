@@ -120,6 +120,12 @@ class leaveConnectionProjectButtonState
       return logging.log(
           'left connectionProject ${widget.connectionProject.title} with garden ${gardenToRemove.name}');
     }
+    // Delete ConnectionProject if no garden is remaining
+    // /gardens/71905e9f-faff-4bf2-9393-9193d53d69ff
+    if(widget.connectionProject.gardens.isEmpty){
+      debugPrint('is empty');
+      widget.connectionProject.deleteConnectionProject(widget.connectionProject.reference);
+    }
     return;
   }
 }
