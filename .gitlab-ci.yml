@@ -1,31 +1,43 @@
-variables:
-  LC_ALL: "en_US.UTF-8"
-  LANG: "en_US.UTF-8"
-
 stages:
+  - setup
   - test
+  - build
   - analyze
-  - package
-  - test_deployment
-  - productive_deployment
-  - notification
+  - deploy
 
-.android_docker_image:
-  image: cirrusci/flutter:latest
 
-test:
-  extends: .android_docker_image
-  stage: test
+setup_phase:
+  stage: setup
   script:
+    - flutter clean
+    #    - flutter channel stable
+    #    - flutter upgrade
+    - flutter pub upgrade
+    - flutter doctor --android-licenses
+    - flutter doctor -v
+    - flutter pub outdated
+
+flutter_test:
+  stage: test
+  allow_failure: true
+  before_script:
+    - flutter clean
+    - flutter pub upgrade
     - flutter pub get
-    - flutter test
-    - flutter test --machine > tests.output
-    - flutter test --coverage
-    - genhtml coverage/lcov.info --output=coverage
+  script:
+    - flutter test --no-null-assertions
+
+build_android_release:
+  stage: build
+  before_script:
+    - flutter clean
+    - flutter pub upgrade
+    - flutter pub get
+  script:
+    - flutter build appbundle --debug
   artifacts:
     paths:
-      - coverage/
-    expire_in: 5 days
+      - build/app/outputs/
 
 analyze.sonarqube:
   stage: analyze
@@ -33,3 +45,23 @@ analyze.sonarqube:
   allow_failure: false
   script:
     - sonar-scanner -Dsonar.host.url=https://www.cs.technik.fhnw.ch/sonarqube -Dsonar.language=flutter -Dsonar.sources=lib -Dsonar.tests=test -Dsonar.login=$CI_SONARQUBE_TOKEN -Dsonar.projectKey=BetterGardensv2 -Dsonar.projectName=BetterGardensv2
+
+pages:
+  stage: deploy
+  only:
+    - master
+    - development
+    - doc_generation
+  before_script:
+    - pkill -f '.*GradleDaemon.*' #make sure there is enough ram
+    - export PATH="$PATH:/usr/lib/dart/bin"
+    - export PATH="$PATH":"$HOME/snap/flutter/common/flutter/.pub-cache/bin"
+    - export PATH="$PATH":"/snap/flutter/current/bin"
+    - export FLUTTER_ROOT=$HOME/snap/flutter/common/flutter
+    - flutter pub global activate dartdoc
+  script:
+    - dartdoc
+    - cp -r doc/api public
+  artifacts:
+    paths:
+      - public

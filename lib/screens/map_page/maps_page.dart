@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:biodiversity/components/circlesOverview.dart';
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/join_connection_project_popup_button.dart';
+import 'package:biodiversity/components/leave_connection_project_button.dart';
 import 'package:biodiversity/components/text_field_with_descriptor.dart';
 import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
@@ -17,9 +18,9 @@ import 'package:collection/src/iterable_extensions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:geolocator/geolocator.dart';
 
 /// Display the map with the markers
 class MapsPage extends StatefulWidget {
@@ -65,7 +66,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
 
     _allGardens = ServiceProvider.instance.gardenService.getAllGardens();
     for (var g in _allGardens) {
-      debugPrint('Test Orange');
       ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(g,
           onTapCallback: (element) {
         setState(() {
@@ -163,38 +163,44 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               element.getLatLng().latitude, element.getLatLng().longitude),
           fillColor: const Color(0x5232d5f3),
           strokeWidth: 1));
+    });
 
-      setJoinableMarkers(element, allGardensNotInProject, radius);
+    allGardensNotInProject.forEach((element) {
+      setJoinableMarkers(element, gardensOfConnectionProject, radius);
     });
   }
 
   void setJoinableMarkers(Garden gardenOfConnectionProject,
       List<Garden> gardensToCompareWith, int radius) {
     // Iterate through all gardens to compare them with the garden of the connectionProject
-    for (var o in gardensToCompareWith) {
-      var distance = Geolocator.distanceBetween(
-        o.getLatLng().latitude,
-        o.getLatLng().longitude,
-        gardenOfConnectionProject.getLatLng().latitude,
-        gardenOfConnectionProject.getLatLng().longitude,
-      );
 
-      if (distance <= radius * 2 && distance != 0.0) {
-        ServiceProvider.instance.mapMarkerService.getJoinableMarker(o,
-            onTapCallback: (element) {
-          setState(() {
-            _tappedGarden = element;
-          });
-          displayModalBottomSheetGarden(context);
-        }).then((marker) {
-          setState(() {
-            _markers.removeWhere((element) =>
-                element.markerId.value == 'garden' + o.reference.id);
-            _markers.add(marker);
-          });
+    if (gardensToCompareWith.any((element) =>
+        GardenIsInRange(element, gardenOfConnectionProject, radius))) {
+      ServiceProvider.instance.mapMarkerService.getJoinableMarker(
+          gardenOfConnectionProject, onTapCallback: (element) {
+        setState(() {
+          _tappedGarden = element;
         });
-      }
+        displayModalBottomSheetGarden(context);
+      }).then((marker) {
+        setState(() {
+          _markers.removeWhere((element) =>
+              element.markerId.value ==
+              'garden' + gardenOfConnectionProject.reference.id);
+          _markers.add(marker);
+        });
+      });
     }
+  }
+
+  bool GardenIsInRange(Garden g1, Garden g2, int radius) {
+    var distance = Geolocator.distanceBetween(
+      g1.getLatLng().latitude,
+      g1.getLatLng().longitude,
+      g2.getLatLng().latitude,
+      g2.getLatLng().longitude,
+    );
+    return (distance <= radius * 2 && distance != 0.0);
   }
 
   void loadUserLocation() async {
@@ -452,7 +458,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                   child: ListView(
                     controller: scrollController,
                     children: <Widget>[
-                      Icon(
+                      const Icon(
                         Icons.horizontal_rule_rounded,
                         color: Color(0xFFE36F00),
                         size: 34.0,
@@ -470,6 +476,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                           Text(_tappedConnectionProject.description ?? '')),
                       joinConnectionProjectButton(
                           connectionProject: _tappedConnectionProject),
+                      leaveConnectionProjectButton(
+                        connectionProject: _tappedConnectionProject,
+                      )
                     ],
                   ),
                 );

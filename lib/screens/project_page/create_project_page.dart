@@ -142,8 +142,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Verbindungsprojekt wurde erfolgreich erstellt.')));
 
-    // TODO: when site is implemented as overlay
-    // Navigator.pop(context);
+    Navigator.pop(context);
   }
 
   Widget speciesListWidget() {
