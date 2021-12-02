@@ -3,8 +3,8 @@ import 'dart:math' as math;
 import 'package:biodiversity/components/connection_project_list_widget.dart';
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/models/connection_project.dart';
+import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/species.dart';
-import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -138,16 +138,16 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
   List<ConnectionProject> getJoinedConnectionProjects() {
     return ServiceProvider.instance.connectionProjectService
         .getAllConnectionProjects()
-        .where((element) => element.gardens.any((element) =>
-            Provider.of<User>(context).gardenReferences.contains(element)))
+        .where((element) =>
+            element.gardens.contains(Provider.of<Garden>(context).reference))
         .toList();
   }
 
   List<ConnectionProject> getJoinableConnectionProjects() {
     return ServiceProvider.instance.connectionProjectService
         .getAllConnectionProjects()
-        .where((element) => element.gardens.any((element) =>
-            !Provider.of<User>(context).gardenReferences.contains(element)))
+        .where((element) =>
+            !element.gardens.contains(Provider.of<Garden>(context).reference))
         .toList();
   }
 }
