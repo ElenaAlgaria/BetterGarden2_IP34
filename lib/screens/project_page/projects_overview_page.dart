@@ -3,13 +3,14 @@ import 'dart:math' as math;
 import 'package:biodiversity/components/connection_project_list_widget.dart';
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/models/connection_project.dart';
+import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/species.dart';
-import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 
 /// Displays an overview of all ConnectionProjects
@@ -50,8 +51,22 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
       body: SingleChildScrollView(
         child: Column(
           children: [
+            const Padding(
+              padding: EdgeInsets.all(20),
+              child: Text(
+                'Meine Vernetzungsprojekte',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+              ),
+            ),
             ConnectionProjectListWidget(
               objects: getJoinedConnectionProjects(),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(20),
+              child: Text(
+                'Verfügbare Vernetzungsprojekte',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+              ),
             ),
             ConnectionProjectListWidget(
               objects: getJoinableConnectionProjects(),
@@ -124,16 +139,39 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
   List<ConnectionProject> getJoinedConnectionProjects() {
     return ServiceProvider.instance.connectionProjectService
         .getAllConnectionProjects()
-        .where((element) => element.gardens.any((element) =>
-            Provider.of<User>(context).gardenReferences.contains(element)))
+        .where((element) =>
+            element.gardens.contains(Provider.of<Garden>(context).reference))
         .toList();
   }
 
   List<ConnectionProject> getJoinableConnectionProjects() {
     return ServiceProvider.instance.connectionProjectService
         .getAllConnectionProjects()
-        .where((element) => element.gardens.any((element) =>
-            !Provider.of<User>(context).gardenReferences.contains(element)))
+        .where((element) =>
+            !element.gardens.contains(Provider.of<Garden>(context).reference))
+        .where((element) => getConnectionProjectsInRadius(
+            Provider.of<Garden>(context),
+            element,
+            ServiceProvider.instance.speciesService
+                .getSpeciesByReference(element.targetSpecies)
+                .radius))
         .toList();
+  }
+
+  bool getConnectionProjectsInRadius(Garden gardenOfConnectionProject,
+      ConnectionProject projectToCompareWith, int radius) {
+    // Iterate through all gardens to compare them with the garden of the connectionProject
+    List<Garden> gardens = [];
+    bool contains = false;
+    for (var i in projectToCompareWith.gardens) {
+      gardens
+          .add(ServiceProvider.instance.gardenService.getGardenByReference(i));
+    }
+    for (var o in gardens) {
+      if (o.isInRange(o, gardenOfConnectionProject, radius)) {
+        contains = true;
+      }
+    }
+    return contains;
   }
 }
