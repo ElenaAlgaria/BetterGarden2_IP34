@@ -33,7 +33,6 @@ flutter_test:
 
 build_android:
   stage: package
-  extends: .android_key_store
   script: flutter build apk --release --build-number=$CI_PIPELINE_ID
   artifacts:
     paths:
