@@ -1,40 +1,86 @@
-variables:
-  LC_ALL: "en_US.UTF-8"
-  LANG: "en_US.UTF-8"
-
 stages:
+  - setup
   - test
+  - build
   - analyze
-  - package
-  - test_deployment
-  - productive_deployment
-  - notification
+  - deploy
 
-.android_docker_image:
-  image: cirrusci/flutter:latest
 
-test:
-  extends: .android_docker_image
+setup_phase:
+  stage: setup
+  script:
+    - flutter clean
+    #    - flutter channel stable
+    #    - flutter upgrade
+    - flutter pub upgrade
+    - flutter doctor --android-licenses
+    - flutter doctor -v
+    - flutter pub outdated
+
+flutter_test:
   stage: test
   before_script:
-    - flutter pub get
     - flutter clean
-    - flutter --version
-    - flutter pub global activate junitreport
-    - pub global activate dart_code_metrics
-    - export PATH="$PATH":"$HOME/.pub-cache/bin"
+    - flutter pub upgrade
+    - flutter pub get
   script:
-    - flutter build bundle
-    - flutter test --coverage --machine | tojunit > testreport.xml
-  artifacts:
-    reports:
-      junit: testreport.xml
-    paths:
-      - coverage
+    - flutter test --no-null-assertions
 
-analyze.sonarqube:
-  stage: analyze
-  image: ichlaffterlalu/sonar-scanner-flutter-cli:latest
-  allow_failure: false
+build_android_release:
+  stage: build
+  before_script:
+    - flutter clean
+    - flutter pub upgrade
+    - flutter pub get
   script:
-    - sonar-scanner -Dsonar.host.url=https://www.cs.technik.fhnw.ch/sonarqube -Dsonar.language=flutter -Dsonar.sources=lib -Dsonar.tests=test -Dsonar.login=$CI_SONARQUBE_TOKEN -Dsonar.projectKey=BetterGardensv2 -Dsonar.projectName=BetterGardensv2
+    - flutter build appbundle --debug
+  artifacts:
+    paths:
+      - build/app/outputs/
+
+analyze:sonarqube:
+  stage: analyze
+  before_script:
+    - export PATH="$PATH:/usr/share/sonar-scanner/bin"
+    - export PATH="$PATH:/usr/lib/dart/bin"
+    - flutter pub upgrade
+  allow_failure: true
+  only:
+    - master
+    - release
+    - development
+    - sonar-cube
+    - more_testing
+  script:
+    - flutter pub get # Download dependencies
+    - flutter test --machine > tests.output # Run tests
+    - flutter test --coverage # Compute coverage
+    - sonar-scanner -Dsonar.qualitygate.wait=true
+variables:
+  SONAR_HOST_URL: ${CI_SONARQUBE_HOST_URL}
+  SONAR_TOKEN: ${CI_SONARQUBE_TOKEN}
+  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar" # Defines the location of the analysis task cache
+cache:
+  key: ${CI_JOB_NAME}
+  paths:
+    - .sonar/cache
+
+pages:
+  stage: deploy
+  only:
+    - master
+    - development
+    - doc_generation
+  before_script:
+    - pkill -f '.*GradleDaemon.*' #make sure there is enough ram
+    - export PATH="$PATH:/usr/lib/dart/bin"
+    - export PATH="$PATH":"$HOME/snap/flutter/common/flutter/.pub-cache/bin"
+    - export PATH="$PATH":"/snap/flutter/current/bin"
+    - export FLUTTER_ROOT=$HOME/snap/flutter/common/flutter
+    - flutter pub global activate dartdoc
+  script:
+    - dartdoc
+    - cp -r doc/api public
+  artifacts:
+    paths:
+      - public
