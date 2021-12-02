@@ -1,43 +1,43 @@
 stages:
-  - setup
-  - test
-  - build
+#  - setup
+#  - test
+#  - build
   - analyze
   - deploy
 
 
-setup_phase:
-  stage: setup
-  script:
-    - flutter clean
-    #    - flutter channel stable
-    #    - flutter upgrade
-    - flutter pub upgrade
-    - flutter doctor --android-licenses
-    - flutter doctor -v
-    - flutter pub outdated
-
-flutter_test:
-  stage: test
-  allow_failure: true
-  before_script:
-    - flutter clean
-    - flutter pub upgrade
-    - flutter pub get
-  script:
-    - flutter test --no-null-assertions
-
-build_android_release:
-  stage: build
-  before_script:
-    - flutter clean
-    - flutter pub upgrade
-    - flutter pub get
-  script:
-    - flutter build appbundle --debug
-  artifacts:
-    paths:
-      - build/app/outputs/
+#setup_phase:
+#  stage: setup
+#  script:
+#    - flutter clean
+#    #    - flutter channel stable
+#    #    - flutter upgrade
+#    - flutter pub upgrade
+#    - flutter doctor --android-licenses
+#    - flutter doctor -v
+#    - flutter pub outdated
+#
+#flutter_test:
+#  stage: test
+#  allow_failure: true
+#  before_script:
+#    - flutter clean
+#    - flutter pub upgrade
+#    - flutter pub get
+#  script:
+#    - flutter test --no-null-assertions
+#
+#build_android_release:
+#  stage: build
+#  before_script:
+#    - flutter clean
+#    - flutter pub upgrade
+#    - flutter pub get
+#  script:
+#    - flutter build appbundle --debug
+#  artifacts:
+#    paths:
+#      - build/app/outputs/
 
 analyze:sonarqube:
   stage: analyze
