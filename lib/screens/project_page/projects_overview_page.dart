@@ -10,6 +10,7 @@ import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 
 /// Displays an overview of all ConnectionProjects
@@ -148,6 +149,36 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
         .getAllConnectionProjects()
         .where((element) =>
             !element.gardens.contains(Provider.of<Garden>(context).reference))
+        .where((element) => getConnectionProjectsInRadius(
+            Provider.of<Garden>(context),
+            element,
+            ServiceProvider.instance.speciesService
+                .getSpeciesByReference(element.targetSpecies)
+                .radius))
         .toList();
+  }
+
+  bool getConnectionProjectsInRadius(Garden gardenOfConnectionProject,
+      ConnectionProject projectToCompareWith, int radius) {
+    // Iterate through all gardens to compare them with the garden of the connectionProject
+    List<Garden> gardens = [];
+    bool contains = false;
+    for (var i in projectToCompareWith.gardens) {
+      gardens
+          .add(ServiceProvider.instance.gardenService.getGardenByReference(i));
+    }
+    for (var o in gardens) {
+      var distance = Geolocator.distanceBetween(
+        o.getLatLng().latitude,
+        o.getLatLng().longitude,
+        gardenOfConnectionProject.getLatLng().latitude,
+        gardenOfConnectionProject.getLatLng().longitude,
+      );
+
+      if (distance <= radius * 2 && distance != 0.0) {
+        contains = true;
+      }
+    }
+    return contains;
   }
 }
