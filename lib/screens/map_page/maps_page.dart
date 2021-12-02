@@ -66,7 +66,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
 
     _allGardens = ServiceProvider.instance.gardenService.getAllGardens();
     for (var g in _allGardens) {
-      debugPrint('Test Orange');
       ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(g,
           onTapCallback: (element) {
         setState(() {
@@ -164,38 +163,44 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               element.getLatLng().latitude, element.getLatLng().longitude),
           fillColor: const Color(0x5232d5f3),
           strokeWidth: 1));
+    });
 
-      setJoinableMarkers(element, allGardensNotInProject, radius);
+    allGardensNotInProject.forEach((element) {
+      setJoinableMarkers(element, gardensOfConnectionProject, radius);
     });
   }
 
   void setJoinableMarkers(Garden gardenOfConnectionProject,
       List<Garden> gardensToCompareWith, int radius) {
     // Iterate through all gardens to compare them with the garden of the connectionProject
-    for (var o in gardensToCompareWith) {
-      var distance = Geolocator.distanceBetween(
-        o.getLatLng().latitude,
-        o.getLatLng().longitude,
-        gardenOfConnectionProject.getLatLng().latitude,
-        gardenOfConnectionProject.getLatLng().longitude,
-      );
 
-      if (distance <= radius * 2 && distance != 0.0) {
-        ServiceProvider.instance.mapMarkerService.getJoinableMarker(o,
-            onTapCallback: (element) {
-          setState(() {
-            _tappedGarden = element;
-          });
-          displayModalBottomSheetGarden(context);
-        }).then((marker) {
-          setState(() {
-            _markers.removeWhere((element) =>
-                element.markerId.value == 'garden' + o.reference.id);
-            _markers.add(marker);
-          });
+    if (gardensToCompareWith.any((element) =>
+        GardenIsInRange(element, gardenOfConnectionProject, radius))) {
+      ServiceProvider.instance.mapMarkerService.getJoinableMarker(
+          gardenOfConnectionProject, onTapCallback: (element) {
+        setState(() {
+          _tappedGarden = element;
         });
-      }
+        displayModalBottomSheetGarden(context);
+      }).then((marker) {
+        setState(() {
+          _markers.removeWhere((element) =>
+              element.markerId.value ==
+              'garden' + gardenOfConnectionProject.reference.id);
+          _markers.add(marker);
+        });
+      });
     }
+  }
+
+  bool GardenIsInRange(Garden g1, Garden g2, int radius) {
+    var distance = Geolocator.distanceBetween(
+      g1.getLatLng().latitude,
+      g1.getLatLng().longitude,
+      g2.getLatLng().latitude,
+      g2.getLatLng().longitude,
+    );
+    return (distance <= radius * 2 && distance != 0.0);
   }
 
   void loadUserLocation() async {
