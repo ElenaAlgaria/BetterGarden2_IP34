@@ -10,7 +10,7 @@ class ButtonPage extends StatelessWidget {
   var testProj = ServiceProvider.instance.connectionProjectService
       .getAllConnectionProjects()
       .where((element) =>
-          element.reference.id == '31311e72-51cb-419f-8d92-91596f2e4b25')
+          element.reference.id == '7bb497c9-5647-4d2a-812c-049fa1406067')
       .first;
 
   @override

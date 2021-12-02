@@ -26,7 +26,7 @@ class MapMarkerService extends ChangeNotifier {
     _gardenStreamSubscription = _storage.database
         .collectionGroup('gardens')
         .snapshots()
-        .listen(_updateElements);
+        .listen(updateElements);
     _loadIcons();
   }
 
@@ -36,7 +36,7 @@ class MapMarkerService extends ChangeNotifier {
     super.dispose();
   }
 
-  void _updateElements(QuerySnapshot snapshots) {
+  void updateElements(QuerySnapshot snapshots) {
     _gardens.clear();
     _gardens.addAll(ServiceProvider.instance.gardenService.getAllGardens());
     _connectionProjects.clear();

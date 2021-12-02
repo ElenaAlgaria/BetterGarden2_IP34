@@ -116,6 +116,12 @@ class leaveConnectionProjectButtonState
             'Möchtest du das Vernetzungsprojekt \"${widget.connectionProject.title}\" wirklich verlassen?'),
         textOK: const Text('Verlassen'))) {
       widget.connectionProject.removeGarden(gardenToRemove.reference);
+      // Delete ConnectionProject if no garden is remaining
+      // /gardens/7f42d575-c02c-4143-a45e-e6181417e37b
+      if(widget.connectionProject.gardens.isEmpty){
+        debugPrint('is empty');
+        widget.connectionProject.deleteConnectionProject(widget.connectionProject.reference);
+      }
       Navigator.of(context).pop();
       return logging.log(
           'left connectionProject ${widget.connectionProject.title} with garden ${gardenToRemove.name}');
