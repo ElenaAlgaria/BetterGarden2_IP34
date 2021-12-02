@@ -168,14 +168,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
           .add(ServiceProvider.instance.gardenService.getGardenByReference(i));
     }
     for (var o in gardens) {
-      var distance = Geolocator.distanceBetween(
-        o.getLatLng().latitude,
-        o.getLatLng().longitude,
-        gardenOfConnectionProject.getLatLng().latitude,
-        gardenOfConnectionProject.getLatLng().longitude,
-      );
-
-      if (distance <= radius * 2 && distance != 0.0) {
+      if (o.isInRange(o, gardenOfConnectionProject, radius)) {
         contains = true;
       }
     }

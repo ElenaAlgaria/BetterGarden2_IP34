@@ -7,6 +7,7 @@ import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uuid/uuid.dart';
 
@@ -190,6 +191,16 @@ class Garden extends ChangeNotifier {
         .expand((element) => element.beneficialFor)
         .toSet()
         .length;
+  }
+
+  bool isInRange(Garden g1, Garden g2, int radius) {
+    var distance = Geolocator.distanceBetween(
+      g1.getLatLng().latitude,
+      g1.getLatLng().longitude,
+      g2.getLatLng().latitude,
+      g2.getLatLng().longitude,
+    );
+    return distance <= radius * 2 && distance != 0.0;
   }
 
   /// count of area objects

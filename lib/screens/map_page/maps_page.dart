@@ -175,7 +175,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     // Iterate through all gardens to compare them with the garden of the connectionProject
 
     if (gardensToCompareWith.any((element) =>
-        GardenIsInRange(element, gardenOfConnectionProject, radius))) {
+        element.isInRange(element, gardenOfConnectionProject, radius))) {
       ServiceProvider.instance.mapMarkerService.getJoinableMarker(
           gardenOfConnectionProject, onTapCallback: (element) {
         setState(() {
