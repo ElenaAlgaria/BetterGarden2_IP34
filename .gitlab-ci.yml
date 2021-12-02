@@ -41,6 +41,7 @@ stages:
 
 analyze:sonarqube:
   stage: analyze
+  image: sonarsource/sonar-scanner-cli:latest
   before_script:
     - export PATH="$PATH:/usr/share/sonar-scanner/bin"
     - export PATH="$PATH:/usr/lib/dart/bin"
