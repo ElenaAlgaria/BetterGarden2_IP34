@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:biodiversity/components/circlesOverview.dart';
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/join_connection_project_popup_button.dart';
+import 'package:biodiversity/components/leave_connection_project_button.dart';
 import 'package:biodiversity/components/text_field_with_descriptor.dart';
 import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
@@ -17,9 +18,9 @@ import 'package:collection/src/iterable_extensions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:geolocator/geolocator.dart';
 
 /// Display the map with the markers
 class MapsPage extends StatefulWidget {
@@ -470,6 +471,13 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                           Text(_tappedConnectionProject.description ?? '')),
                       joinConnectionProjectButton(
                           connectionProject: _tappedConnectionProject),
+                      ServiceProvider.instance.gardenService
+                          .getAllGardensFromUser(Provider.of<User>(context))
+                          .any((element) => _tappedConnectionProject.gardens
+                          .contains(element.reference)) ?
+                          leaveConnectionProjectButton(
+                            connectionProject: _tappedConnectionProject,
+                          ) : null,
                     ],
                   ),
                 );
