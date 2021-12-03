@@ -5,6 +5,7 @@ import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:biodiversity/services/services_library.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -254,17 +255,23 @@ class _ExpandableConnectionProjectCardState
                       style: const TextStyle(
                         color: Colors.blueAccent,
                         fontWeight: FontWeight.bold,
-                      ))
+                      )),
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 16, bottom: 15),
+                padding: const EdgeInsets.only(left: 16, bottom: 0),
                 child: Text(
                   widget.object.description,
                   softWrap: true,
                   textAlign: TextAlign.left,
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, bottom: 15),
+                child: Text(
+                  widget.object.gardens.length.toString(),
+                ),
+              )
             ],
           ),
         ],
