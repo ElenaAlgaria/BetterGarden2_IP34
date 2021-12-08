@@ -33,11 +33,16 @@ flutter_test:
 
 build_android:
   stage: build
-  script: flutter build apk --release --build-number=$CI_PIPELINE_ID
+  before_script:
+    - flutter clean
+    - flutter pub upgrade
+    - flutter pub get
+  script:
+    - flutter build appbundle --debug
   artifacts:
     paths:
-      - build/app/outputs/apk/release/app-release.apk
-    expire_in: 1 day
+      - build/app/outputs/
+
 
 analyze.sonarqube:
   stage: analyze
