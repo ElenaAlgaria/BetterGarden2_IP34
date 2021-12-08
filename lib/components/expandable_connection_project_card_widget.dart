@@ -265,11 +265,14 @@ class _ExpandableConnectionProjectCardState
                   softWrap: true,
                   textAlign: TextAlign.left,
                 ),
-
               ),
-              leaveConnectionProjectButton(
-                connectionProject: widget.object,
-              )
+              Padding(
+                padding: const EdgeInsets.only(left: 16, bottom: 15),
+                child: const Text(
+                  'Weitere Infos',
+                  style: TextStyle(decoration: TextDecoration.underline),
+                ),
+              ),
             ],
           ),
         ],
