@@ -26,9 +26,10 @@ import 'package:provider/provider.dart';
 class MapsPage extends StatefulWidget {
   ///garden which should be displayed on map
   final Garden garden;
+  final ConnectionProject connectionProject;
 
   /// Display the map with the markers
-  MapsPage({Key key, this.garden}) : super(key: key);
+  MapsPage({Key key, this.garden, this.connectionProject}) : super(key: key);
 
   @override
   _MapsPageState createState() => _MapsPageState();
@@ -59,6 +60,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   DocumentReference reference;
 
   List<Garden> _allGardens = [];
+  List<ConnectionProject> _allProjects = [];
 
   @override
   void initState() {
@@ -79,18 +81,22 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       });
     }
 
-    ServiceProvider.instance.mapMarkerService.getConnectionProjectMarkerSet(
+    _allProjects = ServiceProvider.instance.connectionProjectService.getAllConnectionProjects();
+    for(var c in _allProjects){
+    ServiceProvider.instance.mapMarkerService.getConnectionProjectMarkerSet(c,
         onTapCallback: (element) {
       setState(() {
         _tappedConnectionProject = element;
       });
       displayModalBottomSheetConnectionProject(context);
       displayConnectionProjectGardensWithCircles(element.reference);
-    }).then((markers) {
+    }).then((marker) {
       setState(() {
-        _markers.addAll(markers);
+        _markers.add(marker);
       });
     });
+
+    }
 
     speciesList =
         ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
@@ -238,6 +244,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             onMapCreated: (controller) => mapController = controller,
             initialCameraPosition: (widget.garden != null)
                 ? CameraPosition(target: widget.garden.getLatLng(), zoom: _zoom)
+            ?? CameraPosition(target: widget.connectionProject.position, zoom: _zoom)
                 : (mapInteraction.selectedLocation != null)
                     ? CameraPosition(
                         target: mapInteraction.selectedLocation, zoom: _zoom)

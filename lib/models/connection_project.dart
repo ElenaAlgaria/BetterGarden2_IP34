@@ -1,5 +1,6 @@
 import 'dart:core';
 import 'dart:developer' as logging;
+import 'dart:ffi';
 
 import 'package:biodiversity/models/storage_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,6 +16,8 @@ class ConnectionProject extends ChangeNotifier {
   String title;
 
   String description;
+
+  LatLng position;
 
   DocumentReference targetSpecies;
 
@@ -123,4 +126,6 @@ class ConnectionProject extends ChangeNotifier {
     debugPrint(path.toString());
     await _storage.database.doc(path).delete();
   }
+
+
 }

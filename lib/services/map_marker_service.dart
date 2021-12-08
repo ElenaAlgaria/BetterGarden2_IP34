@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer' as logging;
+import 'dart:ffi';
 import 'dart:math';
 
 import 'package:biodiversity/models/connection_project.dart';
@@ -130,15 +131,13 @@ class MapMarkerService extends ChangeNotifier {
   }
 
   /// returns a set of all ConnectionProjectMarkers
-  Future<Set<Marker>> getConnectionProjectMarkerSet(
+  Future <Marker> getConnectionProjectMarkerSet(ConnectionProject connectionProject,
       {Function(ConnectionProject element) onTapCallback}) async {
     while (!_initialized) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
 
-    final list = <Marker>{};
-    _connectionProjects.forEach((project) {
-      var allGardenCoordinates = project.gardens.map((e) => ServiceProvider
+      var allGardenCoordinates = connectionProject.gardens.map((e) => ServiceProvider
           .instance.gardenService
           .getGardenByReference(e)
           .coordinates);
@@ -163,20 +162,20 @@ class MapMarkerService extends ChangeNotifier {
           '/' +
           midLng.toString() +
           '/' +
-          project.creationDate.toString() +
+          connectionProject.creationDate.toString() +
           '/' +
-          project.gardens.length.toString());
-      list.add(Marker(
+          connectionProject.gardens.length.toString());
+      var marker = (Marker(
         markerId: MarkerId(midLat.toString() +
             midLng.toString() +
-            project.creationDate.toString()),
+            connectionProject.creationDate.toString()),
         position: LatLng(midLat, midLng),
         icon: _icons['connectionProject'],
         onTap: () {
-          onTapCallback(project);
+          onTapCallback(connectionProject);
+        connectionProject.position = LatLng(midLat, midLng);
         },
       ));
-    });
-    return list;
+    return marker;
   }
 }
