@@ -4,7 +4,6 @@ import 'dart:developer' as logging;
 import 'package:biodiversity/models/storage_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 // TODO update coordinates of a connectionProject
@@ -116,11 +115,11 @@ class ConnectionProject extends ChangeNotifier {
   /// is true if this connectionproject is an empty placeholder
   bool get isEmpty => _isEmpty;
 
-  Future<void> deleteConnectionProject(DocumentReference connectionProjectReference) async {
+  Future<void> deleteConnectionProject(
+      DocumentReference connectionProjectReference) async {
     logging.log('Delete ConnectionProject $title');
     final path = '/' + connectionProjectReference.path;
     debugPrint(path.toString());
     await _storage.database.doc(path).delete();
-
   }
 }
