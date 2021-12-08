@@ -73,6 +73,9 @@ pages:
 
 android_play_store_internal_and_alpha_deployment:
   stage: deploy
+  before_script:
+    - gem install fastlane
+    - export PATH="$HOME/.fastlane/bin:$PATH"
   script:
     - bundle exec fastlane upload_to_play_store_internal
  #   - bundle exec fastlane promote_internal_to_alpha
