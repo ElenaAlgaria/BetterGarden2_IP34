@@ -114,9 +114,6 @@ class _ExpandableConnectionProjectCardState
                               fontWeight: FontWeight.bold, fontSize: 16),
                           softWrap: true,
                         ),
-                        leaveConnectionProjectButton(
-                          connectionProject: widget.object,
-                        )
                       ],
                     ),
                   ),
@@ -263,11 +260,30 @@ class _ExpandableConnectionProjectCardState
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 16, bottom: 15),
-                child: Text(
-                  widget.object.description,
-                  softWrap: true,
-                  textAlign: TextAlign.left,
-                ),
+                  child: Text(
+                    widget.object.description,
+                    softWrap: true,
+                    textAlign: TextAlign.left,
+                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8, bottom: 15),
+                child: TextButton(
+                  onPressed: () {
+                    /*
+                    if (_expanded) {
+                      Navigator.push(
+                      Neue Seite einfügen wie hier:
+                      expandable_information_object_card_widget.dart Zile 377
+                      );
+                    }
+                    */
+                    },
+                  child: const Text(
+                    'Weitere Infos',
+                    style: TextStyle(decoration: TextDecoration.underline),
+                  ),
+                )
               ),
             ],
           ),
