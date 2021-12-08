@@ -114,9 +114,6 @@ class _ExpandableConnectionProjectCardState
                               fontWeight: FontWeight.bold, fontSize: 16),
                           softWrap: true,
                         ),
-                        leaveConnectionProjectButton(
-                          connectionProject: widget.object,
-                        )
                       ],
                     ),
                   ),
@@ -268,7 +265,11 @@ class _ExpandableConnectionProjectCardState
                   softWrap: true,
                   textAlign: TextAlign.left,
                 ),
+
               ),
+              leaveConnectionProjectButton(
+                connectionProject: widget.object,
+              )
             ],
           ),
         ],
