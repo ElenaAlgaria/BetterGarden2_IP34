@@ -8,6 +8,7 @@ import 'package:biodiversity/services/services_library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:biodiversity/components/leave_connection_project_button.dart';
 
 /// an unspecific expandable card which displays a ConnectionProject
 class ExpandableConnectionProjectCard extends StatefulWidget {
@@ -113,6 +114,9 @@ class _ExpandableConnectionProjectCardState
                               fontWeight: FontWeight.bold, fontSize: 16),
                           softWrap: true,
                         ),
+                        leaveConnectionProjectButton(
+                          connectionProject: widget.object,
+                        )
                       ],
                     ),
                   ),
