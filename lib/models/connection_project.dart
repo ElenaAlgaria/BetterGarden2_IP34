@@ -116,11 +116,11 @@ class ConnectionProject extends ChangeNotifier {
   /// is true if this connectionproject is an empty placeholder
   bool get isEmpty => _isEmpty;
 
-  Future<void> deleteConnectionProject(DocumentReference connectionProjectReference) async {
+  Future<void> deleteConnectionProject(
+      DocumentReference connectionProjectReference) async {
     logging.log('Delete ConnectionProject $title');
     final path = '/' + connectionProjectReference.path;
     debugPrint(path.toString());
     await _storage.database.doc(path).delete();
-
   }
 }

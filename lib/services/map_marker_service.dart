@@ -19,6 +19,7 @@ class MapMarkerService extends ChangeNotifier {
   bool _initialized = false;
   final StorageProvider _storage;
   StreamSubscription _gardenStreamSubscription;
+  StreamSubscription _connectionProjectStreamSubscription;
 
   ///init of the service, should only be used once
   MapMarkerService({StorageProvider storageProvider})
@@ -27,12 +28,17 @@ class MapMarkerService extends ChangeNotifier {
         .collectionGroup('gardens')
         .snapshots()
         .listen(updateElements);
+    _connectionProjectStreamSubscription = _storage.database
+        .collectionGroup('connectionProjects')
+        .snapshots()
+        .listen(updateElements);
     _loadIcons();
   }
 
   @override
   void dispose() {
     _gardenStreamSubscription.cancel();
+    _connectionProjectStreamSubscription.cancel();
     super.dispose();
   }
 
