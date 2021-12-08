@@ -65,7 +65,42 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    drawGardenMarkers();
+    drawConnectionProjectMarkers();
 
+    ServiceProvider.instance.mapMarkerService.addListener(() {
+      drawGardenMarkers();
+      drawConnectionProjectMarkers();
+    });
+
+    speciesList =
+        ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
+    _fabController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+  }
+
+  void drawConnectionProjectMarkers() {
+    _allProjects = ServiceProvider.instance.connectionProjectService
+        .getAllConnectionProjects();
+    for (var c in _allProjects) {
+      ServiceProvider.instance.mapMarkerService.getConnectionProjectMarkerSet(c,
+          onTapCallback: (element) {
+        setState(() {
+          _tappedConnectionProject = element;
+        });
+        displayModalBottomSheetConnectionProject(context);
+        displayConnectionProjectGardensWithCircles(element.reference);
+      }).then((marker) {
+        setState(() {
+          _markers.add(marker);
+        });
+      });
+    }
+  }
+
+  void drawGardenMarkers() {
     _allGardens = ServiceProvider.instance.gardenService.getAllGardens();
     for (var g in _allGardens) {
       ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(g,
@@ -80,30 +115,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         });
       });
     }
-
-    _allProjects = ServiceProvider.instance.connectionProjectService.getAllConnectionProjects();
-    for(var c in _allProjects){
-    ServiceProvider.instance.mapMarkerService.getConnectionProjectMarkerSet(c,
-        onTapCallback: (element) {
-      setState(() {
-        _tappedConnectionProject = element;
-      });
-      displayModalBottomSheetConnectionProject(context);
-      displayConnectionProjectGardensWithCircles(element.reference);
-    }).then((marker) {
-      setState(() {
-        _markers.add(marker);
-      });
-    });
-
-    }
-
-    speciesList =
-        ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
-    _fabController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    );
   }
 
   void modifyPerimeterCircle(String name) {
@@ -243,8 +254,10 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 (defaultTargetPlatform == TargetPlatform.iOS) ? false : true,
             onMapCreated: (controller) => mapController = controller,
             initialCameraPosition: (widget.garden != null)
-                ? CameraPosition(target: widget.garden.getLatLng(), zoom: _zoom)
-            ?? CameraPosition(target: widget.connectionProject.position, zoom: _zoom)
+                ? CameraPosition(
+                        target: widget.garden.getLatLng(), zoom: _zoom) ??
+                    CameraPosition(
+                        target: widget.connectionProject.position, zoom: _zoom)
                 : (mapInteraction.selectedLocation != null)
                     ? CameraPosition(
                         target: mapInteraction.selectedLocation, zoom: _zoom)
@@ -469,7 +482,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                         Icons.horizontal_rule_rounded,
                         color: Color(0xFFE36F00),
                         size: 34.0,
-
                       ),
                       TextFieldWithDescriptor('Verbindungsprojekt',
                           Text(_tappedConnectionProject.title ?? '')),
