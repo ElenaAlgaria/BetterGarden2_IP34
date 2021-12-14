@@ -5,6 +5,7 @@ stages:
 
 flutter_test:
   stage: test
+  allow_failure: true
   script:
     - flutter test
   tags: 
