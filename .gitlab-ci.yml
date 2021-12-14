@@ -1,37 +1,9 @@
-stages: 
-  - test
-  - build
-  - deploy
+stages:
+  - test # All jobs related for testing such as Unit Test
 
-flutter_test:
-  stage: test
-  allow_failure: true
+flutter_test: # Name of the lane
+  stage: test # type of stage
   script:
-    - flutter test
-  tags: 
-    - flutter 
-
-build_android:
-  stage: build
-  before_script:
-    - cd android
-    - bundle install --deployment
-  script:
-    - bundle exec fastlane build
-  artifacts:
-    paths:
-      - build/app/outputs/apk/release/app-release.apk
-  tags: 
-    - flutter 
-
-deploy_android:
-  stage: deploy
-  before_script:
-    - cd android
-    - bundle install --deployment
-  dependencies: 
-    - build_android
-  script:
-    - bundle exec fastlane deploy_beta
-  tags: 
-    - flutter 
+    - flutter test # Run Flutter test
+  tags:
+    - flutter # Tags for runner
