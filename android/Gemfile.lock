@@ -208,6 +208,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  digest-crc (= 0.6.4)
   fastlane
 
 BUNDLED WITH
