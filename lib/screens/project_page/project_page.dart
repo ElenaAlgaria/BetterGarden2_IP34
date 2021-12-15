@@ -1,15 +1,21 @@
 import 'package:biodiversity/components/drawer.dart';
+import 'package:biodiversity/components/join_connection_project_popup_button.dart';
+import 'package:biodiversity/components/leave_connection_project_button.dart';
 import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class ProjectPage extends StatefulWidget {
   final ConnectionProject project;
   final ServiceProvider _serviceProvider;
+  final bool joinedProject;
 
-  ProjectPage({Key key, this.project, ServiceProvider serviceProvider})
+  ProjectPage(
+      {Key key,
+      this.project,
+      this.joinedProject,
+      ServiceProvider serviceProvider})
       : _serviceProvider = serviceProvider ?? ServiceProvider.instance,
         super(key: key);
 
@@ -28,25 +34,36 @@ class _ProjectPageState extends State<ProjectPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Test-Titel")),
+      appBar: AppBar(title: Text(project.title)),
       drawer: MyDrawer(),
       body: SingleChildScrollView(
+        padding: EdgeInsets.all(20),
         child: Column(
           children: [
-            Padding(
-              padding: EdgeInsets.all(20),
-              child: Text(
-                project.title,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+            Text(
+              project.title,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+            ),
+            Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 20)),
+            Text(
+              ServiceProvider.instance.speciesService
+                  .getSpeciesByReference(project.targetSpecies)
+                  .name,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                backgroundColor: Colors.grey[300],
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.all(20),
-              child: Text(
-                "Description",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-              ),
+            Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 20)),
+            Text(
+              project.description,
+              style: TextStyle(fontWeight: FontWeight.normal, fontSize: 18),
             ),
+            Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 20)),
+            widget.joinedProject
+                ? leaveConnectionProjectButton(connectionProject: project)
+                : joinConnectionProjectButton(connectionProject: project),
           ],
         ),
       ),

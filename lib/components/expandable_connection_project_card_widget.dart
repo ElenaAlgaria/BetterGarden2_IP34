@@ -9,7 +9,6 @@ import 'package:biodiversity/services/services_library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:biodiversity/components/leave_connection_project_button.dart';
 
 /// an unspecific expandable card which displays a ConnectionProject
 class ExpandableConnectionProjectCard extends StatefulWidget {
@@ -27,6 +26,9 @@ class ExpandableConnectionProjectCard extends StatefulWidget {
   /// if this flag is set, the card is used for species and hinzufügen and merken will be changed to Aktivitätsradius and merken
   final bool isSpecies;
 
+  ///If this flag is set, the button "Beitreten" will be shown. Else, the Button "Vernetzungsprojekt verlassen" will be shown
+  final bool joinedProject;
+
   /// additional Info to be displayed instead of hinzufügen and merken buttons.
   /// the Buttons will be automatically removed if this string is set
   final String additionalInfo;
@@ -36,10 +38,11 @@ class ExpandableConnectionProjectCard extends StatefulWidget {
   /// show a card to the provided ConnectionProject
   ExpandableConnectionProjectCard(this.object,
       {hideLikeAndAdd = false,
-        this.additionalInfo,
-        arrangeLikeAndAddAsRow = false,
-        ServiceProvider serviceProvider,
-        Key key})
+      this.additionalInfo,
+      this.joinedProject,
+      arrangeLikeAndAddAsRow = false,
+      ServiceProvider serviceProvider,
+      Key key})
       : _serviceProvider = serviceProvider ??= ServiceProvider.instance,
         hideLikeAndAdd = hideLikeAndAdd || additionalInfo != null,
         arrangeLikeAndAddAsRow =
@@ -58,10 +61,7 @@ class _ExpandableConnectionProjectCardState
 
   @override
   Widget build(BuildContext context) {
-    final _screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
+    final _screenWidth = MediaQuery.of(context).size.width;
     String _unit;
     final garden = Provider.of<Garden>(context, listen: false);
     if (widget.object.runtimeType == BiodiversityMeasure) {
@@ -145,7 +145,7 @@ class _ExpandableConnectionProjectCardState
                           icon: Icon(
                             Icons.favorite,
                             color: Provider.of<User>(context)
-                                .doesLikeElement(widget.object.title)
+                                    .doesLikeElement(widget.object.title)
                                 ? Colors.red
                                 : Colors.black,
                             size: 20,
@@ -252,9 +252,9 @@ class _ExpandableConnectionProjectCardState
                   ),
                   Text(
                       ServiceProvider.instance.speciesService
-                          .getSpeciesByReference(
-                          widget.object.targetSpecies)
-                          ?.name ??
+                              .getSpeciesByReference(
+                                  widget.object.targetSpecies)
+                              ?.name ??
                           '',
                       style: const TextStyle(
                         color: Colors.blueAccent,
@@ -278,17 +278,17 @@ class _ExpandableConnectionProjectCardState
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  ProjectPage(project: widget.object,)),
+                              builder: (context) => ProjectPage(
+                                  project: widget.object,
+                                  joinedProject: widget.joinedProject)),
                         );
-                    }
+                      }
                     },
                     child: const Text(
                       'Weitere Infos',
                       style: TextStyle(decoration: TextDecoration.underline),
                     ),
-                  )
-              ),
+                  )),
             ],
           ),
         ],
@@ -298,9 +298,7 @@ class _ExpandableConnectionProjectCardState
 
   ///handles the result of a tap on a like "merken" button
   void _handle_like_button(BuildContext context) {
-    if (Provider
-        .of<User>(context, listen: false)
-        .isLoggedIn) {
+    if (Provider.of<User>(context, listen: false).isLoggedIn) {
       Provider.of<User>(context, listen: false)
           .likeUnlikeElement(widget.object.title);
     } else {
@@ -311,12 +309,11 @@ class _ExpandableConnectionProjectCardState
 
   ///handles the result of a tap on a add "hinzufügen" button
   void _handle_add_measure_to_garden(BuildContext context) {
-    if (Provider
-        .of<User>(context, listen: false)
-        .isLoggedIn) {
+    if (Provider.of<User>(context, listen: false).isLoggedIn) {
       if (ServiceProvider.instance.gardenService
           .getAllGardensFromUser(Provider.of<User>(context, listen: false))
-          .isNotEmpty) {} else {
+          .isNotEmpty) {
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text('Bitte erstelle zuerst einen Garten')));
       }

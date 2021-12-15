@@ -10,7 +10,6 @@ import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 
 /// Displays an overview of all ConnectionProjects
@@ -60,6 +59,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
             ),
             ConnectionProjectListWidget(
               objects: getJoinedConnectionProjects(),
+              joinedProject: true,
             ),
             const Padding(
               padding: EdgeInsets.all(20),
@@ -70,6 +70,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
             ),
             ConnectionProjectListWidget(
               objects: getJoinableConnectionProjects(),
+              joinedProject: false,
             ),
           ],
         ),
