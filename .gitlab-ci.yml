@@ -18,8 +18,6 @@ variables:
   before_script:
     # this will fetch the base64 encoded key store from our CI variables, decode it and place it underneath the path specified in build.gradle
     - echo "$PLAY_STORE_UPLOAD_KEY" | base64 --decode > android/key.jks
-  only:
-    - master
 
 .setup_fastlane_android:
   extends: .android_key_store
