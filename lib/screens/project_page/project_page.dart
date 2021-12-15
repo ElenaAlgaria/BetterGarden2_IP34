@@ -18,13 +18,12 @@ class ProjectPage extends StatefulWidget {
 }
 
 class _ProjectPageState extends State<ProjectPage> {
-  static const List<IconData> icons = [
-    Icons.playlist_add,
-    Icons.house,
-  ];
+  ConnectionProject project;
 
   @override
-  void initState() {}
+  void initState() {
+    project = widget.project;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +33,10 @@ class _ProjectPageState extends State<ProjectPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const Padding(
+            Padding(
               padding: EdgeInsets.all(20),
               child: Text(
-                "Text",
+                project.title,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
               ),
             ),
@@ -52,13 +51,5 @@ class _ProjectPageState extends State<ProjectPage> {
         ),
       ),
     );
-  }
-
-  String getTitle() {
-    return Provider.of<ConnectionProject>(context).title;
-  }
-
-  String getDescription() {
-    return Provider.of<ConnectionProject>(context).description;
   }
 }

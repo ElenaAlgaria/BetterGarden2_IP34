@@ -279,7 +279,7 @@ class _ExpandableConnectionProjectCardState
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  ProjectPage()),
+                                  ProjectPage(project: widget.object,)),
                         );
                     }
                     },
