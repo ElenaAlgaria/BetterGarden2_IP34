@@ -267,16 +267,35 @@ class _ExpandableConnectionProjectCardState
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 16, bottom: 15),
+                padding: const EdgeInsets.only(left: 16),
                 child: Text(
                   widget.object.gardens.length.toString(),
                 ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, bottom: 15),
+                child: Text(
+                 // widget.object.gardens.map((e) => ServiceProvider.instance.gardenService.getGardenByReference(e).name).join('\n'),
+                  getLinksOfGardensOfProject(widget.object.gardens).join('\n'),
+
+                )
               )
             ],
           ),
         ],
       ),
     );
+  }
+
+  ///returns a list of links of a project, tap on link to see location of garden on map
+  List<String> getLinksOfGardensOfProject(List<DocumentReference<Object>> gardenRef) {
+    List<Garden> gardens = <Garden>[];
+    gardens.addAll(gardenRef.map((e) => ServiceProvider.instance.gardenService.getGardenByReference(e)));
+    List<String> gardenNames = <String>[];
+    gardenNames.addAll(gardens.map((e) => e.name));
+
+    // TODO: return every gardenName with a link, with which you access the map with the location of the garden  and open the corresponding expandable card
+    return gardenNames;
   }
 
   ///handles the result of a tap on a like "merken" button
