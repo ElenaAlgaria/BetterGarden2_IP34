@@ -17,7 +17,7 @@ variables:
   extends: .android_docker_image
   before_script:
     # this will fetch the base64 encoded key store from our CI variables, decode it and place it underneath the path specified in build.gradle
-    - echo "$PLAY_STORE_UPLOAD_KEY" | base64 --decode > key.jks
+    - echo "$PLAY_STORE_UPLOAD_KEY" | base64 --decode > /builds/ip34-21vt/ip34-21vt_bettergarden2/mobile-front-end/android/app/key.jks
     - echo "keystorePath=/builds/ip34-21vt/ip34-21vt_bettergarden2/mobile-front-end/android/app/key.jks" > signing.properties
     - echo "keystorePassword=$KEYSTORE_PASSWORD" >> signing.properties
     - echo "keyAlias=$ALIAS" >> signing.properties
