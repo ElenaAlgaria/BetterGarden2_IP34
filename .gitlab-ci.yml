@@ -1,5 +1,5 @@
 stages:
-  - test
+#  - test
   - package
   - test_deployment
   - productive_deployment
@@ -50,17 +50,17 @@ variables:
 #  only:
 #    - master
 
-test:
-  extends: .android_docker_image
-  stage: test
-  allow_failure: true
-  script:
-    - flutter test --coverage
-    - genhtml coverage/lcov.info --output=coverage
-  artifacts:
-    paths:
-      - coverage/
-    expire_in: 5 days
+#test:
+#  extends: .android_docker_image
+#  stage: test
+#  allow_failure: true
+#  script:
+#    - flutter test --coverage
+#    - genhtml coverage/lcov.info --output=coverage
+#  artifacts:
+#    paths:
+#      - coverage/
+#    expire_in: 5 days
 
 build_android:
   stage: package
