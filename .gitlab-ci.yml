@@ -35,7 +35,7 @@ variables:
     # because the Docker container runs as root currently, we won't do any user-install. Otherwise, it will fail with
     # $ gem install --user-install bundler
     # ERROR:  Use --install-dir or --user-install but not both
-    - gem install bundler
+    - gem install bundler:1.17.2
     - bundle install
 
 #.setup_fastlane_ios:
