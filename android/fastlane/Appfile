@@ -1,2 +1,2 @@
-json_key_file("~/Downloads/pc-api-5421667836454384049-709-7c1f4e39a2af.json") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
+json_key_file("/builds/ip34-21vt/ip34-21vt_bettergarden2/mobile-front-end/android/app/fastfilejson.json") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
 package_name("ch.fhnw.bettergarden") # e.g. com.krausefx.app
