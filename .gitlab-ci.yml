@@ -96,6 +96,8 @@ android_play_store_internal_and_alpha_deployment:
   extends: .setup_fastlane_android
   dependencies:
     - build_android
+  before_script:
+    - echo "$FASTFILE_JSON" > /builds/ip34-21vt/ip34-21vt_bettergarden2/mobile-front-end/android/app/fastfilejson.json
   script:
     - bundle exec fastlane upload_to_play_store_internal
     - bundle exec fastlane promote_internal_to_alpha
