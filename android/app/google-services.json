@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:658901568912:android:bdea5635eafb4234c5b715",
         "android_client_info": {
-          "package_name": "bettergardens.ch.biodiversity"
+          "package_name": "bettergardens.ch.fhnw"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "658901568912-4e1a2istkkmmfepm7jfrfgsuulibmnu8.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "bettergardens.ch.biodiversity",
+            "package_name": "bettergardens.ch.fhnw",
             "certificate_hash": "ee85dd64d3c7a593f3827dadaeac4a7385e320be"
           }
         },
@@ -26,7 +26,7 @@
           "client_id": "658901568912-c87utu1sadmo9lulu1be463g0c0s534o.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "bettergardens.ch.biodiversity",
+            "package_name": "bettergardens.ch.fhnw",
             "certificate_hash": "e13a64e4f56a72dbaf39bcfc73c8ace38231aae7"
           }
         },

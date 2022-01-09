@@ -44,7 +44,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "bettergardens.ch.biodiversity"
+        applicationId "bettergardens.ch.fhnw"
         minSdkVersion 23
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
@@ -53,27 +53,15 @@ android {
 
     signingConfigs {
         release {
-            file("../../signing.properties").with { propFile ->
-                if (propFile.canRead()) {
-                    def properties = new Properties()
-                    properties.load(new FileInputStream(propFile))
-
-                    storeFile file(properties['keystorePath'])
-                    storePassword properties['keystorePassword']
-                    keyAlias properties['keyAlias']
-                    keyPassword properties['keyPassword']
-                } else {
-                    println 'Unable to read signing.properties'
-                }
-            }
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
         }
     }
 
     buildTypes {
         release {
-            // On release, switch to signingConfigs.release
-            // The key for building the App Bundle is stored local by Thierry Odermatt
-            // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.release
         }
     }
