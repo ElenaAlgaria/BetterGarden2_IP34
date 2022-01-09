@@ -51,14 +51,14 @@ android {
         versionName flutterVersionName
     }
 
-    signingConfigs {
-        release {
-            keyAlias keystoreProperties['$BITRISEIO_ANDROID_KEYSTORE_ALIAS']
-            keyPassword keystoreProperties['$BITRISEIO_ANDROID_KEYSTORE_PASSWORD']
-            storeFile file(keystoreProperties['$BITRISEIO_ANDROID_KEYSTORE_URL'])
-            storePassword keystoreProperties['$BITRISEIO_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD']
-        }
-    }
+    //signingConfigs {
+    //    release {
+    //        keyAlias keystoreProperties['$BITRISEIO_ANDROID_KEYSTORE_ALIAS']
+    //        keyPassword keystoreProperties['$BITRISEIO_ANDROID_KEYSTORE_PASSWORD']
+    //        storeFile file(keystoreProperties['$BITRISEIO_ANDROID_KEYSTORE_URL'])
+    //        storePassword keystoreProperties['$BITRISEIO_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD']
+    //    }
+    //}
 
     buildTypes {
         release {
