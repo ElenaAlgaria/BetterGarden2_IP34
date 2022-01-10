@@ -45,7 +45,7 @@ android {
 
     defaultConfig {
         versionCode 2
-        version Name "2.1.6"
+        versionName "2.1.6"
         applicationId "bettergardens.fibl.fhnw.ch"
         minSdkVersion 23
         targetSdkVersion 30
