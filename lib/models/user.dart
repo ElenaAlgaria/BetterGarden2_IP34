@@ -123,6 +123,18 @@ class User extends ChangeNotifier {
     return true;
   }
 
+/*  User.fromMap(Map<String, dynamic> map,
+    {this.reference, StorageProvider storageProvider})
+    : _storage = storageProvider ??= StorageProvider.instance,
+    favoredObjects = map.containsKey('favoredObjects')
+      ? Map<String, int>.from(map['favoredObjects'] as Map)
+      :{},
+    gardenReferences*/
+
+/*  User.fromSnapshot(DocumentSnapshot snapshot)
+      *//*: this.fromMap(snapshot.data(), reference: snapshot.reference);*//*
+      : this.loadDetailsFromLoggedInUser();*/
+
   ///saves all information from the [User] Class to the database
   ///returns `false` if no user is logged in
   Future<bool> saveUser() async {

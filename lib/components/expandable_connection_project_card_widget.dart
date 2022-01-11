@@ -276,7 +276,8 @@ class _ExpandableConnectionProjectCardState
                 padding: const EdgeInsets.only(left: 16, bottom: 15),
                 child: Text(
                  // widget.object.gardens.map((e) => ServiceProvider.instance.gardenService.getGardenByReference(e).name).join('\n'),
-                  getLinksOfGardensOfProject(widget.object.gardens).join('\n'),
+                 getLinksOfGardensOfProject(widget.object.gardens).join('\n'),
+
 
                 )
               )
@@ -292,9 +293,9 @@ class _ExpandableConnectionProjectCardState
     List<Garden> gardens = <Garden>[];
     gardens.addAll(gardenRef.map((e) => ServiceProvider.instance.gardenService.getGardenByReference(e)));
     List<String> gardenNames = <String>[];
-    gardenNames.addAll(gardens.map((e) => e.name));
+    gardenNames.addAll(gardens.map((e) => e.name + " von " + e.owner));
 
-    // TODO: return every gardenName with a link, with which you access the map with the location of the garden  and open the corresponding expandable card
+    // TODO: return every gardenName with a link, with which you access the map with the location of the garden and open the corresponding expandable card
     return gardenNames;
   }
 
