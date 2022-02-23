@@ -7,6 +7,7 @@ import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/user.dart';
+import 'package:biodiversity/screens/map_page/project_already_exists_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -115,7 +116,19 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                                     if (!_formkey.currentState.validate()) {
                                       return;
                                     } else {
-                                      saveProject();
+                                      var species =
+                                          getJoinableConnectionProjectsForSpecies(
+                                              _currentSpecies, _selectedGarden);
+                                      if (species != null) {
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ProjectAlreadyExistsPage(species)),
+                                        );
+                                      } else {
+                                        saveProject();
+                                      }
                                     }
                                   },
                                   label: Text("Vernetzungsprojekt starten"),
@@ -169,5 +182,28 @@ class _CreateProjectPageState extends State<CreateProjectPage>
       textField: 'display',
       valueField: 'value',
     );
+  }
+
+  ConnectionProject getJoinableConnectionProjectsForSpecies(
+      Species specie, Garden garden) {
+    return ServiceProvider.instance.connectionProjectService
+        .getAllConnectionProjects()
+        .where((element) => !element.gardens.contains(garden.reference))
+        .where((element) => element.targetSpecies.path == specie.reference.path)
+        .where((element) => getConnectionProjectsInRadius(
+            garden,
+            element,
+            ServiceProvider.instance.speciesService
+                .getSpeciesByReference(element.targetSpecies)
+                .radius)).first;
+  }
+
+  bool getConnectionProjectsInRadius(
+      Garden garden, ConnectionProject projectToCompareWith, int radius) {
+   var x = projectToCompareWith.gardens
+        .map((e) =>
+        ServiceProvider.instance.gardenService.getGardenByReference(e))
+        .any((element) => element.isInRange(element, garden, radius));
+    return x;
   }
 }
