@@ -59,6 +59,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
             ),
             ConnectionProjectListWidget(
               objects: getJoinedConnectionProjects(),
+              joinedProject: true,
             ),
             const Padding(
               padding: EdgeInsets.all(20),
@@ -69,6 +70,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
             ),
             ConnectionProjectListWidget(
               objects: getJoinableConnectionProjects(),
+              joinedProject: false,
             ),
           ],
         ),

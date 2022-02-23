@@ -3,6 +3,7 @@ import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/user.dart';
+import 'package:biodiversity/screens/project_page/project_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:biodiversity/services/services_library.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,9 @@ class ExpandableConnectionProjectCard extends StatefulWidget {
   /// if this flag is set, the card is used for species and hinzufügen and merken will be changed to Aktivitätsradius and merken
   final bool isSpecies;
 
+  ///If this flag is set, the button "Beitreten" will be shown. Else, the Button "Vernetzungsprojekt verlassen" will be shown
+  final bool joinedProject;
+
   /// additional Info to be displayed instead of hinzufügen and merken buttons.
   /// the Buttons will be automatically removed if this string is set
   final String additionalInfo;
@@ -35,6 +39,7 @@ class ExpandableConnectionProjectCard extends StatefulWidget {
   ExpandableConnectionProjectCard(this.object,
       {hideLikeAndAdd = false,
       this.additionalInfo,
+      this.joinedProject,
       arrangeLikeAndAddAsRow = false,
       ServiceProvider serviceProvider,
       Key key})
@@ -265,6 +270,25 @@ class _ExpandableConnectionProjectCardState
                   textAlign: TextAlign.left,
                 ),
               ),
+              Padding(
+                  padding: const EdgeInsets.only(left: 8, bottom: 15),
+                  child: TextButton(
+                    onPressed: () {
+                      if (_expanded) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ProjectPage(
+                                  project: widget.object,
+                                  joinedProject: widget.joinedProject)),
+                        );
+                      }
+                    },
+                    child: const Text(
+                      'Weitere Infos',
+                      style: TextStyle(decoration: TextDecoration.underline),
+                    ),
+                  )),
             ],
           ),
         ],
