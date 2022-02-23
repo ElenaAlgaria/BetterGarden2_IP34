@@ -2,6 +2,7 @@ import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/join_connection_project_popup_button.dart';
 import 'package:biodiversity/components/leave_connection_project_button.dart';
 import 'package:biodiversity/models/connection_project.dart';
+import 'package:biodiversity/screens/project_page/edit_project_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -64,6 +65,25 @@ class _ProjectPageState extends State<ProjectPage> {
             widget.joinedProject
                 ? leaveConnectionProjectButton(connectionProject: project)
                 : joinConnectionProjectButton(connectionProject: project),
+            Padding(
+              padding: const EdgeInsets.only(left: 8, bottom: 15),
+              child: TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            EditProjectPage(
+                                project: widget.project,
+                            )),
+                  );
+                },
+                child: const Text(
+                  'Bearbeiten',
+                  style: TextStyle(decoration: TextDecoration.underline),
+                ),
+              ),
+            )
           ],
         ),
       ),
