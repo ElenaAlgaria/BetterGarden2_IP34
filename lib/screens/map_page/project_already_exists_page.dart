@@ -1,17 +1,20 @@
-import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/join_connection_project_popup_button.dart';
-import 'package:biodiversity/components/leave_connection_project_button.dart';
+import 'package:biodiversity/models/connection_project.dart';
+import 'package:biodiversity/screens/project_page/create_project_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
 
 class ProjectAlreadyExistsPage extends StatelessWidget {
-  ProjectAlreadyExistsPage({Key key}) : super(key: key);
 
-  var testProj = ServiceProvider.instance.connectionProjectService
-      .getAllConnectionProjects()
-      .where((element) =>
-          element.reference.id == 'ff71ce2b-6e8f-48fe-94b5-b7b4ce0a7f22')
-      .first;
+  final ConnectionProject connectionProject;
+
+  ProjectAlreadyExistsPage(this.connectionProject, {Key key}) : super(key: key);
+
+  //var testProj = ServiceProvider.instance.connectionProjectService
+  //    .getAllConnectionProjects()
+  //    .where((element) =>
+  //        element.reference.id == 'ff71ce2b-6e8f-48fe-94b5-b7b4ce0a7f22')
+  //    .first;
 
   @override
   Widget build(BuildContext context) {
@@ -28,14 +31,17 @@ class ProjectAlreadyExistsPage extends StatelessWidget {
             padding: const EdgeInsets.all(25.0),
             child: Column(children: [
               joinConnectionProjectButton(
-                connectionProject: testProj,
+                connectionProject: connectionProject,
+
               ),
               TextButton(
                 onPressed: () {
-                  var widget;
-                  Navigator.canPop(context)
-                      ? Navigator.pop(context)
-                      : Navigator.push(context, widget.fallbackRoute);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            CreateProjectPage()),
+                  );
                 },
                 child: Row(
                   children: [
