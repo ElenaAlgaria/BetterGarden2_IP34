@@ -1,4 +1,4 @@
-package bettergardens.ch.biodiversity
+package bettergardens.fibl.fhnw.ch
 
 import io.flutter.embedding.android.FlutterActivity
 

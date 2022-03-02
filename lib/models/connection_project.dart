@@ -4,9 +4,7 @@ import 'dart:developer' as logging;
 import 'package:biodiversity/models/storage_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uuid/uuid.dart';
-
 
 // TODO update coordinates of a connectionProject
 // TODO and implement the logic.
@@ -21,9 +19,6 @@ class ConnectionProject extends ChangeNotifier {
 
   /// the time and date the object was created
   DateTime creationDate;
-
-  /// the coordinates as [GeoPoint] of the Address
-  GeoPoint coordinates;
 
   List<DocumentReference> gardens;
 
@@ -41,7 +36,6 @@ class ConnectionProject extends ChangeNotifier {
     description = '';
     targetSpecies = null;
     creationDate = DateTime.now();
-    coordinates = null;
     gardens = [];
     _isEmpty = true;
   }
@@ -60,9 +54,6 @@ class ConnectionProject extends ChangeNotifier {
         creationDate = map.containsKey('creationDate')
             ? (map['creationDate'] as Timestamp).toDate()
             : DateTime.now(),
-        coordinates = map.containsKey('coordinates')
-            ? (map['coordinates'] as GeoPoint)
-            : const GeoPoint(0, 0),
         gardens = map.containsKey('gardens')
             ? List<DocumentReference>.from(map['gardens'] as Iterable)
             : [],
@@ -86,8 +77,7 @@ class ConnectionProject extends ChangeNotifier {
       'title': title,
       'description': description,
       'targetSpecies': targetSpecies,
-      'coordinates' : coordinates,
-      'creationDate' : creationDate,
+      'creationDate': creationDate,
       'gardens': gardens
     });
   }
@@ -99,7 +89,6 @@ class ConnectionProject extends ChangeNotifier {
     targetSpecies = connectionProject.targetSpecies;
     gardens.clear();
     gardens.addAll(connectionProject.gardens);
-    coordinates = connectionProject.coordinates;
     creationDate = connectionProject.creationDate;
     reference = connectionProject.reference;
     _isEmpty = connectionProject._isEmpty;
@@ -123,17 +112,14 @@ class ConnectionProject extends ChangeNotifier {
     }
   }
 
-
-
   /// is true if this connectionproject is an empty placeholder
   bool get isEmpty => _isEmpty;
 
-  /// returns a [LatLng] object of the coordinates. Used for google Maps
-  LatLng getLatLng() {
-    if(coordinates == null) {
-      return const LatLng(0, 0);
-    } else {
-      return LatLng(coordinates.latitude, coordinates.longitude);
-    }
+  Future<void> deleteConnectionProject(
+      DocumentReference connectionProjectReference) async {
+    logging.log('Delete ConnectionProject $title');
+    final path = '/' + connectionProjectReference.path;
+    debugPrint(path.toString());
+    await _storage.database.doc(path).delete();
   }
 }

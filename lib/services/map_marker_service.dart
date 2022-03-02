@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:math';
 import 'dart:developer' as logging;
+import 'dart:math';
 
 import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
@@ -26,7 +26,7 @@ class MapMarkerService extends ChangeNotifier {
     _gardenStreamSubscription = _storage.database
         .collectionGroup('gardens')
         .snapshots()
-        .listen(_updateElements);
+        .listen(updateElements);
     _loadIcons();
   }
 
@@ -36,7 +36,7 @@ class MapMarkerService extends ChangeNotifier {
     super.dispose();
   }
 
-  void _updateElements(QuerySnapshot snapshots) {
+  void updateElements(QuerySnapshot snapshots) {
     _gardens.clear();
     _gardens.addAll(ServiceProvider.instance.gardenService.getAllGardens());
     _connectionProjects.clear();
@@ -113,8 +113,8 @@ class MapMarkerService extends ChangeNotifier {
     }
     var marker = Marker(
       markerId: MarkerId('joinableGarden' + garden.reference.id.toString()),
-      position: LatLng(
-          garden.getLatLng().latitude, garden.getLatLng().longitude),
+      position:
+          LatLng(garden.getLatLng().latitude, garden.getLatLng().longitude),
       icon: _icons['joinableGarden'],
       onTap: () {
         onTapCallback(garden);

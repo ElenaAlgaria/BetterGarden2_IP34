@@ -22,8 +22,7 @@ class DeleteElementGardenPage extends StatefulWidget {
   final InformationObject object;
 }
 
-class _DeleteElementGardenPageState
-    extends State<DeleteElementGardenPage> {
+class _DeleteElementGardenPageState extends State<DeleteElementGardenPage> {
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -42,13 +41,12 @@ class _DeleteElementGardenPageState
       saveCallback: () {
         Provider.of<Garden>(context, listen: false)
             .removeFromOwnedObjects(widget.object.name);
-          
-       Navigator.push(
+
+        Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => WhiteRedirectPage(
-                  'Element wurde entfernt',
-                  MyGarden())),
+              builder: (context) =>
+                  WhiteRedirectPage('Element wurde entfernt', MyGarden())),
         );
       },
       body: Column(
@@ -60,8 +58,7 @@ class _DeleteElementGardenPageState
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
-          const Text(
-              'Wollen Sie das ausgewählte Element wirklich löschen?'),
+          const Text('Wollen Sie das ausgewählte Element wirklich löschen?'),
           const SizedBox(height: 20),
           SimpleInformationObjectCard(
             widget.object,

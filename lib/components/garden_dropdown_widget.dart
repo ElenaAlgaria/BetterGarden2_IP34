@@ -20,9 +20,6 @@ class gardenDropDownState extends State<gardenDropDown> {
   Widget build(BuildContext context) {
     if (widget.gardensList == null || widget.gardensList.isEmpty) {
       throw ArgumentError('there are no gardens present for selection');
-    } else {
-      currentGarden = widget.gardensList.first;
-      widget.onGardenChanged(currentGarden);
     }
 
     return DropDownFormField(
@@ -35,6 +32,9 @@ class gardenDropDownState extends State<gardenDropDown> {
         });
       },
       onChanged: (value) {
+        setState(() {
+          currentGarden = value;
+        });
         widget.onGardenChanged(value);
       },
       dataSource: widget.gardensList.map((garden) {

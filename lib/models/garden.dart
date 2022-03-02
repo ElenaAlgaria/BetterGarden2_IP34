@@ -7,6 +7,7 @@ import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uuid/uuid.dart';
 
@@ -52,7 +53,6 @@ class Garden extends ChangeNotifier {
     gardenType = '';
     gardenType = '';
     ownedObjects = {};
-    ownedLinkingProjects = [];
     coordinates = const GeoPoint(0, 0);
     creationDate = DateTime.now();
     _isEmpty = true;
@@ -73,10 +73,6 @@ class Garden extends ChangeNotifier {
     }
   }
 
-  /// which Vernetzungsprojekte are contained in this garden
-  //TODO: Implement Vernetzungsprojekte and switch String to Vernetzungsprojekt
-  List<String> ownedLinkingProjects;
-
   /// creates a Garden from the provided Map.
   /// Used for database loading and testing
   Garden.fromMap(Map<String, dynamic> map,
@@ -90,9 +86,6 @@ class Garden extends ChangeNotifier {
         ownedObjects = map.containsKey('ownedObjects')
             ? Map<String, int>.from(map['ownedObjects'] as Map)
             : {},
-        ownedLinkingProjects = map.containsKey('ownedLinkingProjects')
-            ? List<String>.from(map['ownedLinkingProjects'] as Iterable)
-            : [],
         coordinates = map.containsKey('coordinates')
             ? (map['coordinates'] as GeoPoint)
             : const GeoPoint(0, 0),
@@ -123,7 +116,6 @@ class Garden extends ChangeNotifier {
       'ownedObjects': ownedObjects,
       'coordinates': coordinates,
       'creationDate': creationDate,
-      'ownedLinkingProjects': ownedLinkingProjects,
       'imageURL': imageURL,
     });
   }
@@ -135,8 +127,6 @@ class Garden extends ChangeNotifier {
     owner = garden.owner;
     ownedObjects.clear();
     ownedObjects.addAll(garden.ownedObjects);
-    ownedLinkingProjects.clear();
-    ownedLinkingProjects.addAll(garden.ownedLinkingProjects);
     coordinates = garden.coordinates;
     gardenType = garden.gardenType;
     creationDate = garden.creationDate;
@@ -161,29 +151,10 @@ class Garden extends ChangeNotifier {
     }
   }
 
-  /// add a LinkingProject to the garden
-  /// and saves the garden to the database
-  void addLinkingProject(String linkingProject) {
-    if (linkingProject != null &&
-        linkingProject.isNotEmpty &&
-        !ownedLinkingProjects.contains(linkingProject)) {
-      ownedLinkingProjects.add(linkingProject);
-      saveGarden();
-    }
-  }
-
   /// removes a element from the garden, changes are saved automatically
   void removeFromOwnedObjects(String object) {
     if (ownedObjects.containsKey(object)) {
       ownedObjects.remove(object);
-      saveGarden();
-    }
-  }
-
-  /// removes a element from the garden, changes are saved automatically
-  void removeFromLinkingProjects(String object) {
-    if (ownedLinkingProjects.contains(object)) {
-      ownedLinkingProjects.remove(object);
       saveGarden();
     }
   }
@@ -220,6 +191,17 @@ class Garden extends ChangeNotifier {
         .expand((element) => element.beneficialFor)
         .toSet()
         .length;
+  }
+
+  bool isInRange(Garden g1, Garden g2, int radius) {
+    debugPrint(g1.name + g2.name);
+    var distance = Geolocator.distanceBetween(
+      g1.getLatLng().latitude,
+      g1.getLatLng().longitude,
+      g2.getLatLng().latitude,
+      g2.getLatLng().longitude,
+    );
+    return distance <= radius * 2 && distance != 0.0;
   }
 
   /// count of area objects
