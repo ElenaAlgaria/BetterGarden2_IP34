@@ -228,7 +228,7 @@ class MyDrawer extends StatelessWidget {
                                 );
                               },
                             ),
-                            ListTile(
+                            /*ListTile(
                               title: const Text(
                                 'Warning',
                                 style: TextStyle(fontSize: 14),
@@ -240,7 +240,7 @@ class MyDrawer extends StatelessWidget {
                                       builder: (context) => ProjectAlreadyExistsPage()),
                                 );
                               },
-                            ),
+                            ), */
                           ],
                         ),
                       ),

@@ -3,6 +3,7 @@ import 'dart:developer' as logging;
 import 'package:biodiversity/components/garden_dropdown_widget.dart';
 import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/user.dart';
+import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -85,6 +86,7 @@ class joinConnectionProjectButtonState
                                               0, 20.0, 0, 0),
                                           child: ElevatedButton.icon(
                                             onPressed: () {
+
                                               if (!_formKey.currentState
                                                   .validate()) {
                                                 return;
@@ -102,7 +104,12 @@ class joinConnectionProjectButtonState
                                                               'Du bist dem Verbindungsprojekt erfolgreich beigetreten.')));
                                                   logging.log(
                                                       'Add garden \"${_selectedGarden.name}\" to connectionProject \"${widget.connectionProject.title}\"');
-                                                  Navigator.of(context).pop();
+                                                  Navigator.pushReplacement(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            MapsPage()),
+                                                  );
                                                 } else {
                                                   throw ArgumentError(
                                                       'garden already belongs to connectionProject');
