@@ -41,8 +41,6 @@ class RegisterForm extends StatefulWidget {
 
 class _RegisterFormState extends State<RegisterForm> {
   final _formKey = GlobalKey<FormState>();
-  String _name;
-  String _surname;
   String _nickname;
   String _email;
   String _password;
@@ -59,18 +57,6 @@ class _RegisterFormState extends State<RegisterForm> {
             onSaved: (value) => _nickname = value,
             validator: (value) =>
                 value.isEmpty ? 'Bitte ein Nickname eingeben' : null,
-          ),
-          TextFormField(
-            decoration: const InputDecoration(labelText: 'Name'),
-            onSaved: (value) => _name = value,
-            validator: (value) =>
-                value.isEmpty ? 'Bitte ein Name eingeben' : null,
-          ),
-          TextFormField(
-            decoration: const InputDecoration(labelText: 'Nachname'),
-            onSaved: (value) => _surname = value,
-            validator: (value) =>
-                value.isEmpty ? 'Bitte ein Nachname eingeben' : null,
           ),
           TextFormField(
               decoration: const InputDecoration(labelText: 'Email'),
@@ -170,8 +156,7 @@ class _RegisterFormState extends State<RegisterForm> {
       _formKey.currentState.save();
       final errorMessage =
           await Provider.of<biodiversity_user.User>(context, listen: false)
-              .registerWithEmail(_email, _password,
-                  name: _name, surname: _surname, nickname: _nickname);
+              .registerWithEmail(_email, _password, nickname: _nickname);
       if (errorMessage == null) {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => MyGarden()));
