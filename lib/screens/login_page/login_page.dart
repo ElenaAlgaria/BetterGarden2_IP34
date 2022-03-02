@@ -67,12 +67,6 @@ class LoginPage extends StatelessWidget {
                 signInFunction:
                     Provider.of<User>(context, listen: false).signInWithGoogle,
               ),
-        // SignInButton(
-        //   name: 'Facebook',
-        //   icon: FontAwesomeIcons.facebook,
-        //   signInFunction:
-        //       Provider.of<User>(context, listen: false).signInWithFacebook,
-        // ),
         TextButton(
             onPressed: () {
               Navigator.push(context,
