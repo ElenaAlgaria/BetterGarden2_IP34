@@ -31,7 +31,7 @@ class _AccountPage extends State<AccountPage> {
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(100),
           child: Container(
-            color: Theme.of(context).colorScheme.primaryVariant,
+            color: Theme.of(context).colorScheme.primary,
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: Row(
