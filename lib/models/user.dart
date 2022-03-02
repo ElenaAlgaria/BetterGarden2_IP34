@@ -299,6 +299,7 @@ class User extends ChangeNotifier {
     }
     final token = await googleAccount.authentication;
     final credential = GoogleAuthProvider.credential(idToken: token.idToken);
+
     final result = await _signInWithCredential(
         credential: credential,
         email: googleAccount.email,
@@ -408,14 +409,16 @@ class User extends ChangeNotifier {
       if (error.code == 'account-exists-with-different-credential') {
         return LoginResult('Sie haben sich bereits mit einem anderen Account'
             'registriert.');
-      }
-      if (error.code == 'invalid-email') {
+      } else if (error.code == 'invalid-email') {
         // This should not be possible,
         // since the email is fetched from the provider account
         return LoginResult('Deine Email adresse ist ungültig');
+      } else if (error.code == 'invalid-credentials') {
+        return LoginResult('Ein Fehler ist aufgetreten beim Abrufen deiner Logindaten.');
       }
+    } catch (e) {
+      return LoginResult('Ein Fehler ist aufgetreten. Versuche es erneut');
     }
-    return null;
   }
 
   ///Displays the google account selection popup and the privacy agreement.<br>
