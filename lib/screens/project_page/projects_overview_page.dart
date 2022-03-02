@@ -10,7 +10,6 @@ import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 
 /// Displays an overview of all ConnectionProjects
@@ -60,6 +59,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
             ),
             ConnectionProjectListWidget(
               objects: getJoinedConnectionProjects(),
+              joinedProject: true,
             ),
             const Padding(
               padding: EdgeInsets.all(20),
@@ -70,6 +70,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
             ),
             ConnectionProjectListWidget(
               objects: getJoinableConnectionProjects(),
+              joinedProject: false,
             ),
           ],
         ),
@@ -158,20 +159,11 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
         .toList();
   }
 
-  bool getConnectionProjectsInRadius(Garden gardenOfConnectionProject,
-      ConnectionProject projectToCompareWith, int radius) {
-    // Iterate through all gardens to compare them with the garden of the connectionProject
-    List<Garden> gardens = [];
-    bool contains = false;
-    for (var i in projectToCompareWith.gardens) {
-      gardens
-          .add(ServiceProvider.instance.gardenService.getGardenByReference(i));
-    }
-    for (var o in gardens) {
-      if (o.isInRange(o, gardenOfConnectionProject, radius)) {
-        contains = true;
-      }
-    }
-    return contains;
+  bool getConnectionProjectsInRadius(
+      Garden garden, ConnectionProject projectToCompareWith, int radius) {
+    return projectToCompareWith.gardens
+        .map((e) =>
+            ServiceProvider.instance.gardenService.getGardenByReference(e))
+        .any((element) => element.isInRange(element, garden, radius));
   }
 }

@@ -1,81 +1,123 @@
 stages:
-  - setup
-  - test
-  - build
-  - analyze
-  - deploy
+#  - test
+  - package
+  - test_deployment
+  - productive_deployment
 
+variables:
+  LC_ALL: "en_US.UTF-8"
+  LANG: "en_US.UTF-8"
 
-setup_phase:
-  stage: setup
-  script:
-    - flutter clean
-    #    - flutter channel stable
-    #    - flutter upgrade
-    - flutter pub upgrade
-    - flutter doctor --android-licenses
-    - flutter doctor -v
-    - flutter pub outdated
-    - echo "$PLAY_STORE_UPLOAD_KEY" | base64 --decode > android/key.jks
+.android_docker_image:
+  image: cirrusci/flutter:latest
+#  tags:
+#    - flutter-android
+
+.android_key_store:
+  extends: .android_docker_image
+  before_script:
+    # this will fetch the base64 encoded key store from our CI variables, decode it and place it underneath the path specified in build.gradle
+    - echo "$PLAY_STORE_UPLOAD_KEY" | base64 --decode > /builds/ip34-21vt/ip34-21vt_bettergarden2/mobile-front-end/android/app/key.jks
+    - echo "keystorePath=/builds/ip34-21vt/ip34-21vt_bettergarden2/mobile-front-end/android/app/key.jks" > signing.properties
+    - echo "keystorePassword=$KEYSTORE_PASSWORD" >> signing.properties
+    - echo "keyAlias=$ALIAS" >> signing.properties
+    - echo "keyPassword=$KEY_PASSWORD" >> signing.properties
+  artifacts:
+    paths:
+      - my.keystore
+      - signing.properties
+    expire_in: 10 mins
+
+.setup_fastlane_android:
+  extends: .android_key_store
+  before_script:
     - cd android/
-    - gem install bundler
+    # because the Docker container runs as root currently, we won't do any user-install. Otherwise, it will fail with
+    # $ gem install --user-install bundler
+    # ERROR:  Use --install-dir or --user-install but not both
+    - gem install bundler:1.17.2
     - bundle install
 
-flutter_test:
-  stage: test
-  allow_failure: true
-  before_script:
-    - flutter clean
-    - flutter pub upgrade
-    - flutter pub get
-  script:
-    - flutter test --no-null-assertions
+#.setup_fastlane_ios:
+#  before_script:
+#    - cd ios/
+#    - gem install --user-install bundler
+#    - bundle install --path vendor/bundle
+#    - bundle exec fastlane match
+#    - export FLUTTER_APP_VERSION=$(pubver -d ../. get)
+#  tags:
+#    - ios
+#  only:
+#    - master
+
+#test:
+#  extends: .android_docker_image
+#  stage: test
+#  allow_failure: true
+#  script:
+#    - flutter test --coverage
+#    - genhtml coverage/lcov.info --output=coverage
+#  artifacts:
+#    paths:
+#      - coverage/
+#    expire_in: 5 days
 
 build_android:
-  stage: build
-  before_script:
-    - flutter clean
-    - flutter pub upgrade
-    - flutter pub get
-  script:
-    - flutter build appbundle --debug
+  stage: package
+  extends: .android_key_store
+  script: flutter build apk --release --build-number=$CI_PIPELINE_ID
   artifacts:
     paths:
-      - build/app/outputs/
+      - build/app/outputs/apk/release/app-release.apk
+    expire_in: 1 day
 
+#build_ios:
+#  stage: package
+#  script:
+    # although fastlane also is capable of building the ipa, we are doing it with flutter to ensure it has the same versioning like the Android app
+#    - flutter build ios --release --build-number=$CI_PIPELINE_ID
+#  artifacts:
+#    untracked: true
+#    expire_in: 1 day
+#  tags:
+#    - ios
+#  only:
+#    - master
 
-analyze.sonarqube:
-  stage: analyze
-  image: ichlaffterlalu/sonar-scanner-flutter-cli:latest
-  allow_failure: false
-  script:
-    - sonar-scanner -Dsonar.host.url=https://www.cs.technik.fhnw.ch/sonarqube -Dsonar.language=flutter -Dsonar.sources=lib -Dsonar.tests=test -Dsonar.login=$CI_SONARQUBE_TOKEN -Dsonar.projectKey=BetterGardensv2 -Dsonar.projectName=BetterGardensv2
-
-pages:
-  stage: deploy
-  only:
-    - master
-    - development
-    - doc_generation
-  before_script:
-    - pkill -f '.*GradleDaemon.*' #make sure there is enough ram
-    - export PATH="$PATH:/usr/lib/dart/bin"
-    - export PATH="$PATH":"$HOME/snap/flutter/common/flutter/.pub-cache/bin"
-    - export PATH="$PATH":"/snap/flutter/current/bin"
-    - export FLUTTER_ROOT=$HOME/snap/flutter/common/flutter
-    - flutter pub global activate dartdoc
-  script:
-    - dartdoc
-    - cp -r doc/api public
-  artifacts:
-    paths:
-      - public
+# ios_testflight_beta_deployment:
+#   stage: test_deployment
+#   extends: .setup_fastlane_ios
+#   dependencies:
+#     - build_ios
+#   script: bundle exec fastlane beta
 
 android_play_store_internal_and_alpha_deployment:
-  stage: deploy
+  stage: test_deployment
+  extends: .setup_fastlane_android
+  dependencies:
+    - build_android
   before_script:
-    - gem install fastlane
-    - export PATH="$HOME/.fastlane/bin:$PATH"
+    - echo "$FASTFILE_JSON" > /builds/ip34-21vt/ip34-21vt_bettergarden2/mobile-front-end/android/app/fastfilejson.json
+    - gem install bundler:1.17.2
+    - bundle install
   script:
     - bundle exec fastlane upload_to_play_store_internal
- #   - bundle exec fastlane promote_internal_to_alpha
+    - bundle exec fastlane promote_internal_to_alpha
+
+# app_store_submit_to_review:
+#   stage: productive_deployment
+#   extends: .setup_fastlane_ios
+#   dependencies:
+#     - ios_testflight_beta_deployment
+#   script: bundle exec fastlane submit_review
+#  when: manual
+#  allow_failure: false
+
+android_play_store_productive_deployment:
+  stage: productive_deployment
+  extends: .setup_fastlane_android
+  dependencies:
+    - android_play_store_internal_and_alpha_deployment
+  script: bundle exec fastlane promote_alpha_to_production
+  when: manual
+  allow_failure: false
