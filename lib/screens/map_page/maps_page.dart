@@ -267,7 +267,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             },
           ),
           speciesListWidget(),
-          navigateToCreateGroupButton()
         ],
       ),
       floatingActionButton: Row(
@@ -301,22 +300,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           ),
       ),
     );
-  }
-
-  Widget navigateToCreateGroupButton() {
-    return Container(
-        margin: const EdgeInsets.fromLTRB(250, 0, 0, 0),
-        color: Colors.white,
-        child: IconButton(
-          icon: const Icon(Icons.add),
-          tooltip: 'Create new Group',
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => CreateProjectPage()),
-            );
-          },
-        ));
   }
 
   Widget speciesListWidget() {
