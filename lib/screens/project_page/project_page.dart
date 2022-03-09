@@ -26,11 +26,27 @@ class ProjectPage extends StatefulWidget {
 
 class _ProjectPageState extends State<ProjectPage> {
   ConnectionProject project;
+  ConnectionProject updatedProject;
 
   @override
   void initState() {
     project = widget.project;
+    updatedProject = project;
   }
+
+ /* @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    setState(() {
+      reloadConnectionProject();
+      build(context);
+    });
+  }*/
+
+ /* void reloadConnectionProject() {
+    project = updatedProject;
+  }*/
+
 
   @override
   Widget build(BuildContext context) {
@@ -68,15 +84,21 @@ class _ProjectPageState extends State<ProjectPage> {
             Padding(
               padding: const EdgeInsets.only(left: 8, bottom: 15),
               child: TextButton(
-                onPressed: () {
-                  Navigator.push(
+                onPressed: () async {
+                  final value = await Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
                             EditProjectPage(
                                 project: widget.project,
+                                onConnectionProjectChanged: (_currentConnectionProject) {
+                                  updatedProject = _currentConnectionProject;
+                                },
                             )),
                   );
+                  setState(() {
+                    project = updatedProject;
+                  });
                 },
                 child: const Text(
                   'Bearbeiten',
