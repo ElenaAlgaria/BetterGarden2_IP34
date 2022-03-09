@@ -400,6 +400,9 @@ class User extends ChangeNotifier {
       await _storage.auth.signInWithCredential(credential);
       _loggedIn = true;
       await loadDetailsFromLoggedInUser();
+      if (mail.isEmpty && email.isNotEmpty) {
+        updateUserData(newMail: email);
+      }
     } on FirebaseAuthException catch (error) {
       signOutCallback();
       if (error.code == 'account-exists-with-different-credential') {
