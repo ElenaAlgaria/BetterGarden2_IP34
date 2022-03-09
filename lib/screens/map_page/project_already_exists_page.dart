@@ -1,6 +1,6 @@
 import 'package:biodiversity/components/join_connection_project_popup_button.dart';
 import 'package:biodiversity/models/connection_project.dart';
-aimport 'package:biodiversity/models/garden.dart';
+import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
 import 'package:biodiversity/screens/project_page/projects_overview_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
