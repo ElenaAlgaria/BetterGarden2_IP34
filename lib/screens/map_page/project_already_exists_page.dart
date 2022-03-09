@@ -10,14 +10,9 @@ class ProjectAlreadyExistsPage extends StatelessWidget {
 
   ProjectAlreadyExistsPage(this.connectionProject, {Key key}) : super(key: key);
 
-  //var testProj = ServiceProvider.instance.connectionProjectService
-  //    .getAllConnectionProjects()
-  //    .where((element) =>
-  //        element.reference.id == 'ff71ce2b-6e8f-48fe-94b5-b7b4ce0a7f22')
-  //    .first;
-
   @override
   Widget build(BuildContext context) {
+    debugPrint("Substring: " + connectionProject.targetSpecies.toString().substring(48, connectionProject.targetSpecies.toString().length-1));
     return Scaffold(
       //appBar: AppBar(title: const Text('Testsite')),
       //drawer: MyDrawer(),
@@ -30,6 +25,8 @@ class ProjectAlreadyExistsPage extends StatelessWidget {
         Padding(
             padding: const EdgeInsets.all(25.0),
             child: Column(children: [
+              ServiceProvider.instance.imageService
+                  .getImage(connectionProject.targetSpecies.toString().substring(48, connectionProject.targetSpecies.toString().length-1), "species"),
               joinConnectionProjectButton(
                 connectionProject: connectionProject,
 

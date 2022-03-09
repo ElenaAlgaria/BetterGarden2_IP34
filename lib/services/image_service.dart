@@ -165,7 +165,7 @@ class ImageService extends ChangeNotifier {
     }
     if (!doc.exists || !doc.data().containsKey('downloadURL')) {
       if (name != 'default') {
-        final url = await getImageURL('default', '');
+        final url = await getImageURL(name, '');
         if (url != null) _urls[key] = url;
         return url;
       }
@@ -187,7 +187,7 @@ class ImageService extends ChangeNotifier {
     final doc = await _storage.database.doc('imageReferences/$key').get();
     if (!doc.exists || !doc.data().containsKey('copyright')) {
       if (name != 'default') {
-        final copyright = await getImageCopyright('default');
+        final copyright = await getImageCopyright(name);
         if (copyright != null) _copyrightInfo[key] = copyright;
         return copyright;
       }
