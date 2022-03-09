@@ -607,7 +607,7 @@ class User extends ChangeNotifier {
       await _storage.auth.currentUser.delete();
       return 'Der Account wurde erfolgreich entfernt';
     } on FirebaseAuthException {
-      return 'Etwas is schiefgelaufen';
+      return 'Etwas ist schiefgelaufen';
     }
   }
 
