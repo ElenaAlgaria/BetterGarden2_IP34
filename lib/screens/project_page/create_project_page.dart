@@ -124,7 +124,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  ProjectAlreadyExistsPage(species)),
+                                                  ProjectAlreadyExistsPage(species, _selectedGarden)),
                                         );
                                       } else {
                                         saveProject();

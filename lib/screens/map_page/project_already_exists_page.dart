@@ -1,19 +1,22 @@
 import 'package:biodiversity/components/join_connection_project_popup_button.dart';
 import 'package:biodiversity/models/connection_project.dart';
+aimport 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
 import 'package:biodiversity/screens/project_page/projects_overview_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProjectAlreadyExistsPage extends StatelessWidget {
 
   final ConnectionProject connectionProject;
+  Garden selectedGarden;
 
-  ProjectAlreadyExistsPage(this.connectionProject, {Key key}) : super(key: key);
+  ProjectAlreadyExistsPage(this.connectionProject, this.selectedGarden, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("Substring: " + connectionProject.targetSpecies.toString().substring(48, connectionProject.targetSpecies.toString().length-1));
+    Provider.of<Garden>(context).switchGarden(selectedGarden);
     return Scaffold(
       body: ListView(children: <Widget>[
         const SizedBox(height: 30),
