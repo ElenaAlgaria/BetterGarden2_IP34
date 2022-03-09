@@ -13,11 +13,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class EditProjectPage extends StatefulWidget {
+  final ValueChanged<ConnectionProject> onConnectionProjectChanged;
   final ConnectionProject project;
 
   EditProjectPage(
       {Key key,
       Species currentSpecies,
+      this.onConnectionProjectChanged,
       this.project,})
       : super(key: key);
 
@@ -145,6 +147,8 @@ class _EditProjectPageState extends State<EditProjectPage>
     _currentConnectionProject.title = _titleController.text;
     _currentConnectionProject.description = _descriptionController.text;
     _currentConnectionProject.saveConnectionProject();
+
+    widget.onConnectionProjectChanged(_currentConnectionProject);
 
     log('updated following connectionProject');
     log(_currentConnectionProject.title);
