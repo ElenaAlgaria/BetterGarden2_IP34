@@ -400,6 +400,9 @@ class User extends ChangeNotifier {
       await _storage.auth.signInWithCredential(credential);
       _loggedIn = true;
       await loadDetailsFromLoggedInUser();
+      if (mail.isEmpty && email.isNotEmpty) {
+        updateUserData(newMail: email);
+      }
     } on FirebaseAuthException catch (error) {
       signOutCallback();
       if (error.code == 'account-exists-with-different-credential') {
@@ -607,7 +610,7 @@ class User extends ChangeNotifier {
       await _storage.auth.currentUser.delete();
       return 'Der Account wurde erfolgreich entfernt';
     } on FirebaseAuthException {
-      return 'Etwas is schiefgelaufen';
+      return 'Etwas ist schiefgelaufen';
     }
   }
 
