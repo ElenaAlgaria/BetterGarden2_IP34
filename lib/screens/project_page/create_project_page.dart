@@ -125,7 +125,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  ProjectAlreadyExistsPage(species)),
+                                                  ProjectAlreadyExistsPage(species, _selectedGarden)),
                                         );
                                       } else {
                                         saveProject();
@@ -187,16 +187,19 @@ class _CreateProjectPageState extends State<CreateProjectPage>
 
   ConnectionProject getJoinableConnectionProjectsForSpecies(
       Species specie, Garden garden) {
-    return ServiceProvider.instance.connectionProjectService
+    var project = ServiceProvider.instance.connectionProjectService
         .getAllConnectionProjects()
         .where((element) => !element.gardens.contains(garden.reference))
         .where((element) => element.targetSpecies.path == specie.reference.path)
         .where((element) => getConnectionProjectsInRadius(
-            garden,
-            element,
-            ServiceProvider.instance.speciesService
-                .getSpeciesByReference(element.targetSpecies)
-                .radius)).first;
+        garden,
+        element,
+        ServiceProvider.instance.speciesService
+            .getSpeciesByReference(element.targetSpecies)
+            .radius)).toList();
+    if(project.isNotEmpty){
+      return project.first;
+    }
   }
 
   bool getConnectionProjectsInRadius(
