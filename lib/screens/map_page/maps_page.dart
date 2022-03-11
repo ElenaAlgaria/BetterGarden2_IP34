@@ -517,8 +517,8 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             heroTag: null,
             tooltip: 'Vernetzungsprojekt erstellen',
             backgroundColor: Theme.of(context).cardColor,
-            onPressed: () {
-              Navigator.push(
+            onPressed: () async {
+              final value = await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => CreateProjectPage(),
@@ -529,6 +529,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                   ),
                 ),
               );
+              setState(() {
+                initState();
+              });
             },
             child: Icon(icons[2], color: Theme.of(context).backgroundColor),
           ),
