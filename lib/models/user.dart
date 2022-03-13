@@ -443,6 +443,7 @@ class User extends ChangeNotifier {
     return result;
   }
 
+
   /// Registers a user with the provided email address and password.
   /// An email will be sent to confirm the users email address.<br>
   /// The User is not logged in afterwards.
@@ -470,6 +471,12 @@ class User extends ChangeNotifier {
         return 'Something went wrong.';
       }
     }
+    return null;
+  }
+
+  Future<String> saveNickname({String nickname, String name, String surname})async {
+    updateUserData(newName: name, newSurname: surname, newNickname: nickname);
+
     return null;
   }
 
