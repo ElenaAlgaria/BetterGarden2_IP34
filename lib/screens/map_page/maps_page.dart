@@ -266,6 +266,19 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                   .selectedLocation = pos;
             },
           ),
+          Positioned(
+              top: 60,
+              right: 20,
+              child: CircleAvatar(
+                  radius: 20,
+                  backgroundColor: Color(0xfffefffc),
+                  child: IconButton(
+                    icon: const Icon(Icons.layers_outlined,
+                        color: Color(0xff6c6c6c)),
+                    onPressed: () {
+                      displayModalBottomOverlayLayers(this.context);
+                    },
+                  ))),
           speciesListWidget(),
         ],
       ),
@@ -343,6 +356,66 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             },
           ))
     ]));
+  }
+
+  Future<Widget> displayModalBottomOverlayLayers(BuildContext context) async {
+    return await showModalBottomSheet(
+        barrierColor: Colors.transparent,
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20.0),
+          topRight: Radius.circular(20.0),
+        )),
+        context: context,
+        isScrollControlled: true,
+        builder: (context) {
+          return DraggableScrollableSheet(
+              initialChildSize: 0.18,
+              minChildSize: 0.1,
+              expand: false,
+              builder: (context, scrollController) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                  child: ListView(
+                    controller: scrollController,
+                    children: <Widget>[
+                      const Icon(
+                        Icons.horizontal_rule_rounded,
+                        color: Color(0xFFE36F00),
+                        size: 34.0,
+                      ),
+                      ButtonBar(
+                        alignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ElevatedButton(
+                            child: const Text('Gardens'),
+                            onPressed: (){
+                            },
+                          ),
+                          ElevatedButton(
+                            child: const Text('Projects'),
+                            onPressed: (){
+                            },
+                          ),
+                          ElevatedButton(
+                            child: const Text('Species'),
+                            onPressed: (){
+                            },
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                );
+              });
+        }).whenComplete(() => {
+          setState(() {
+            _markers = Set<Marker>.of(_markersHistory);
+            _circles.clear();
+          })
+        });
   }
 
   Future<Widget> displayModalBottomSheetGarden(BuildContext context) async {
@@ -445,7 +518,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                         Icons.horizontal_rule_rounded,
                         color: Color(0xFFE36F00),
                         size: 34.0,
-
                       ),
                       TextFieldWithDescriptor('Verbindungsprojekt',
                           Text(_tappedConnectionProject.title ?? '')),
