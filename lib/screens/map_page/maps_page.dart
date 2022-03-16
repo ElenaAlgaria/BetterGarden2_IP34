@@ -51,15 +51,23 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   final double _zoom = 14.0;
 
   Set<Marker> _allGardenMarkers = {};
-  Set<Marker> _allGardenMarkersHistory = {};
-  bool _allGardenMarkersVisible = false;
-  Set<Marker> _allConnectionProjectMarkers = {};
-  Set<Marker> _allConnectionProjectMarkersHistory = {};
-  bool _allConnectionProjectMarkersVisible = false;
-  Set<Marker> _joinableConnectionProjectMarkers = {};
-  Set<Marker> _joinableConnectionProjectHistory = {};
-  bool _joinableGardenConnectionProjectMarkers = false;
+  bool _allGardenMarkersVisible = true;
 
+  Set<Marker> _allConnectionProjectMarkers = {};
+  bool _allConnectionProjectMarkersVisible = true;
+
+  Set<Marker> _joinableConnectionProjectMarkers = {};
+
+  Set<Marker> assembleMarkers() {
+    Set<Marker> tempMarkerSet = {};
+    if (_allGardenMarkersVisible) {
+      tempMarkerSet.addAll(_allGardenMarkers);
+    }
+    if (_allConnectionProjectMarkersVisible) {
+      tempMarkerSet.addAll(_allConnectionProjectMarkers);
+    }
+    return tempMarkerSet;
+  }
 
   List<Circle> _circles = [];
 
@@ -72,7 +80,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-
     _allGardens = ServiceProvider.instance.gardenService.getAllGardens();
     for (var g in _allGardens) {
       ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(g,
@@ -141,7 +148,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
 
   void displayConnectionProjectGardensWithCircles(
       DocumentReference connectionProjectReferences) {
-    _allConnectionProjectMarkersHistory = Set<Marker>.of(_allConnectionProjectMarkers);
+    _allConnectionProjectMarkersVisible = false;
 
     var connectionProject = ServiceProvider.instance.connectionProjectService
         .getConnectionProjectByReference(connectionProjectReferences);
@@ -259,7 +266,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             rotateGesturesEnabled: false,
             mapToolbarEnabled: false,
             mapType: MapType.hybrid,
-            markers: {..._allConnectionProjectMarkers, ..._joinableConnectionProjectMarkers, ..._allGardenMarkers},
+            markers: assembleMarkers(),
             circles: _circles.toSet(),
             onCameraIdle: () {
               mapController.getVisibleRegion().then((bounds) {
@@ -401,19 +408,29 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                         children: [
                           ElevatedButton(
                             child: const Text('Gardens'),
-                            onPressed: (){
+                            onPressed: () {
+                              _allGardenMarkersVisible =
+                                  !_allGardenMarkersVisible;
+                              setState(() {
+                              });
                             },
                           ),
                           ElevatedButton(
                             child: const Text('Projects'),
-                            onPressed: (){
+                            onPressed: () {
+                              _allConnectionProjectMarkersVisible =
+                                  !_allConnectionProjectMarkersVisible;
+                              setState(() {
+                              });
                             },
                           ),
-                          ElevatedButton(
-                            child: const Text('Species'),
-                            onPressed: (){
+                          /* ElevatedButton(
+                            child: const Text('Joinable Projects'),
+                            onPressed: () {
+                              _joinableConnectionProjectMarkersVisible =
+                                  !_joinableConnectionProjectMarkersVisible;
                             },
-                          ),
+                          ),*/
                         ],
                       )
                     ],
@@ -421,10 +438,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 );
               });
         }).whenComplete(() => {
-          setState(() {
-            _allConnectionProjectMarkers = Set<Marker>.of(_allConnectionProjectMarkersHistory);
-            _circles.clear();
-          })
+
         });
   }
 
@@ -551,7 +565,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               });
         }).whenComplete(() => {
           setState(() {
-            _allConnectionProjectMarkers = Set<Marker>.of(_allConnectionProjectMarkersHistory);
+            _allConnectionProjectMarkersVisible = true;
             _circles.clear();
           })
         });

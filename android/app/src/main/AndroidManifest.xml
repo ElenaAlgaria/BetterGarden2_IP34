@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
 
     <application
-            android:name="io.flutter.app.FlutterApplication"
+            android:name="${applicationName}"
             android:label="Better Gardens"
             android:icon="@mipmap/ic_launcher"
             android:requestLegacyExternalStorage="true">
@@ -21,7 +21,7 @@
                    android:value="AIzaSyCluGMsV1MadS-nQpHqkmCe7OgV4-pTUek"/>
 
         <activity
-                android:name=".MainActivity"
+                android:name="io.flutter.embedding.android.FlutterActivity"
                 android:exported="true"
                 android:launchMode="singleTop"
                 android:theme="@style/LaunchTheme"

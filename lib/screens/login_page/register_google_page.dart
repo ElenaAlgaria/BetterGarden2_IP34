@@ -4,7 +4,7 @@ import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'nickname_form.dart';
+import 'package:biodiversity/screens/login_page/nickname_form.dart';
 
 /// Page that handles the registration with google.
 /// The page itself doesn't contain any content
