@@ -11,11 +11,14 @@ import 'package:biodiversity/screens/map_page/project_already_exists_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 class CreateProjectPage extends StatefulWidget {
+  final ValueChanged<ConnectionProject> onConnectionProjectAdded;
+
   /// Display the create project page
-  CreateProjectPage({Key key, Species currentSpecies}) : super(key: key);
+  CreateProjectPage({Key key, this.onConnectionProjectAdded, Species currentSpecies}) : super(key: key);
 
   @override
   _CreateProjectPageState createState() => _CreateProjectPageState();
@@ -145,6 +148,8 @@ class _CreateProjectPageState extends State<CreateProjectPage>
     newConnectionProject.gardens.add(_selectedGarden.reference);
     newConnectionProject.targetSpecies = _currentSpecies.reference;
     newConnectionProject.saveConnectionProject();
+
+    widget.onConnectionProjectAdded(newConnectionProject);
 
     log('saved following connectionProject');
     log(_currentSpecies.name);

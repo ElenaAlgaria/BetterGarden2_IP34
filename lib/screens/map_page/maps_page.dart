@@ -40,6 +40,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   AnimationController _fabController;
   Garden _tappedGarden = Garden.empty();
   ConnectionProject _tappedConnectionProject = ConnectionProject.empty();
+  ConnectionProject _newConnectionProjet = ConnectionProject.empty();
 
   static const List<IconData> icons = [
     Icons.playlist_add,
@@ -114,6 +115,36 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
+  }
+
+  void addNewConnectionProjectMarker() {
+    _allGardens = ServiceProvider.instance.gardenService.getAllGardens();
+    for (var g in _allGardens) {
+      ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(g,
+          onTapCallback: (element) {
+            setState(() {
+              _tappedGarden = element;
+            });
+            displayModalBottomSheetGarden(context);
+          }).then((marker) {
+        setState(() {
+          _markers.add(marker);
+        });
+      });
+    }
+
+    ServiceProvider.instance.mapMarkerService.getConnectionProjectMarkerSet(
+        onTapCallback: (element) {
+          setState(() {
+            _tappedConnectionProject = element;
+          });
+          displayModalBottomSheetConnectionProject(context);
+          displayConnectionProjectGardensWithCircles(element.reference);
+        }).then((markers) {
+      setState(() {
+        _markers.addAll(markers);
+      });
+    });
   }
 
   void modifyPerimeterCircle(String name) {
@@ -613,11 +644,15 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             heroTag: null,
             tooltip: 'Vernetzungsprojekt erstellen',
             backgroundColor: Theme.of(context).cardColor,
-            onPressed: () {
-              Navigator.push(
+            onPressed: () async {
+              final value = await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => CreateProjectPage(),
+                  builder: (context) => CreateProjectPage(
+                    onConnectionProjectAdded: (newConnectionProject) {
+                      _newConnectionProjet = newConnectionProject;
+                    },
+                  ),
                   settings: RouteSettings(
                     arguments: speciesList.firstWhereOrNull(
                             (element) => element.name == _currentSpecies) ??
@@ -625,6 +660,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                   ),
                 ),
               );
+              setState(() {
+                addNewConnectionProjectMarker();
+              });
             },
             child: Icon(icons[2], color: Theme.of(context).backgroundColor),
           ),
