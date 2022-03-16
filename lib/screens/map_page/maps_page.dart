@@ -49,8 +49,17 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   ];
   var _currentSpecies;
   final double _zoom = 14.0;
-  Set<Marker> _markers = {};
-  Set<Marker> _markersHistory = {};
+
+  Set<Marker> _allGardenMarkers = {};
+  Set<Marker> _allGardenMarkersHistory = {};
+  bool _allGardenMarkersVisible = false;
+  Set<Marker> _allConnectionProjectMarkers = {};
+  Set<Marker> _allConnectionProjectMarkersHistory = {};
+  bool _allConnectionProjectMarkersVisible = false;
+  Set<Marker> _joinableConnectionProjectMarkers = {};
+  Set<Marker> _joinableConnectionProjectHistory = {};
+  bool _joinableGardenConnectionProjectMarkers = false;
+
 
   List<Circle> _circles = [];
 
@@ -74,7 +83,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         displayModalBottomSheetGarden(context);
       }).then((marker) {
         setState(() {
-          _markers.add(marker);
+          _allGardenMarkers.add(marker);
         });
       });
     }
@@ -88,7 +97,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       displayConnectionProjectGardensWithCircles(element.reference);
     }).then((markers) {
       setState(() {
-        _markers.addAll(markers);
+        _allConnectionProjectMarkers.addAll(markers);
       });
     });
 
@@ -132,7 +141,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
 
   void displayConnectionProjectGardensWithCircles(
       DocumentReference connectionProjectReferences) {
-    _markersHistory = Set<Marker>.of(_markers);
+    _allConnectionProjectMarkersHistory = Set<Marker>.of(_allConnectionProjectMarkers);
 
     var connectionProject = ServiceProvider.instance.connectionProjectService
         .getConnectionProjectByReference(connectionProjectReferences);
@@ -184,10 +193,11 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         displayModalBottomSheetGarden(context);
       }).then((marker) {
         setState(() {
-          _markers.removeWhere((element) =>
+          _joinableConnectionProjectMarkers = {..._allConnectionProjectMarkers};
+          _joinableConnectionProjectMarkers.removeWhere((element) =>
               element.markerId.value ==
               'garden' + gardenOfConnectionProject.reference.id);
-          _markers.add(marker);
+          _joinableConnectionProjectMarkers.add(marker);
         });
       });
     }
@@ -249,7 +259,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             rotateGesturesEnabled: false,
             mapToolbarEnabled: false,
             mapType: MapType.hybrid,
-            markers: _markers,
+            markers: {..._allConnectionProjectMarkers, ..._joinableConnectionProjectMarkers, ..._allGardenMarkers},
             circles: _circles.toSet(),
             onCameraIdle: () {
               mapController.getVisibleRegion().then((bounds) {
@@ -412,7 +422,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               });
         }).whenComplete(() => {
           setState(() {
-            _markers = Set<Marker>.of(_markersHistory);
+            _allConnectionProjectMarkers = Set<Marker>.of(_allConnectionProjectMarkersHistory);
             _circles.clear();
           })
         });
@@ -541,7 +551,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               });
         }).whenComplete(() => {
           setState(() {
-            _markers = Set<Marker>.of(_markersHistory);
+            _allConnectionProjectMarkers = Set<Marker>.of(_allConnectionProjectMarkersHistory);
             _circles.clear();
           })
         });
