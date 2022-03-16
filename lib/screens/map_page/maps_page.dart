@@ -128,7 +128,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             displayModalBottomSheetGarden(context);
           }).then((marker) {
         setState(() {
-          _markers.add(marker);
+          _allGardenMarkers.add(marker);
         });
       });
     }
@@ -142,7 +142,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           displayConnectionProjectGardensWithCircles(element.reference);
         }).then((markers) {
       setState(() {
-        _markers.addAll(markers);
+        _allConnectionProjectMarkers.addAll(markers);
       });
     });
   }
