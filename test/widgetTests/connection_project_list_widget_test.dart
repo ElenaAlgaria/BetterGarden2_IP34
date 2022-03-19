@@ -10,38 +10,36 @@ import '../environment/mock_service_provider.dart';
 import '../environment/mock_storage_provider.dart';
 
 void main() {
-  ConnectionProject cp1 = ConnectionProject.empty();
-  cp1.title = "Connection Project 1";
-  cp1.description = "This is Connection Project 1";
 
-  ConnectionProject cp2 = ConnectionProject.empty();
-  cp2.title = "Connection Project 2";
-  cp2.description = "This is Connection Project 2";
-
-  group('test list content', () {
+/*  group('test list content', () {
     final storage = MockStorageProvider();
     final service = MockServiceProvider(storageProvider: storage);
-    final list = <ConnectionProject>[];
-    list.add(cp1);
-    list.add(cp2);
-
-    testWidgets('test if all ConnectionProjects are present on the list',
-        (tester) async {
-      await setUpBiodiversityEnvironment(
-          tester: tester,
-          widget: Scaffold(
-            body: ConnectionProjectListWidget(
-              objects: list,
-              serviceProvider: service,
+    for (final obj in [ConnectionProject]) {
+      final list = <ConnectionProject>[];
+      for (var i = 0; i < 5; i++) {
+        if (obj == ConnectionProject) {
+          list.add(ConnectionProject.fromMap({'name': 'connection-project$i'},
+              storageProvider: storage));
+        }
+      }
+      testWidgets('test if all ConnectionProjects are present on the list',
+          (tester) async {
+        await setUpBiodiversityEnvironment(
+            tester: tester,
+            widget: Scaffold(
+              body: ConnectionProjectListWidget(
+                objects: list,
+                serviceProvider: service,
+              ),
             ),
-          ),
-          storageProvider: storage);
-      expect(
-        find.byType(ExpandableConnectionProjectCard, skipOffstage: false),
-        findsNWidgets(list.length),
-        reason: 'an expandable card was not present in the list');
-    });
-  });
+            storageProvider: storage);
+        expect(
+            find.byType(ExpandableConnectionProjectCard, skipOffstage: false),
+            findsNWidgets(list.length),
+            reason: 'an expandable card was not present in the list');
+      });
+    }
+  });*/
 
   group('basic test', () {
     final storage = MockStorageProvider();
@@ -64,7 +62,7 @@ void main() {
             reason: 'should not find card in empty list');
         expect(find.text('Leider keine Einträge vorhanden'), findsOneWidget,
             reason:
-            'Message missing which tells the user that there is no card');
+                'Message missing which tells the user that there is no card');
       }
     });
     testWidgets('test if search is present', (tester) async {
@@ -84,6 +82,4 @@ void main() {
       }
     });
   });
-
-
 }
