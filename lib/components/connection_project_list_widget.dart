@@ -140,7 +140,7 @@ class _ConnectionProjectListWidgetState
           Flexible(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: filteredItems.isEmpty
+              child: filteredItems == null || filteredItems.isEmpty
                   ? Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,

@@ -5,6 +5,7 @@ import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:biodiversity/services/services_library.dart';
+import 'package:biodiversity/services/user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -31,6 +32,8 @@ class ExpandableConnectionProjectCard extends StatefulWidget {
   final String additionalInfo;
 
   final ServiceProvider _serviceProvider;
+
+  List<bool> _isOpen;
 
   /// show a card to the provided ConnectionProject
   ExpandableConnectionProjectCard(this.object,
@@ -269,31 +272,64 @@ class _ExpandableConnectionProjectCardState
               Padding(
                 padding: const EdgeInsets.only(left: 16),
                 child: Text(
-                  widget.object.gardens.length.toString(),
+                  widget.object.gardens.length.toString() + ' Teilnehmer',
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 16, bottom: 15),
                 child: Text(
                  // widget.object.gardens.map((e) => ServiceProvider.instance.gardenService.getGardenByReference(e).name).join('\n'),
-                 getLinksOfGardensOfProject(widget.object.gardens).join('\n'),
+                getLinksOfGardensOfProject(widget.object.gardens).join('\n'),
+                ),
 
-
-                )
-              )
+              ),
+              /*ExpansionPanelList(
+                children: [
+                  ExpansionPanel(
+                    headerBuilder: (context, isExpanded) {
+                      return Text("Hello");
+                    },
+                    body: Text("Now Open"),
+                    isExpanded: _isOpen[1],
+                  ),
+                  ExpansionPanel(
+                  ),
+                ],
+                expansionCallback: (i, isOpen) =>
+                setState(() =>
+                  _isOpen[i] = !isOpen,
+              ))*/
             ],
           ),
         ],
       ),
     );
+
   }
 
   ///returns a list of links of a project, tap on link to see location of garden on map
   List<String> getLinksOfGardensOfProject(List<DocumentReference<Object>> gardenRef) {
+    List<User> users;
+    users = ServiceProvider.instance.userService.getAllUsers();
+    print("****");
+    for (var u in users) {
+      print("Hallo");
+      print(u.gardenReferences.toString());
+      print("Tschüss");
+    }
+    print("****");
+      // var nickname = ServiceProvider.instance.userService.getAllUsers().map((e) => e.nickname ?? "Anonymous");
+      // print(nickname);
+
     List<Garden> gardens = <Garden>[];
     gardens.addAll(gardenRef.map((e) => ServiceProvider.instance.gardenService.getGardenByReference(e)));
-    List<String> gardenNames = <String>[];
-    gardenNames.addAll(gardens.map((e) => e.name + " von " + e.owner));
+    var gardenNames = <String>[];
+    var allUsers = ServiceProvider.instance.userService.getAllUsers();
+
+
+    // gardenNames.addAll(gardens.map((e) => e.name + ' von ' + ServiceProvider.instance.userService.getUserByReference(e.reference)?.nickname ?? 'Anonymous'));
+    gardenNames.addAll(gardens.map((e) => e.name + ' von ' + (allUsers?.firstWhere((user) => user.gardenReferences?.contains(e.reference) ?? false, orElse: () => null)?.nickname ?? 'Anonymous')).toList());
+    // gardenNames.addAll(gardens.map((e) => e.name + ' von ' + allUsers?.firstWhere((user) => user.gardenReferences != null ? user.gardenReferences.toList().contains(e.reference) : false ).toString()));
 
     // TODO: return every gardenName with a link, with which you access the map with the location of the garden and open the corresponding expandable card
     return gardenNames;

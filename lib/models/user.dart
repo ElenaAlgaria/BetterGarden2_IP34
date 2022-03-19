@@ -47,6 +47,10 @@ class User extends ChangeNotifier {
   /// toggle whether an image of the garden is visible on the map
   bool showGardenImageOnMap;
 
+  /// reference where the object is stored in the database
+  DocumentReference reference;
+
+
   /// Provides an empty User object. This should only be used once at App start.
   User.empty({StorageProvider storageProvider})
       : _storage = storageProvider ??= StorageProvider.instance,
@@ -123,17 +127,42 @@ class User extends ChangeNotifier {
     return true;
   }
 
-/*  User.fromMap(Map<String, dynamic> map,
+  User.fromMap(Map<String, dynamic> map,
     {this.reference, StorageProvider storageProvider})
     : _storage = storageProvider ??= StorageProvider.instance,
-    favoredObjects = map.containsKey('favoredObjects')
-      ? Map<String, int>.from(map['favoredObjects'] as Map)
-      :{},
-    gardenReferences*/
+    _favoredObjects = map.containsKey('_favoredObjects')
+        ? map['_favoredObjects'] as Set<String>
+        : null,
+    _gardenReferences = map.containsKey('_gardenReferences') ? map['_gardenReferences'] as Set<DocumentReference>
+        : null,
+    _gardens = map.containsKey('_gardens')
+        ? map['_gardens'] as Set<String>
+        : null,
+    imageURL = map.containsKey('imageURL')
+        ? map['imageURL'] as String
+        : '',
+    mail = map.containsKey('mail')
+        ? map['mail'] as String
+        : '',
+    name = map.containsKey('name')
+        ? map['name'] as String
+        : '',
+    nickname = map.containsKey('nickname')
+        ? map['nickname'] as String
+        : '',
+    showGardenImageOnMap = map.containsKey('showGardenImageOnMap')
+        ? map['showGardenImageOnMap'] as bool
+        : '',
+    showNameOnMap = map.containsKey('showNameOnMap')
+        ? map['showNameOnMap'] as bool
+        : '',
+    surname = map.containsKey('surname')
+        ? map['surname'] as String
+        : '';
 
-/*  User.fromSnapshot(DocumentSnapshot snapshot)
-      *//*: this.fromMap(snapshot.data(), reference: snapshot.reference);*//*
-      : this.loadDetailsFromLoggedInUser();*/
+
+  User.fromSnapshot(DocumentSnapshot snapshot)
+      : this.fromMap(snapshot.data(), reference: snapshot.reference);
 
   ///saves all information from the [User] Class to the database
   ///returns `false` if no user is logged in
@@ -262,9 +291,9 @@ class User extends ChangeNotifier {
   }
 
   /// Returns a list of all names from owned gardens
-  List<String> get gardens => _gardens.toList();
+  List<String> get gardens => _gardens?.toList();
 
-  List<DocumentReference> get gardenReferences => _gardenReferences.toList();
+  List<DocumentReference> get gardenReferences => _gardenReferences?.toList();
 
   /// signs the user out, saves all data to the database.
   /// Afterwards all fields are reset to empty fields.

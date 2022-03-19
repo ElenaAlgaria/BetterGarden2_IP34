@@ -46,9 +46,13 @@ class ConnectionProject extends ChangeNotifier {
   ConnectionProject.fromMap(Map<String, dynamic> map,
       {this.reference, StorageProvider storageProvider})
       : _storage = storageProvider ??= StorageProvider.instance,
-        title = map.containsKey('title') ? map['title'] as String : '',
+        title = map.containsKey('title')
+            ? map['title'] as String
+            : '',
         description =
-            map.containsKey('description') ? map['description'] as String : '',
+            map.containsKey('description')
+                ? map['description'] as String
+                : '',
         targetSpecies = map.containsKey('targetSpecies')
             ? map['targetSpecies'] as DocumentReference
             : '',

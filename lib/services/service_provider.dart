@@ -15,7 +15,7 @@ class ServiceProvider {
   static final _imageService = ImageService();
   static final _biodiversityService = BiodiversityService();
   static final _speciesService = SpeciesService();
-/* static final _userService = UserService(); */
+  static final _userService = UserService();
   static final _connectionProjectService = ConnectionProjectService();
   static final _takeHomeMessageService = TakeHomeMessageService();
   static final _mapMarkerService = MapMarkerService();
@@ -37,7 +37,7 @@ class ServiceProvider {
   final SpeciesService speciesService = _speciesService;
 
   /// Reference to the UserService
-/*  final UserService userService = _userService; */
+  final UserService userService = _userService;
 
   /// Reference to the ConnectionProjectService
   final ConnectionProjectService connectionProjectService =
