@@ -311,13 +311,13 @@ class _ExpandableConnectionProjectCardState
   List<String> getLinksOfGardensOfProject(List<DocumentReference<Object>> gardenRef) {
     List<User> users;
     users = ServiceProvider.instance.userService.getAllUsers();
-    print("****");
+/*    print("****");
     for (var u in users) {
       print("Hallo");
       print(u.gardenReferences.toString());
       print("Tschüss");
     }
-    print("****");
+    print("****");*/
       // var nickname = ServiceProvider.instance.userService.getAllUsers().map((e) => e.nickname ?? "Anonymous");
       // print(nickname);
 
