@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-/// Displays the impressum
-class ImpressumPage extends StatelessWidget {
-  /// Displays the impressum
-  ImpressumPage({Key key}) : super(key: key);
+/// Displays the About the App
+class AboutTheAppPage extends StatelessWidget {
+  /// Displays the About the App
+  AboutTheAppPage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Impressum')),
+      appBar: AppBar(title: const Text('About the App')),
       drawer: MyDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
