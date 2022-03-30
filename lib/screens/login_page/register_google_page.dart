@@ -4,6 +4,8 @@ import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:biodiversity/screens/login_page/nickname_form.dart';
+
 /// Page that handles the registration with google.
 /// The page itself doesn't contain any content
 class RegisterGooglePage extends StatefulWidget {
@@ -50,7 +52,7 @@ class _RegisterGooglePageState extends State<RegisterGooglePage> {
         .registerWithGoogle(context);
     if (registerMessage == null) {
       Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => MyGarden()));
+          .pushReplacement(MaterialPageRoute(builder: (context) => NickNameForm()));
     } else {
       setState(() {
         _errorText = registerMessage;

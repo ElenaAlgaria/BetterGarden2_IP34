@@ -68,6 +68,14 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 TextFormField(
+                                  decoration: const InputDecoration(
+                                      labelText: 'Projekttitel',
+                                      hintText: 'Projekttitel',
+                                      labelStyle: TextStyle(
+                                        fontSize: 15,
+                                      )
+                                  ),
+                                  maxLength: 20,
                                   controller: _titleController,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -76,13 +84,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                                       return null;
                                     }
                                   },
-                                  decoration: const InputDecoration(
-                                      hintText: 'Projekttitel',
-                                      labelText: 'Projekttitel',
-                                      labelStyle: TextStyle(
-                                        fontSize: 15,
-                                      )),
-                                  maxLength: 20,
+
                                 ),
                                 TextFormField(
                                   controller: _descriptionController,

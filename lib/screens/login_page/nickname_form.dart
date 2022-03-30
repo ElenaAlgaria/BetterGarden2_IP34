@@ -9,19 +9,19 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 /// The page where you can insert your data to register with email and password
-class RegisterEmailPage extends StatefulWidget {
+class NickNameForm extends StatefulWidget {
   ///The page where you can insert your data to register with email and password
-  RegisterEmailPage({Key key}) : super(key: key);
+  NickNameForm({Key key}) : super(key: key);
 
   @override
-  _RegisterEmailPageState createState() => _RegisterEmailPageState();
+  _NickNameFormState createState() => _NickNameFormState();
 }
 
-class _RegisterEmailPageState extends State<RegisterEmailPage> {
+class _NickNameFormState extends State<NickNameForm> {
   @override
   Widget build(BuildContext context) {
     return LogoAndWavesScreen(
-      title: 'Registrieren mit Email',
+      title: 'Wie sollen wir Sie nennen?',
       logoSize: 0,
       children: [
         RegisterForm(),
@@ -56,51 +56,9 @@ class _RegisterFormState extends State<RegisterForm> {
             decoration: const InputDecoration(labelText: 'Nickname'),
             onSaved: (value) => _nickname = value,
             validator: (value) =>
-                value.isEmpty ? 'Bitte ein Nickname eingeben' : null,
+            value.isEmpty ? 'Bitte ein Nickname eingeben' : null,
           ),
-          TextFormField(
-              decoration: const InputDecoration(labelText: 'Email'),
-              onSaved: (value) => _email = value,
-              keyboardType: TextInputType.emailAddress,
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Bitte geben Sie eine Email Adresse ein';
-                  //match valid email addresses https://stackoverflow.com/a/16888554
-                } else if (!RegExp(
-                        "^[a-zA-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*\$")
-                    .hasMatch(value)) {
-                  return 'Bitte geben Sie eine gültige Email Adresse ein';
-                } else {
-                  return null;
-                }
-              }),
-          TextFormField(
-              decoration: const InputDecoration(labelText: 'Passwort'),
-              obscureText: true,
-              onSaved: (value) => _password = value,
-              onChanged: (value) => _password = value,
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Gib bitte ein Passwort ein';
-                } else if (value.length < 6) {
-                  return 'Dein Passwort muss mindestens 6 Zeichen lang sein';
-                } else {
-                  return null;
-                }
-              }),
-          TextFormField(
-              decoration:
-                  const InputDecoration(labelText: 'Passwort wiederholen'),
-              obscureText: true,
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Gib bitte ein Passwort ein';
-                } else if (value != _password) {
-                  return 'Die Passwörter stimmen nicht überein';
-                } else {
-                  return null;
-                }
-              }),
+
           FormField<bool>(
               key: Key(_readPrivacyAgreement.toString()),
               initialValue: _readPrivacyAgreement,
@@ -137,12 +95,12 @@ class _RegisterFormState extends State<RegisterForm> {
                 );
               },
               validator: (value) =>
-                  value ? null : 'Bitte lies das Privacy-Agreement'),
+              value ? null : 'Bitte lies das Privacy-Agreement'),
           const SizedBox(
             height: 40,
           ),
           ElevatedButton(
-            onPressed: () => _registerWithEmail(context).then((value) => null),
+            onPressed: () => _saveNickname(context).then((value) => null),
             child: const Text('Registrieren'),
           ),
         ],
@@ -150,13 +108,13 @@ class _RegisterFormState extends State<RegisterForm> {
     );
   }
 
-  Future<void> _registerWithEmail(BuildContext context) async {
+  Future<void> _saveNickname(BuildContext context) async {
     logging.log(_formKey.toString());
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       final errorMessage =
-          await Provider.of<biodiversity_user.User>(context, listen: false)
-              .registerWithEmail(_email, _password, nickname: _nickname);
+      await Provider.of<biodiversity_user.User>(context, listen: false)
+          .saveNickname(nickname: _nickname);
       if (errorMessage == null) {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => MyGarden()));
