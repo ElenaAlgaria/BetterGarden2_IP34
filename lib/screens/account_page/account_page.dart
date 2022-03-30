@@ -51,7 +51,7 @@ class _AccountPage extends State<AccountPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
                       Text(
-                        user.name == '' ? user.nickname : user.name,
+                        user.nickname,
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
@@ -132,12 +132,8 @@ class _AccountPage extends State<AccountPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  TextFieldWithDescriptor(
-                      'Name',
-                      Text('${user.name}'
-                          ' ${user.surname}')),
+                  TextFieldWithDescriptor('Benutzername', Text(user.nickname)),
                   TextFieldWithDescriptor('Email', Text(user.mail)),
-                  TextFieldWithDescriptor('Benutzername', Text(user.nickname))
                 ],
               ),
             ),

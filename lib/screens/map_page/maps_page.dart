@@ -50,8 +50,25 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   ];
   var _currentSpecies;
   final double _zoom = 14.0;
-  Set<Marker> _markers = {};
-  Set<Marker> _markersHistory = {};
+
+  Set<Marker> _allGardenMarkers = {};
+  bool _allGardenMarkersVisible = true;
+
+  Set<Marker> _allConnectionProjectMarkers = {};
+  bool _allConnectionProjectMarkersVisible = true;
+
+  Set<Marker> _joinableConnectionProjectMarkers = {};
+
+  Set<Marker> assembleMarkers() {
+    Set<Marker> tempMarkerSet = {};
+    if (_allGardenMarkersVisible) {
+      tempMarkerSet.addAll(_allGardenMarkers);
+    }
+    if (_allConnectionProjectMarkersVisible) {
+      tempMarkerSet.addAll(_allConnectionProjectMarkers);
+    }
+    return tempMarkerSet;
+  }
 
   List<Circle> _circles = [];
 
@@ -64,7 +81,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-
     _allGardens = ServiceProvider.instance.gardenService.getAllGardens();
     for (var g in _allGardens) {
       ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(g,
@@ -75,7 +91,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         displayModalBottomSheetGarden(context);
       }).then((marker) {
         setState(() {
-          _markers.add(marker);
+          _allGardenMarkers.add(marker);
         });
       });
     }
@@ -89,7 +105,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       displayConnectionProjectGardensWithCircles(element.reference);
     }).then((markers) {
       setState(() {
-        _markers.addAll(markers);
+        _allConnectionProjectMarkers.addAll(markers);
       });
     });
 
@@ -112,7 +128,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             displayModalBottomSheetGarden(context);
           }).then((marker) {
         setState(() {
-          _markers.add(marker);
+          _allGardenMarkers.add(marker);
         });
       });
     }
@@ -126,7 +142,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           displayConnectionProjectGardensWithCircles(element.reference);
         }).then((markers) {
       setState(() {
-        _markers.addAll(markers);
+        _allConnectionProjectMarkers.addAll(markers);
       });
     });
   }*/
@@ -163,7 +179,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
 
   void displayConnectionProjectGardensWithCircles(
       DocumentReference connectionProjectReferences) {
-    _markersHistory = Set<Marker>.of(_markers);
+    _allConnectionProjectMarkersVisible = false;
 
     var connectionProject = ServiceProvider.instance.connectionProjectService
         .getConnectionProjectByReference(connectionProjectReferences);
@@ -215,10 +231,11 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         displayModalBottomSheetGarden(context);
       }).then((marker) {
         setState(() {
-          _markers.removeWhere((element) =>
+          _joinableConnectionProjectMarkers = {..._allConnectionProjectMarkers};
+          _joinableConnectionProjectMarkers.removeWhere((element) =>
               element.markerId.value ==
               'garden' + gardenOfConnectionProject.reference.id);
-          _markers.add(marker);
+          _joinableConnectionProjectMarkers.add(marker);
         });
       });
     }
@@ -280,7 +297,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             rotateGesturesEnabled: false,
             mapToolbarEnabled: false,
             mapType: MapType.hybrid,
-            markers: _markers,
+            markers: assembleMarkers(),
             circles: _circles.toSet(),
             onCameraIdle: () {
               mapController.getVisibleRegion().then((bounds) {
@@ -297,6 +314,19 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                   .selectedLocation = pos;
             },
           ),
+          Positioned(
+              top: 60,
+              right: 20,
+              child: CircleAvatar(
+                  radius: 20,
+                  backgroundColor: Color(0xfffefffc),
+                  child: IconButton(
+                    icon: const Icon(Icons.layers_outlined,
+                        color: Color(0xff6c6c6c)),
+                    onPressed: () {
+                      displayModalBottomOverlayLayers(this.context);
+                    },
+                  ))),
           speciesListWidget(),
         ],
       ),
@@ -374,6 +404,73 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             },
           ))
     ]));
+  }
+
+  Future<Widget> displayModalBottomOverlayLayers(BuildContext context) async {
+    return await showModalBottomSheet(
+        barrierColor: Colors.transparent,
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20.0),
+          topRight: Radius.circular(20.0),
+        )),
+        context: context,
+        isScrollControlled: true,
+        builder: (context) {
+          return DraggableScrollableSheet(
+              initialChildSize: 0.18,
+              minChildSize: 0.1,
+              expand: false,
+              builder: (context, scrollController) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                  child: ListView(
+                    controller: scrollController,
+                    children: <Widget>[
+                      const Icon(
+                        Icons.horizontal_rule_rounded,
+                        color: Color(0xFFE36F00),
+                        size: 34.0,
+                      ),
+                      ButtonBar(
+                        alignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ElevatedButton(
+                            child: const Text('Gardens'),
+                            onPressed: () {
+                              _allGardenMarkersVisible =
+                                  !_allGardenMarkersVisible;
+                              setState(() {
+                              });
+                            },
+                          ),
+                          ElevatedButton(
+                            child: const Text('Projects'),
+                            onPressed: () {
+                              _allConnectionProjectMarkersVisible =
+                                  !_allConnectionProjectMarkersVisible;
+                              setState(() {
+                              });
+                            },
+                          ),
+                          /* ElevatedButton(
+                            child: const Text('Joinable Projects'),
+                            onPressed: () {
+                              _joinableConnectionProjectMarkersVisible =
+                                  !_joinableConnectionProjectMarkersVisible;
+                            },
+                          ),*/
+                        ],
+                      )
+                    ],
+                  ),
+                );
+              });
+        }).whenComplete(() => {
+
+        });
   }
 
   Future<Widget> displayModalBottomSheetGarden(BuildContext context) async {
@@ -499,7 +596,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               });
         }).whenComplete(() => {
           setState(() {
-            _markers = Set<Marker>.of(_markersHistory);
+            _allConnectionProjectMarkersVisible = true;
             _circles.clear();
           })
         });
