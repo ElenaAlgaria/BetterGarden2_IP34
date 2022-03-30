@@ -10,6 +10,7 @@ import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/user.dart';
+import 'package:biodiversity/screens/map_page/google_maps_factory.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
 import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
@@ -58,6 +59,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   bool _allConnectionProjectMarkersVisible = true;
 
   Set<Marker> _joinableConnectionProjectMarkers = {};
+  bool _alljoinableConnectionProjectMarkersVisible = true;
 
   Set<Marker> assembleMarkers() {
     Set<Marker> tempMarkerSet = {};
@@ -66,6 +68,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     }
     if (_allConnectionProjectMarkersVisible) {
       tempMarkerSet.addAll(_allConnectionProjectMarkers);
+    }
+    if(_alljoinableConnectionProjectMarkersVisible){
+      tempMarkerSet.addAll(_joinableConnectionProjectMarkers);
     }
     return tempMarkerSet;
   }
@@ -279,40 +284,10 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       drawer: MyDrawer(),
       body: Stack(
         children: <Widget>[
-          GoogleMap(
-            myLocationEnabled: true,
-            myLocationButtonEnabled:
-                (defaultTargetPlatform == TargetPlatform.iOS) ? false : true,
-            onMapCreated: (controller) => mapController = controller,
-            initialCameraPosition: (widget.garden != null)
-                ? CameraPosition(target: widget.garden.getLatLng(), zoom: _zoom)
-                : (mapInteraction.selectedLocation != null)
-                    ? CameraPosition(
-                        target: mapInteraction.selectedLocation, zoom: _zoom)
-                    : CameraPosition(
-                        target: mapInteraction.defaultLocation,
-                        zoom: _zoom,
-                      ),
-            zoomControlsEnabled: false,
-            rotateGesturesEnabled: false,
-            mapToolbarEnabled: false,
-            mapType: MapType.hybrid,
+          GoogleMaps_Factory(
             markers: assembleMarkers(),
-            circles: _circles.toSet(),
-            onCameraIdle: () {
-              mapController.getVisibleRegion().then((bounds) {
-                final lat =
-                    (bounds.southwest.latitude + bounds.northeast.latitude) / 2;
-                final long =
-                    (bounds.southwest.longitude + bounds.northeast.longitude) /
-                        2;
-                _focusedLocation = LatLng(lat, long);
-              });
-            },
-            onTap: (pos) {
-              Provider.of<MapInteractionContainer>(context, listen: false)
-                  .selectedLocation = pos;
-            },
+            circles: _circles,
+            garden: widget.garden
           ),
           Positioned(
               top: 60,
@@ -661,7 +636,11 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 ),
               );
               setState(() {
-                initState();
+                GoogleMaps_Factory(
+                    markers: assembleMarkers(),
+                    circles: _circles,
+                    garden: widget.garden
+                );
               });
             },
             child: Icon(icons[2], color: Theme.of(context).backgroundColor),
