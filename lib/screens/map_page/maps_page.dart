@@ -101,7 +101,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     );
   }
 
-  void addNewConnectionProjectMarker() {
+/*  void addNewConnectionProjectMarker() {
     _allGardens = ServiceProvider.instance.gardenService.getAllGardens();
     for (var g in _allGardens) {
       ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(g,
@@ -129,7 +129,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         _markers.addAll(markers);
       });
     });
-  }
+  }*/
 
   void modifyPerimeterCircle(String name) {
     if (name != '') {
@@ -564,7 +564,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 ),
               );
               setState(() {
-                addNewConnectionProjectMarker();
+                initState();
               });
             },
             child: Icon(icons[2], color: Theme.of(context).backgroundColor),
