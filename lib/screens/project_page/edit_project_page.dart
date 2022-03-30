@@ -7,30 +7,34 @@ import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/user.dart';
-import 'package:biodiversity/screens/map_page/project_already_exists_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
-class CreateProjectPage extends StatefulWidget {
-  final ValueChanged<ConnectionProject> onConnectionProjectAdded;
+class EditProjectPage extends StatefulWidget {
+  final ValueChanged<ConnectionProject> onConnectionProjectChanged;
+  final ConnectionProject project;
 
-  /// Display the create project page
-  CreateProjectPage({Key key, this.onConnectionProjectAdded, Species currentSpecies}) : super(key: key);
+  EditProjectPage(
+      {Key key,
+      Species currentSpecies,
+      this.onConnectionProjectChanged,
+      this.project,})
+      : super(key: key);
 
   @override
-  _CreateProjectPageState createState() => _CreateProjectPageState();
+  _EditProjectPageState createState() => _EditProjectPageState();
 }
 
-class _CreateProjectPageState extends State<CreateProjectPage>
+class _EditProjectPageState extends State<EditProjectPage>
     with TickerProviderStateMixin {
   final _formkey = GlobalKey<FormState>();
 
   List<Species> _speciesList = [];
   Garden _selectedGarden;
   Species _currentSpecies;
+  ConnectionProject _currentConnectionProject;
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -40,6 +44,9 @@ class _CreateProjectPageState extends State<CreateProjectPage>
     super.initState();
     _speciesList =
         ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
+    _currentConnectionProject = widget.project;
+    _titleController.text = _currentConnectionProject.title;
+    _descriptionController.text = _currentConnectionProject.description;
   }
 
   @override
@@ -52,7 +59,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
       _currentSpecies ??= _speciesList[2];
     }
     return Scaffold(
-        appBar: AppBar(title: const Text('Vernetzungsprojekt starten')),
+        appBar: AppBar(title: const Text('Vernetzungsprojekt bearbeiten')),
         drawer: MyDrawer(),
         body: Builder(
             builder: (context) => Center(
@@ -62,20 +69,12 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                         key: _formkey,
                         child: Padding(
                             padding:
-                                const EdgeInsets.fromLTRB(20.0, 0, 20.0, 10.0),
+                            const EdgeInsets.fromLTRB(20.0, 0, 20.0, 10.0),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 TextFormField(
-                                  decoration: const InputDecoration(
-                                      labelText: 'Projekttitel',
-                                      hintText: 'Projekttitel',
-                                      labelStyle: TextStyle(
-                                        fontSize: 15,
-                                      )
-                                  ),
-                                  maxLength: 20,
                                   controller: _titleController,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -84,7 +83,13 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                                       return null;
                                     }
                                   },
-
+                                  decoration: const InputDecoration(
+                                      /*hintText: _currentConnectionProject.title,*/
+                                      labelText: 'Projekttitel',
+                                      labelStyle: TextStyle(
+                                        fontSize: 15,
+                                      )),
+                                  maxLength: 20,
                                 ),
                                 TextFormField(
                                   controller: _descriptionController,
@@ -96,7 +101,6 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                                     }
                                   },
                                   decoration: const InputDecoration(
-                                      hintText: 'Projektbeschreibung',
                                       labelText: 'Projektbeschreibung',
                                       labelStyle: TextStyle(
                                         fontSize: 15,
@@ -104,36 +108,12 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                                   maxLength: 500,
                                   maxLines: 3,
                                 ),
-                                speciesListWidget(),
-                                Container(
-                                  margin:
-                                      const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
-                                  child: gardenDropDown(
-                                      onGardenChanged: (selectedGarden) {
-                                        _selectedGarden = selectedGarden;
-                                      },
-                                      gardensList: ServiceProvider
-                                          .instance.gardenService
-                                          .getAllGardensFromUser(user)),
-                                ),
                                 ElevatedButton.icon(
                                   onPressed: () {
                                     if (!_formkey.currentState.validate()) {
                                       return;
                                     } else {
-                                      var species =
-                                          getJoinableConnectionProjectsForSpecies(
-                                              _currentSpecies, _selectedGarden);
-                                      if (species != null) {
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ProjectAlreadyExistsPage(species, _selectedGarden)),
-                                        );
-                                      } else {
-                                        saveProject();
-                                      }
+                                      updateProject();
                                     }
                                   },
                                   label: Text("Vernetzungsprojekt starten"),
@@ -151,8 +131,6 @@ class _CreateProjectPageState extends State<CreateProjectPage>
     newConnectionProject.targetSpecies = _currentSpecies.reference;
     newConnectionProject.saveConnectionProject();
 
-    widget.onConnectionProjectAdded(newConnectionProject);
-
     log('saved following connectionProject');
     log(_currentSpecies.name);
     log(_selectedGarden.name);
@@ -161,6 +139,22 @@ class _CreateProjectPageState extends State<CreateProjectPage>
 
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Verbindungsprojekt wurde erfolgreich erstellt.')));
+
+    Navigator.pop(context);
+  }
+
+  void updateProject() {
+    _currentConnectionProject.title = _titleController.text;
+    _currentConnectionProject.description = _descriptionController.text;
+    _currentConnectionProject.saveConnectionProject();
+
+    widget.onConnectionProjectChanged(_currentConnectionProject);
+
+    log('updated following connectionProject');
+    log(_currentConnectionProject.title);
+
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Verbindungsprojekt wurde erfolgreich aktualisiert.')));
 
     Navigator.pop(context);
   }
@@ -189,31 +183,5 @@ class _CreateProjectPageState extends State<CreateProjectPage>
       textField: 'display',
       valueField: 'value',
     );
-  }
-
-  ConnectionProject getJoinableConnectionProjectsForSpecies(
-      Species specie, Garden garden) {
-    var project = ServiceProvider.instance.connectionProjectService
-        .getAllConnectionProjects()
-        .where((element) => !element.gardens.contains(garden.reference))
-        .where((element) => element.targetSpecies.path == specie.reference.path)
-        .where((element) => getConnectionProjectsInRadius(
-        garden,
-        element,
-        ServiceProvider.instance.speciesService
-            .getSpeciesByReference(element.targetSpecies)
-            .radius)).toList();
-    if(project.isNotEmpty){
-      return project.first;
-    }
-  }
-
-  bool getConnectionProjectsInRadius(
-      Garden garden, ConnectionProject projectToCompareWith, int radius) {
-   var x = projectToCompareWith.gardens
-        .map((e) =>
-        ServiceProvider.instance.gardenService.getGardenByReference(e))
-        .any((element) => element.isInRange(element, garden, radius));
-    return x;
   }
 }

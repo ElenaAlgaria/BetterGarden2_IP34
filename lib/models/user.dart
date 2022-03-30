@@ -340,6 +340,7 @@ class User extends ChangeNotifier {
     }
     final token = await googleAccount.authentication;
     final credential = GoogleAuthProvider.credential(idToken: token.idToken);
+
     final result = await _signInWithCredential(
         credential: credential,
         email: googleAccount.email,
@@ -441,19 +442,24 @@ class User extends ChangeNotifier {
       await _storage.auth.signInWithCredential(credential);
       _loggedIn = true;
       await loadDetailsFromLoggedInUser();
+      if (mail.isEmpty && email.isNotEmpty) {
+        updateUserData(newMail: email);
+      }
     } on FirebaseAuthException catch (error) {
       signOutCallback();
       if (error.code == 'account-exists-with-different-credential') {
         return LoginResult('Sie haben sich bereits mit einem anderen Account'
             'registriert.');
-      }
-      if (error.code == 'invalid-email') {
+      } else if (error.code == 'invalid-email') {
         // This should not be possible,
         // since the email is fetched from the provider account
         return LoginResult('Deine Email adresse ist ungültig');
+      } else if (error.code == 'invalid-credentials') {
+        return LoginResult('Ein Fehler ist aufgetreten beim Abrufen deiner Logindaten.');
       }
+    } catch (e) {
+      return LoginResult('Ein Fehler ist aufgetreten. Versuche es erneut');
     }
-    return null;
   }
 
   ///Displays the google account selection popup and the privacy agreement.<br>
@@ -477,6 +483,7 @@ class User extends ChangeNotifier {
     );
     return result;
   }
+
 
   /// Registers a user with the provided email address and password.
   /// An email will be sent to confirm the users email address.<br>
@@ -505,6 +512,12 @@ class User extends ChangeNotifier {
         return 'Something went wrong.';
       }
     }
+    return null;
+  }
+
+  Future<String> saveNickname({String nickname, String name, String surname})async {
+    updateUserData(newName: name, newSurname: surname, newNickname: nickname);
+
     return null;
   }
 
@@ -648,7 +661,7 @@ class User extends ChangeNotifier {
       await _storage.auth.currentUser.delete();
       return 'Der Account wurde erfolgreich entfernt';
     } on FirebaseAuthException {
-      return 'Etwas is schiefgelaufen';
+      return 'Etwas ist schiefgelaufen';
     }
   }
 

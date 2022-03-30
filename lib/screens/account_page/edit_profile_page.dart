@@ -20,8 +20,6 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePage extends State<EditProfilePage> {
   final _formKey = GlobalKey<FormState>();
-  String _name;
-  String _surname;
   String _nickname;
   String _email;
   String _imageURL;
@@ -45,10 +43,8 @@ class _EditProfilePage extends State<EditProfilePage> {
         saveCallback: () {
           _formKey.currentState.save();
           user.updateUserData(
-            newName: _name,
-            newSurname: _surname,
-            newMail: _email,
             newNickname: _nickname,
+            newMail: _email,
             doesShowNameOnMap: _showNameOnMap,
             doesShowGardenImageOnMap: _showGardenImageOnMap,
           );
@@ -109,23 +105,13 @@ class _EditProfilePage extends State<EditProfilePage> {
                 child: const Text('Profilbild ändern'),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: TextFormField(
-                  initialValue: user.name,
-                  decoration: const InputDecoration(
-                      labelText: 'Vorname',
-                      contentPadding: EdgeInsets.symmetric(vertical: 4)),
-                  onSaved: (value) => _name = value,
-                ),
-              ),
-              Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: TextFormField(
-                  initialValue: user.surname,
+                  initialValue: user.nickname,
                   decoration: const InputDecoration(
-                      labelText: 'Nachname',
+                      labelText: 'Benutzername',
                       contentPadding: EdgeInsets.symmetric(vertical: 4)),
-                  onSaved: (value) => _surname = value,
+                  onSaved: (value) => _nickname = value,
                 ),
               ),
               Padding(
@@ -136,16 +122,6 @@ class _EditProfilePage extends State<EditProfilePage> {
                       labelText: 'Email',
                       contentPadding: EdgeInsets.symmetric(vertical: 4)),
                   onSaved: (value) => _email = value,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: TextFormField(
-                  initialValue: user.nickname,
-                  decoration: const InputDecoration(
-                      labelText: 'Benutzername',
-                      contentPadding: EdgeInsets.symmetric(vertical: 4)),
-                  onSaved: (value) => _nickname = value,
                 ),
               ),
               SwitchListTile(
