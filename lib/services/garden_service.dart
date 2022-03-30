@@ -95,7 +95,7 @@ class GardenService extends ChangeNotifier {
 
   /// returns a single Garden referenced by the provided reference
   Garden getGardenByReference(DocumentReference reference) {
-    return _gardens.where((element) => element.reference == reference).first;
+    return _gardens.firstWhere((element) => element.reference == reference, orElse: () => null);
   }
 
   /// returns the nickname of the garden owner if showGardenOnMap is set to true for this user

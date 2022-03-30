@@ -156,14 +156,14 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
             ServiceProvider.instance.speciesService
                 .getSpeciesByReference(element.targetSpecies)
                 .radius))
-        .toList();
+        ?.toList();
   }
 
   bool getConnectionProjectsInRadius(
       Garden garden, ConnectionProject projectToCompareWith, int radius) {
     return projectToCompareWith.gardens
         .map((e) =>
-            ServiceProvider.instance.gardenService.getGardenByReference(e))
+            ServiceProvider.instance.gardenService.getGardenByReference(e) ?? Garden.empty())
         .any((element) => element.isInRange(element, garden, radius));
   }
 }
