@@ -34,81 +34,80 @@ class _ProjectPageState extends State<ProjectPage> {
     updatedProject = project;
   }
 
- /* @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    setState(() {
-      reloadConnectionProject();
-      build(context);
-    });
-  }*/
-
- /* void reloadConnectionProject() {
-    project = updatedProject;
-  }*/
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(project.title)),
       drawer: MyDrawer(),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Text(
-              project.title,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-            ),
-            Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 20)),
-            Text(
-              ServiceProvider.instance.speciesService
-                  .getSpeciesByReference(project.targetSpecies)
-                  .name,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-                backgroundColor: Colors.grey[300],
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Text(
+                project.title,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
               ),
-            ),
-            Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 20)),
-            Text(
-              project.description,
-              style: TextStyle(fontWeight: FontWeight.normal, fontSize: 18),
-            ),
-            Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 20)),
-            widget.joinedProject
-                ? leaveConnectionProjectButton(connectionProject: project)
-                : joinConnectionProjectButton(connectionProject: project),
-            Padding(
-              padding: const EdgeInsets.only(left: 8, bottom: 15),
-              child: TextButton(
-                onPressed: () async {
-                  final value = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            EditProjectPage(
-                                project: widget.project,
-                                onConnectionProjectChanged: (_currentConnectionProject) {
-                                  updatedProject = _currentConnectionProject;
-                                },
-                            )),
-                  );
-                  setState(() {
-                    project = updatedProject;
-                  });
-                },
-                child: const Text(
-                  'Bearbeiten',
-                  style: TextStyle(decoration: TextDecoration.underline),
+              Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 40)),
+              Container(
+                width: 200.0,
+                height: 60.0,
+                child: TextField(
+                  readOnly: true,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(50.0),
+                      borderSide: BorderSide(color: Colors.grey, width: 2.0),
+                    ),
+                    hintText: ServiceProvider.instance.speciesService
+                        .getSpeciesByReference(project.targetSpecies)
+                        .name,
+                  ),
                 ),
               ),
-            )
-          ],
+              Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 20)),
+              Text(
+                project.description,
+                style: TextStyle(fontWeight: FontWeight.normal, fontSize: 18),
+              ),
+              Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 20)),
+              widget.joinedProject
+                  ? leaveConnectionProjectButton(connectionProject: project)
+                  : joinConnectionProjectButton(connectionProject: project),
+              if(widget.joinedProject == true)
+              Padding(
+                padding: const EdgeInsets.only(left: 8, bottom: 15),
+                child: TextButton(
+                  onPressed: () async {
+                    final value = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              EditProjectPage(
+                                project: widget.project,
+                                onConnectionProjectChanged: (_currentConnectionProject) {
+                                  //updatedProject = _currentConnectionProject;
+                                },
+                              )),
+                    );
+                    setState(() {
+                      //project = updatedProject;
+                    });
+                  },
+                  child: const Text(
+                    'Bearbeiten',
+                    style: TextStyle(decoration: TextDecoration.underline),
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
-      ),
+      )
     );
   }
 }
