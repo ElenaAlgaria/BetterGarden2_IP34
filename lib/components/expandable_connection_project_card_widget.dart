@@ -335,25 +335,9 @@ class _ExpandableConnectionProjectCardState
   List<String> getLinksOfGardensOfProject(List<DocumentReference<Object>> gardenRef) {
     List<User> users;
     users = ServiceProvider.instance.userService.getAllUsers();
-/*    print("****");
-    for (var u in users) {
-      print("Hallo");
-      print(u.gardenReferences.toString());
-      print("Tschüss");
-    }
-    print("****");*/
-      // var nickname = ServiceProvider.instance.userService.getAllUsers().map((e) => e.nickname ?? "Anonymous");
-      // print(nickname);
-
-    List<Garden> gardens = <Garden>[];
-    gardens.addAll(gardenRef.map((e) => ServiceProvider.instance.gardenService.getGardenByReference(e)));
-    var gardenNames = <String>[];
+    var gardens = gardenRef.map((e) => ServiceProvider.instance.gardenService.getGardenByReference(e));
     var allUsers = ServiceProvider.instance.userService.getAllUsers();
-
-
-    // gardenNames.addAll(gardens.map((e) => e.name + ' von ' + ServiceProvider.instance.userService.getUserByReference(e.reference)?.nickname ?? 'Anonymous'));
-    gardenNames.addAll(gardens.map((e) => e.name + ' von ' + (allUsers?.firstWhere((user) => user.gardenReferences?.contains(e.reference) ?? false, orElse: () => null)?.nickname ?? 'Anonymous')).toList());
-    // gardenNames.addAll(gardens.map((e) => e.name + ' von ' + allUsers?.firstWhere((user) => user.gardenReferences != null ? user.gardenReferences.toList().contains(e.reference) : false ).toString()));
+    var gardenNames = gardens.map((e) => e.name + ' von ' + (allUsers?.firstWhere((user) => user.gardenReferences?.contains(e.reference) ?? false, orElse: () => null).nickname ?? 'Anonymous')).toList();
 
     // TODO: return every gardenName with a link, with which you access the map with the location of the garden and open the corresponding expandable card
     return gardenNames;

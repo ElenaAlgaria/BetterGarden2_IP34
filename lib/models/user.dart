@@ -130,13 +130,14 @@ class User extends ChangeNotifier {
   User.fromMap(Map<String, dynamic> map,
     {this.reference, StorageProvider storageProvider})
     : _storage = storageProvider ??= StorageProvider.instance,
-    _favoredObjects = map.containsKey('_favoredObjects')
-        ? map['_favoredObjects'] as Set<String>
+    _favoredObjects = map.containsKey('favoredObjects')
+        ? Set<String>.from(map['favoredObjects'] as Iterable)
         : null,
-    _gardenReferences = map.containsKey('_gardenReferences') ? map['_gardenReferences'] as Set<DocumentReference>
+    _gardenReferences = map.containsKey('gardenReferences')
+        ? Set<DocumentReference>.from(map['gardenReferences'] as Iterable)
         : null,
-    _gardens = map.containsKey('_gardens')
-        ? map['_gardens'] as Set<String>
+    _gardens = map.containsKey('gardens')
+        ? Set<String>.from(map['gardens'] as Iterable)
         : null,
     imageURL = map.containsKey('imageURL')
         ? map['imageURL'] as String
