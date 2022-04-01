@@ -48,6 +48,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
     return Scaffold(
       appBar: AppBar(
         title: const Text('Vernetzungsprojekte'),
+        centerTitle: true,
         actions: [
           IconButton(
               onPressed: () {
