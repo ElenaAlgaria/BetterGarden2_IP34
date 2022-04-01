@@ -288,22 +288,6 @@ class _ExpandableConnectionProjectCardState
                 ),
 
               ),
-              /*ExpansionPanelList(
-                children: [
-                  ExpansionPanel(
-                    headerBuilder: (context, isExpanded) {
-                      return Text("Hello");
-                    },
-                    body: Text("Now Open"),
-                    isExpanded: _isOpen[1],
-                  ),
-                  ExpansionPanel(
-                  ),
-                ],
-                expansionCallback: (i, isOpen) =>
-                setState(() =>
-                  _isOpen[i] = !isOpen,
-              ))*/
               Padding(
                   padding: const EdgeInsets.only(left: 8, bottom: 15),
                   child: TextButton(
@@ -337,7 +321,7 @@ class _ExpandableConnectionProjectCardState
     users = ServiceProvider.instance.userService.getAllUsers();
     var gardens = gardenRef.map((e) => ServiceProvider.instance.gardenService.getGardenByReference(e));
     var allUsers = ServiceProvider.instance.userService.getAllUsers();
-    var gardenNames = gardens.map((e) => e.name + ' von ' + (allUsers?.firstWhere((user) => user.gardenReferences?.contains(e.reference) ?? false, orElse: () => null).nickname ?? 'Anonymous')).toList();
+    var gardenNames = gardens.map((e) => e.name + ' von ' + (allUsers?.firstWhere((user) => user.gardenReferences?.contains(e.reference) ?? false, orElse: () => null)?.nickname ?? 'Anonymous')).toList();
 
     // TODO: return every gardenName with a link, with which you access the map with the location of the garden and open the corresponding expandable card
     return gardenNames;
