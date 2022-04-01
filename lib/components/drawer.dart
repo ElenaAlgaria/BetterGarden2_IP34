@@ -1,15 +1,13 @@
 import 'package:biodiversity/components/white_redirect_page.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/account_page/account_page.dart';
-import 'package:biodiversity/screens/button_example/button_page.dart';
+import 'package:biodiversity/screens/dev_tools_page/dev_tools_page.dart';
 import 'package:biodiversity/screens/favored_list_page/favored_list_page.dart';
 import 'package:biodiversity/screens/impressum_page/impressum_page.dart';
 import 'package:biodiversity/screens/information_list_page/biodiversity_elements_list_page.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
-import 'package:biodiversity/screens/map_page/project_already_exists_page.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
-import 'package:biodiversity/screens/project_page/project_page.dart';
 import 'package:biodiversity/screens/project_page/projects_overview_page.dart';
 import 'package:biodiversity/screens/species_list_page/species_list_page.dart';
 import 'package:biodiversity/screens/take_home_message_page/take_home_messages.dart';
@@ -214,17 +212,16 @@ class MyDrawer extends StatelessWidget {
                                 );
                               },
                             ),
-
                             ListTile(
                               title: const Text(
-                                'Button',
+                                'Dev Tools',
                                 style: TextStyle(fontSize: 14),
                               ),
                               onTap: () {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => ButtonPage()),
+                                      builder: (context) => DevToolsPage()),
                                 );
                               },
                             ),
