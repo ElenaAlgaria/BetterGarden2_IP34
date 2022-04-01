@@ -7,12 +7,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-
 /// A service which load all users and stores them
 class UserService extends ChangeNotifier {
   final List<User> _users = [];
+
 /* final List<String> _classes = []; */
   StreamSubscription _streamSubscription;
+
 /* bool _initialized = false; */
   StorageProvider _storage;
 
@@ -48,5 +49,4 @@ class UserService extends ChangeNotifier {
   User getUserByReference(DocumentReference reference) {
     return _users?.where((element) => element.reference == reference)?.first;
   }
-
 }

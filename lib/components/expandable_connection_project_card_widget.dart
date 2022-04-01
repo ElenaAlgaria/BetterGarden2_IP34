@@ -283,10 +283,9 @@ class _ExpandableConnectionProjectCardState
               Padding(
                 padding: const EdgeInsets.only(left: 16, bottom: 15),
                 child: Text(
-                 // widget.object.gardens.map((e) => ServiceProvider.instance.gardenService.getGardenByReference(e).name).join('\n'),
-                getLinksOfGardensOfProject(widget.object.gardens).join('\n'),
+                  // widget.object.gardens.map((e) => ServiceProvider.instance.gardenService.getGardenByReference(e).name).join('\n'),
+                  getLinksOfGardensOfProject(widget.object.gardens).join('\n'),
                 ),
-
               ),
               Padding(
                   padding: const EdgeInsets.only(left: 8, bottom: 15),
@@ -312,16 +311,29 @@ class _ExpandableConnectionProjectCardState
         ],
       ),
     );
-
   }
 
   ///returns a list of links of a project, tap on link to see location of garden on map
-  List<String> getLinksOfGardensOfProject(List<DocumentReference<Object>> gardenRef) {
+  List<String> getLinksOfGardensOfProject(
+      List<DocumentReference<Object>> gardenRef) {
     List<User> users;
     users = ServiceProvider.instance.userService.getAllUsers();
-    var gardens = gardenRef.map((e) => ServiceProvider.instance.gardenService.getGardenByReference(e));
+    var gardens = gardenRef.map(
+        (e) => ServiceProvider.instance.gardenService.getGardenByReference(e));
     var allUsers = ServiceProvider.instance.userService.getAllUsers();
-    var gardenNames = gardens.map((e) => e.name + ' von ' + (allUsers?.firstWhere((user) => user.gardenReferences?.contains(e.reference) ?? false, orElse: () => null)?.nickname ?? 'Anonymous')).toList();
+    var gardenNames = gardens
+        .map((e) =>
+            e.name +
+            ' von ' +
+            (allUsers
+                    ?.firstWhere(
+                        (user) =>
+                            user.gardenReferences?.contains(e.reference) ??
+                            false,
+                        orElse: () => null)
+                    ?.nickname ??
+                'Anonymous'))
+        .toList();
 
     // TODO: return every gardenName with a link, with which you access the map with the location of the garden and open the corresponding expandable card
     return gardenNames;

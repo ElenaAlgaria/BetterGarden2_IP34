@@ -50,7 +50,6 @@ class User extends ChangeNotifier {
   /// reference where the object is stored in the database
   DocumentReference reference;
 
-
   /// Provides an empty User object. This should only be used once at App start.
   User.empty({StorageProvider storageProvider})
       : _storage = storageProvider ??= StorageProvider.instance,
@@ -128,39 +127,28 @@ class User extends ChangeNotifier {
   }
 
   User.fromMap(Map<String, dynamic> map,
-    {this.reference, StorageProvider storageProvider})
-    : _storage = storageProvider ??= StorageProvider.instance,
-    _favoredObjects = map.containsKey('favoredObjects')
-        ? Set<String>.from(map['favoredObjects'] as Iterable)
-        : null,
-    _gardenReferences = map.containsKey('gardenReferences')
-        ? Set<DocumentReference>.from(map['gardenReferences'] as Iterable)
-        : null,
-    _gardens = map.containsKey('gardens')
-        ? Set<String>.from(map['gardens'] as Iterable)
-        : null,
-    imageURL = map.containsKey('imageURL')
-        ? map['imageURL'] as String
-        : '',
-    mail = map.containsKey('mail')
-        ? map['mail'] as String
-        : '',
-    name = map.containsKey('name')
-        ? map['name'] as String
-        : '',
-    nickname = map.containsKey('nickname')
-        ? map['nickname'] as String
-        : '',
-    showGardenImageOnMap = map.containsKey('showGardenImageOnMap')
-        ? map['showGardenImageOnMap'] as bool
-        : '',
-    showNameOnMap = map.containsKey('showNameOnMap')
-        ? map['showNameOnMap'] as bool
-        : '',
-    surname = map.containsKey('surname')
-        ? map['surname'] as String
-        : '';
-
+      {this.reference, StorageProvider storageProvider})
+      : _storage = storageProvider ??= StorageProvider.instance,
+        _favoredObjects = map.containsKey('favoredObjects')
+            ? Set<String>.from(map['favoredObjects'] as Iterable)
+            : null,
+        _gardenReferences = map.containsKey('gardenReferences')
+            ? Set<DocumentReference>.from(map['gardenReferences'] as Iterable)
+            : null,
+        _gardens = map.containsKey('gardens')
+            ? Set<String>.from(map['gardens'] as Iterable)
+            : null,
+        imageURL = map.containsKey('imageURL') ? map['imageURL'] as String : '',
+        mail = map.containsKey('mail') ? map['mail'] as String : '',
+        name = map.containsKey('name') ? map['name'] as String : '',
+        nickname = map.containsKey('nickname') ? map['nickname'] as String : '',
+        showGardenImageOnMap = map.containsKey('showGardenImageOnMap')
+            ? map['showGardenImageOnMap'] as bool
+            : '',
+        showNameOnMap = map.containsKey('showNameOnMap')
+            ? map['showNameOnMap'] as bool
+            : '',
+        surname = map.containsKey('surname') ? map['surname'] as String : '';
 
   User.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data(), reference: snapshot.reference);
@@ -456,7 +444,8 @@ class User extends ChangeNotifier {
         // since the email is fetched from the provider account
         return LoginResult('Deine Email adresse ist ungültig');
       } else if (error.code == 'invalid-credentials') {
-        return LoginResult('Ein Fehler ist aufgetreten beim Abrufen deiner Logindaten.');
+        return LoginResult(
+            'Ein Fehler ist aufgetreten beim Abrufen deiner Logindaten.');
       }
     } catch (e) {
       return LoginResult('Ein Fehler ist aufgetreten. Versuche es erneut');
@@ -484,7 +473,6 @@ class User extends ChangeNotifier {
     );
     return result;
   }
-
 
   /// Registers a user with the provided email address and password.
   /// An email will be sent to confirm the users email address.<br>
@@ -516,7 +504,8 @@ class User extends ChangeNotifier {
     return null;
   }
 
-  Future<String> saveNickname({String nickname, String name, String surname})async {
+  Future<String> saveNickname(
+      {String nickname, String name, String surname}) async {
     updateUserData(newName: name, newSurname: surname, newNickname: nickname);
 
     return null;
