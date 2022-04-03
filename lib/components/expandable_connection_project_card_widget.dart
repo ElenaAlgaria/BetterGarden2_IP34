@@ -62,7 +62,7 @@ class ExpandableConnectionProjectCard extends StatefulWidget {
 class _ExpandableConnectionProjectCardState
     extends State<ExpandableConnectionProjectCard> {
   bool _expanded = false;
-
+  bool flag = true;
   @override
   Widget build(BuildContext context) {
     final _screenWidth = MediaQuery.of(context).size.width;
@@ -274,7 +274,37 @@ class _ExpandableConnectionProjectCardState
                   textAlign: TextAlign.left,
                 ),
               ),
-              Padding(
+              Row(
+                children: [
+                  Expanded(
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.only(left: 16),
+                        child: Text(
+                            flag
+                                ? widget.object.gardens.length.toString() + ' Teilnehmer'
+                                : widget.object.gardens.length.toString() + ' Teilnehmer' + '\n' + getLinksOfGardensOfProject(widget.object.gardens).join('\n'),
+                        ),
+                      ),
+                  ),
+                  InkWell(
+                    onTap: (){
+                      setState(() {
+                        flag = !flag;
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.only(right: 30),
+                        child: Icon(flag?Icons.keyboard_arrow_down:Icons.keyboard_arrow_up),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+
+              ),
+             /* Padding(
                 padding: const EdgeInsets.only(left: 16),
                 child: Text(
                   widget.object.gardens.length.toString() + ' Teilnehmer',
@@ -286,7 +316,7 @@ class _ExpandableConnectionProjectCardState
                   // widget.object.gardens.map((e) => ServiceProvider.instance.gardenService.getGardenByReference(e).name).join('\n'),
                   getLinksOfGardensOfProject(widget.object.gardens).join('\n'),
                 ),
-              ),
+              ),*/
               Padding(
                   padding: const EdgeInsets.only(left: 8, bottom: 15),
                   child: TextButton(
