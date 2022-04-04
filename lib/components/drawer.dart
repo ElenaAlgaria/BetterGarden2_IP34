@@ -1,7 +1,6 @@
 import 'package:biodiversity/components/white_redirect_page.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/account_page/account_page.dart';
-import 'package:biodiversity/screens/dev_tools_page/dev_tools_page.dart';
 import 'package:biodiversity/screens/favored_list_page/favored_list_page.dart';
 import 'package:biodiversity/screens/impressum_page/impressum_page.dart';
 import 'package:biodiversity/screens/information_list_page/biodiversity_elements_list_page.dart';
