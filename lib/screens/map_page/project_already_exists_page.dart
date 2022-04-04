@@ -16,7 +16,9 @@ class ProjectAlreadyExistsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<Garden>(context).switchGarden(selectedGarden);
+    builder: (context) {
+      Provider.of<Garden>(context).switchGarden(selectedGarden);
+    };
     return Scaffold(
       body: ListView(children: <Widget>[
         const SizedBox(height: 30),

@@ -212,19 +212,6 @@ class MyDrawer extends StatelessWidget {
                                 );
                               },
                             ),
-                            ListTile(
-                              title: const Text(
-                                'Dev Tools',
-                                style: TextStyle(fontSize: 14),
-                              ),
-                              onTap: () {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => DevToolsPage()),
-                                );
-                              },
-                            ),
                             /*ListTile(
                               title: const Text(
                                 'Warning',
@@ -290,7 +277,7 @@ class MyDrawer extends StatelessWidget {
                     onPressed: () {
                       Provider.of<User>(context, listen: false).signOut();
                       Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => LoginPage()));
+                          MaterialPageRoute(builder: (contebt) => LoginPage()));
                     },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(

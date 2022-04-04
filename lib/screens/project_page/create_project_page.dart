@@ -117,6 +117,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                                           .getAllGardensFromUser(user)),
                                 ),
                                 ElevatedButton.icon(
+                                  key: const Key ('saveConnectionProject'),
                                   onPressed: () {
                                     if (!_formkey.currentState.validate()) {
                                       return;
