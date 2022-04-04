@@ -271,8 +271,14 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     mapController.animateCamera(CameraUpdate.newLatLng(loc));
   }
 
+  void test() {
+    assembleMarkers().forEach((element) { debugPrint("MarkersvoOriginal: " + element.markerId.toString());});
+    debugPrint("Bra size: " + assembleMarkers().length.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
+    test();
     final mapInteraction =
         Provider.of<MapInteractionContainer>(context, listen: false);
     loadUserLocation();

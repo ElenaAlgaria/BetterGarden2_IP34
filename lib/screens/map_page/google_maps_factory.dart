@@ -56,16 +56,7 @@ class _GoogleMaps_Factory extends State<GoogleMaps_Factory> {
             mapType: MapType.hybrid,
             markers: widget.markers,
             circles: widget.circles.toSet(),
-            onCameraIdle: () {
-              mapController.getVisibleRegion().then((bounds) {
-                final lat =
-                    (bounds.southwest.latitude + bounds.northeast.latitude) / 2;
-                final long =
-                    (bounds.southwest.longitude + bounds.northeast.longitude) /
-                        2;
-                _focusedLocation = LatLng(lat, long);
-              });
-            },
+            onCameraIdle: () {},
             onTap: (pos) {
               Provider.of<MapInteractionContainer>(context, listen: false)
                   .selectedLocation = pos;

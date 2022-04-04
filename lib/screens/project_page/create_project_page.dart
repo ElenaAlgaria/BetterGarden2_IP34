@@ -5,6 +5,7 @@ import 'package:biodiversity/components/dropdown_formfield.dart';
 import 'package:biodiversity/components/garden_dropdown_widget.dart';
 import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
+import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/map_page/project_already_exists_page.dart';
@@ -37,6 +38,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
 
   @override
   void initState() {
+    Provider.of<MapInteractionContainer>(context, listen: false).reset();
     super.initState();
     _speciesList =
         ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
@@ -45,6 +47,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
+    final mapInteractions = Provider.of<MapInteractionContainer>(context);
     if (ModalRoute.of(context).settings.arguments != '' &&
         _currentSpecies == null) {
       _currentSpecies = ModalRoute.of(context).settings.arguments as Species;
@@ -62,7 +65,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                         key: _formkey,
                         child: Padding(
                             padding:
-                                const EdgeInsets.fromLTRB(20.0, 0, 20.0, 10.0),
+                            const EdgeInsets.fromLTRB(20.0, 0, 20.0, 10.0),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -107,7 +110,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                                 speciesListWidget(),
                                 Container(
                                   margin:
-                                      const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
+                                  const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
                                   child: gardenDropDown(
                                       onGardenChanged: (selectedGarden) {
                                         _selectedGarden = selectedGarden;
@@ -122,8 +125,8 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                                       return;
                                     } else {
                                       var species =
-                                          getJoinableConnectionProjectsForSpecies(
-                                              _currentSpecies, _selectedGarden);
+                                      getJoinableConnectionProjectsForSpecies(
+                                          _currentSpecies, _selectedGarden);
                                       if (species != null) {
                                         Navigator.pushReplacement(
                                           context,
@@ -132,6 +135,8 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                                                   ProjectAlreadyExistsPage(species, _selectedGarden)),
                                         );
                                       } else {
+                                        mapInteractions.getLocationOfAddress(_selectedGarden.street);
+                                        mapInteractions.selectedLocation;
                                         saveProject();
                                       }
                                     }
@@ -210,7 +215,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
 
   bool getConnectionProjectsInRadius(
       Garden garden, ConnectionProject projectToCompareWith, int radius) {
-   var x = projectToCompareWith.gardens
+    var x = projectToCompareWith.gardens
         .map((e) =>
         ServiceProvider.instance.gardenService.getGardenByReference(e))
         .any((element) => element.isInRange(element, garden, radius));

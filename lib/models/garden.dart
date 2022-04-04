@@ -218,4 +218,6 @@ class Garden extends ChangeNotifier {
 
   /// is true if this garden is an empty placeholder
   bool get isEmpty => _isEmpty;
+
+
 }

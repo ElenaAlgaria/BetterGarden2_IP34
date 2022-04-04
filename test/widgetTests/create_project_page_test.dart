@@ -1,5 +1,4 @@
 import 'package:biodiversity/main.dart';
-import 'package:biodiversity/screens/button_example/button_page.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:biodiversity/screens/login_page/register_email_page.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
