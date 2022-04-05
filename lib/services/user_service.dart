@@ -11,10 +11,8 @@ import 'package:flutter/material.dart';
 class UserService extends ChangeNotifier {
   final List<User> _users = [];
 
-/* final List<String> _classes = []; */
   StreamSubscription _streamSubscription;
 
-/* bool _initialized = false; */
   StorageProvider _storage;
 
   /// init the service, should only be used once

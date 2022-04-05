@@ -37,8 +37,6 @@ class ExpandableConnectionProjectCard extends StatefulWidget {
 
   final ServiceProvider _serviceProvider;
 
-  List<bool> _isOpen;
-
   /// show a card to the provided ConnectionProject
   ExpandableConnectionProjectCard(this.object,
       {hideLikeAndAdd = false,
@@ -63,6 +61,7 @@ class _ExpandableConnectionProjectCardState
     extends State<ExpandableConnectionProjectCard> {
   bool _expanded = false;
   bool flag = true;
+
   @override
   Widget build(BuildContext context) {
     final _screenWidth = MediaQuery.of(context).size.width;
@@ -277,17 +276,23 @@ class _ExpandableConnectionProjectCardState
               Row(
                 children: [
                   Expanded(
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.only(left: 16),
-                        child: Text(
-                            flag
-                                ? widget.object.gardens.length.toString() + ' Teilnehmer'
-                                : widget.object.gardens.length.toString() + ' Teilnehmer' + '\n' + getLinksOfGardensOfProject(widget.object.gardens).join('\n'),
-                        ),
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.only(left: 16),
+                      child: Text(
+                        flag
+                            ? widget.object.gardens.length.toString() +
+                                ' Teilnehmer'
+                            : widget.object.gardens.length.toString() +
+                                ' Teilnehmer' +
+                                '\n' +
+                                getLinksOfGardensOfProject(
+                                        widget.object.gardens)
+                                    .join('\n'),
                       ),
+                    ),
                   ),
                   InkWell(
-                    onTap: (){
+                    onTap: () {
                       setState(() {
                         flag = !flag;
                       });
@@ -296,27 +301,15 @@ class _ExpandableConnectionProjectCardState
                       children: [
                         Container(
                           padding: const EdgeInsets.only(right: 30),
-                        child: Icon(flag?Icons.keyboard_arrow_down:Icons.keyboard_arrow_up),
+                          child: Icon(flag
+                              ? Icons.keyboard_arrow_down
+                              : Icons.keyboard_arrow_up),
                         ),
                       ],
                     ),
                   )
                 ],
-
               ),
-             /* Padding(
-                padding: const EdgeInsets.only(left: 16),
-                child: Text(
-                  widget.object.gardens.length.toString() + ' Teilnehmer',
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 16, bottom: 15),
-                child: Text(
-                  // widget.object.gardens.map((e) => ServiceProvider.instance.gardenService.getGardenByReference(e).name).join('\n'),
-                  getLinksOfGardensOfProject(widget.object.gardens).join('\n'),
-                ),
-              ),*/
               Padding(
                   padding: const EdgeInsets.only(left: 8, bottom: 15),
                   child: TextButton(
