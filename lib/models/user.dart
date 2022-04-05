@@ -539,7 +539,7 @@ class User extends ChangeNotifier {
       authUser.user.updateDisplayName(displayName);
       authUser.user.updateEmail(email);
       updateUserData(
-          newNickname: displayName, informListeners: false, newMail: mail);
+          newNickname: displayName, informListeners: false, newMail: email);
       _loggedIn = true;
       await loadDetailsFromLoggedInUser();
       return null;
