@@ -6,6 +6,8 @@ import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/project_page/project_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:biodiversity/services/services_library.dart';
+import 'package:biodiversity/services/user_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -58,6 +60,7 @@ class ExpandableConnectionProjectCard extends StatefulWidget {
 class _ExpandableConnectionProjectCardState
     extends State<ExpandableConnectionProjectCard> {
   bool _expanded = false;
+  bool flag = true;
 
   @override
   Widget build(BuildContext context) {
@@ -259,16 +262,53 @@ class _ExpandableConnectionProjectCardState
                       style: const TextStyle(
                         color: Colors.blueAccent,
                         fontWeight: FontWeight.bold,
-                      ))
+                      )),
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 16, bottom: 15),
+                padding: const EdgeInsets.only(left: 16, bottom: 0),
                 child: Text(
                   widget.object.description,
                   softWrap: true,
                   textAlign: TextAlign.left,
                 ),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.only(left: 16),
+                      child: Text(
+                        flag
+                            ? widget.object.gardens.length.toString() +
+                                ' Teilnehmer'
+                            : widget.object.gardens.length.toString() +
+                                ' Teilnehmer' +
+                                '\n' +
+                                getLinksOfGardensOfProject(
+                                        widget.object.gardens)
+                                    .join('\n'),
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        flag = !flag;
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.only(right: 30),
+                          child: Icon(flag
+                              ? Icons.keyboard_arrow_down
+                              : Icons.keyboard_arrow_up),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
               ),
               Padding(
                   padding: const EdgeInsets.only(left: 8, bottom: 15),
@@ -294,6 +334,32 @@ class _ExpandableConnectionProjectCardState
         ],
       ),
     );
+  }
+
+  ///returns a list of links of a project, tap on link to see location of garden on map
+  List<String> getLinksOfGardensOfProject(
+      List<DocumentReference<Object>> gardenRef) {
+    List<User> users;
+    users = ServiceProvider.instance.userService.getAllUsers();
+    var gardens = gardenRef.map(
+        (e) => ServiceProvider.instance.gardenService.getGardenByReference(e));
+    var allUsers = ServiceProvider.instance.userService.getAllUsers();
+    var gardenNames = gardens
+        .map((e) =>
+            e.name +
+            ' von ' +
+            (allUsers
+                    ?.firstWhere(
+                        (user) =>
+                            user.gardenReferences?.contains(e.reference) ??
+                            false,
+                        orElse: () => null)
+                    ?.nickname ??
+                'Anonymous'))
+        .toList();
+
+    // TODO: return every gardenName with a link, with which you access the map with the location of the garden and open the corresponding expandable card
+    return gardenNames;
   }
 
   ///handles the result of a tap on a like "merken" button
