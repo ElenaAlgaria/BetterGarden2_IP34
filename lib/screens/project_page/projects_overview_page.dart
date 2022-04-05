@@ -6,6 +6,7 @@ import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
+import 'package:biodiversity/screens/project_page/project_general_information_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -45,7 +46,20 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Vernetzungsprojekte')),
+      appBar: AppBar(
+        title: const Text('Vernetzungsprojekte'),
+        centerTitle: true,
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProjectGeneralInformationPage()),
+                );
+              },
+              icon: const Icon(Icons.help))
+        ],
+      ),
       drawer: MyDrawer(),
       body: SingleChildScrollView(
         child: Column(
@@ -163,7 +177,8 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
       Garden garden, ConnectionProject projectToCompareWith, int radius) {
     return projectToCompareWith.gardens
         .map((e) =>
-            ServiceProvider.instance.gardenService.getGardenByReference(e) ?? Garden.empty())
+            ServiceProvider.instance.gardenService.getGardenByReference(e) ??
+            Garden.empty())
         .any((element) => element.isInRange(element, garden, radius));
   }
 }

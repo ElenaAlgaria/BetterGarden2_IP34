@@ -5,6 +5,7 @@ import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/map_marker_service.dart';
 import 'package:biodiversity/services/species_service.dart';
 import 'package:biodiversity/services/take_home_message_service.dart';
+import 'package:biodiversity/services/user_service.dart';
 
 /// A class which provides a single place where all services can be accessed
 class ServiceProvider {
@@ -14,6 +15,7 @@ class ServiceProvider {
   static final _imageService = ImageService();
   static final _biodiversityService = BiodiversityService();
   static final _speciesService = SpeciesService();
+  static final _userService = UserService();
   static final _connectionProjectService = ConnectionProjectService();
   static final _takeHomeMessageService = TakeHomeMessageService();
   static final _mapMarkerService = MapMarkerService();
@@ -33,6 +35,9 @@ class ServiceProvider {
 
   /// Reference to the SpeciesService
   final SpeciesService speciesService = _speciesService;
+
+  /// Reference to the UserService
+  final UserService userService = _userService;
 
   /// Reference to the ConnectionProjectService
   final ConnectionProjectService connectionProjectService =
