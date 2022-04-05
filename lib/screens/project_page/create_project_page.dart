@@ -11,11 +11,14 @@ import 'package:biodiversity/screens/map_page/project_already_exists_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 class CreateProjectPage extends StatefulWidget {
+  final ValueChanged<ConnectionProject> onConnectionProjectAdded;
+
   /// Display the create project page
-  CreateProjectPage({Key key, Species currentSpecies}) : super(key: key);
+  CreateProjectPage({Key key, this.onConnectionProjectAdded, Species currentSpecies}) : super(key: key);
 
   @override
   _CreateProjectPageState createState() => _CreateProjectPageState();
@@ -65,6 +68,14 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 TextFormField(
+                                  decoration: const InputDecoration(
+                                      labelText: 'Projekttitel',
+                                      hintText: 'Projekttitel',
+                                      labelStyle: TextStyle(
+                                        fontSize: 15,
+                                      )
+                                  ),
+                                  maxLength: 20,
                                   controller: _titleController,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -73,13 +84,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                                       return null;
                                     }
                                   },
-                                  decoration: const InputDecoration(
-                                      hintText: 'Projekttitel',
-                                      labelText: 'Projekttitel',
-                                      labelStyle: TextStyle(
-                                        fontSize: 15,
-                                      )),
-                                  maxLength: 20,
+
                                 ),
                                 TextFormField(
                                   controller: _descriptionController,
@@ -124,7 +129,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  ProjectAlreadyExistsPage(species)),
+                                                  ProjectAlreadyExistsPage(species, _selectedGarden)),
                                         );
                                       } else {
                                         saveProject();
@@ -145,6 +150,8 @@ class _CreateProjectPageState extends State<CreateProjectPage>
     newConnectionProject.gardens.add(_selectedGarden.reference);
     newConnectionProject.targetSpecies = _currentSpecies.reference;
     newConnectionProject.saveConnectionProject();
+
+    widget.onConnectionProjectAdded(newConnectionProject);
 
     log('saved following connectionProject');
     log(_currentSpecies.name);
@@ -186,16 +193,19 @@ class _CreateProjectPageState extends State<CreateProjectPage>
 
   ConnectionProject getJoinableConnectionProjectsForSpecies(
       Species specie, Garden garden) {
-    return ServiceProvider.instance.connectionProjectService
+    var project = ServiceProvider.instance.connectionProjectService
         .getAllConnectionProjects()
         .where((element) => !element.gardens.contains(garden.reference))
         .where((element) => element.targetSpecies.path == specie.reference.path)
         .where((element) => getConnectionProjectsInRadius(
-            garden,
-            element,
-            ServiceProvider.instance.speciesService
-                .getSpeciesByReference(element.targetSpecies)
-                .radius)).first;
+        garden,
+        element,
+        ServiceProvider.instance.speciesService
+            .getSpeciesByReference(element.targetSpecies)
+            .radius)).toList();
+    if(project.isNotEmpty){
+      return project.first;
+    }
   }
 
   bool getConnectionProjectsInRadius(
