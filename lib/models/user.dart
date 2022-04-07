@@ -47,6 +47,9 @@ class User extends ChangeNotifier {
   /// toggle whether an image of the garden is visible on the map
   bool showGardenImageOnMap;
 
+  /// toggle whether a user has access to developertools
+  bool hasDeveloperTools;
+
   /// reference where the object is stored in the database
   DocumentReference reference;
 
@@ -63,7 +66,8 @@ class User extends ChangeNotifier {
         imageURL = '',
         mail = '',
         showNameOnMap = true,
-        showGardenImageOnMap = true {
+        showGardenImageOnMap = true,
+        hasDeveloperTools = false {
     if (_storage.auth.currentUser != null) {
       _loggedIn = true;
       loadDetailsFromLoggedInUser();
@@ -106,6 +110,10 @@ class User extends ChangeNotifier {
         map['gardenReferences'] is List) {
       _gardenReferences = Set.from(map['gardenReferences']);
     }
+    if (map.containsKey('hasDeveloperTools') &&
+        map['hasDeveloperTools'] is bool) {
+      hasDeveloperTools = map['hasDeveloperTools'];
+    }
     if (map.containsKey('favoredObjects') && map['favoredObjects'] is List) {
       _favoredObjects = Set.from(map['favoredObjects']);
     }
@@ -144,10 +152,13 @@ class User extends ChangeNotifier {
         nickname = map.containsKey('nickname') ? map['nickname'] as String : '',
         showGardenImageOnMap = map.containsKey('showGardenImageOnMap')
             ? map['showGardenImageOnMap'] as bool
-            : '',
+            : true,
+        hasDeveloperTools = map.containsKey('hasDeveloperTools')
+            ? map['hasDeveloperTools'] as bool
+            : false,
         showNameOnMap = map.containsKey('showNameOnMap')
             ? map['showNameOnMap'] as bool
-            : '',
+            : false,
         surname = map.containsKey('surname') ? map['surname'] as String : '';
 
   User.fromSnapshot(DocumentSnapshot snapshot)
@@ -170,6 +181,7 @@ class User extends ChangeNotifier {
       'favoredObjects': _favoredObjects.toList(),
       'showNameOnMap': showNameOnMap,
       'showGardenImageOnMap': showGardenImageOnMap,
+      'hasDeveloperTools': hasDeveloperTools,
     });
     return true;
   }
@@ -188,6 +200,7 @@ class User extends ChangeNotifier {
       String newAddress,
       bool doesShowNameOnMap,
       bool doesShowGardenImageOnMap,
+      bool showDeveloperTools,
       bool informListeners = true}) {
     if (newName != null) name = newName;
     if (newSurname != null) surname = newSurname;
@@ -203,6 +216,7 @@ class User extends ChangeNotifier {
     if (doesShowGardenImageOnMap != null) {
       showGardenImageOnMap = doesShowGardenImageOnMap;
     }
+    if (showDeveloperTools != null) hasDeveloperTools = showDeveloperTools;
     saveUser();
     if (informListeners) {
       notifyListeners();
@@ -305,6 +319,7 @@ class User extends ChangeNotifier {
     _loggedIn = false;
     showNameOnMap = true;
     showGardenImageOnMap = true;
+    hasDeveloperTools = false;
     notifyListeners();
   }
 

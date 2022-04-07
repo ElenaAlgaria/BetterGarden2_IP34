@@ -1,6 +1,7 @@
 import 'package:biodiversity/components/white_redirect_page.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/account_page/account_page.dart';
+import 'package:biodiversity/screens/dev_tools_page/dev_tools_page.dart';
 import 'package:biodiversity/screens/favored_list_page/favored_list_page.dart';
 import 'package:biodiversity/screens/impressum_page/impressum_page.dart';
 import 'package:biodiversity/screens/information_list_page/biodiversity_elements_list_page.dart';
@@ -196,8 +197,7 @@ class MyDrawer extends StatelessWidget {
                                 );
                               },
                             ),
-                            // ignore: prefer_if_elements_to_conditional_expressions
-                            _loginLogoutButton(context),
+                            ..._loginLogoutButton(context),
                             ListTile(
                               title: const Text(
                                 'Impressum',
@@ -211,19 +211,6 @@ class MyDrawer extends StatelessWidget {
                                 );
                               },
                             ),
-                            /*ListTile(
-                              title: const Text(
-                                'Warning',
-                                style: TextStyle(fontSize: 14),
-                              ),
-                              onTap: () {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ProjectAlreadyExistsPage()),
-                                );
-                              },
-                            ), */
                           ],
                         ),
                       ),
@@ -241,18 +228,36 @@ class MyDrawer extends StatelessWidget {
     );
   }
 
-  Widget _loginLogoutButton(BuildContext context) {
+  List<Widget> _loginLogoutButton(BuildContext context) {
+    var widgetList = <Widget>[];
     if (Provider.of<User>(context).isLoggedIn) {
-      return ListTile(
-          title: const Text('Logout'), onTap: () => _signOut(context));
+      widgetList.add(ListTile(
+          title: const Text('Logout'), onTap: () => _signOut(context)));
+      if (Provider.of<User>(context).hasDeveloperTools) {
+        widgetList.add(ListTile(
+          title: const Text(
+            'Dev Tools',
+            style: TextStyle(fontSize: 14),
+          ),
+          onTap: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => DevToolsPage()),
+            );
+          },
+        ));
+      }
+      return widgetList;
     } else {
-      return ListTile(
-        title: const Text('Login'),
-        onTap: () => Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
-        ),
-      );
+      return [
+        ListTile(
+          title: const Text('Login'),
+          onTap: () => Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => LoginPage()),
+          ),
+        )
+      ];
     }
   }
 
