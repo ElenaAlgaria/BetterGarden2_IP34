@@ -193,11 +193,11 @@ class Garden extends ChangeNotifier {
         .length;
   }
 
-  bool isInRange(Garden g1, Garden g2, int radius) {
-    debugPrint(g1.name + g2.name);
+  bool isInRange(Garden g2, int radius) {
+    debugPrint(name + g2.name);
     var distance = Geolocator.distanceBetween(
-      g1.getLatLng().latitude,
-      g1.getLatLng().longitude,
+      getLatLng().latitude,
+      getLatLng().longitude,
       g2.getLatLng().latitude,
       g2.getLatLng().longitude,
     );

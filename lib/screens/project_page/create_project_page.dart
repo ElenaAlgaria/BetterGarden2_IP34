@@ -214,7 +214,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
    var x = projectToCompareWith.gardens
         .map((e) =>
         ServiceProvider.instance.gardenService.getGardenByReference(e))
-        .any((element) => element.isInRange(element, garden, radius));
+        .any((element) => element.isInRange(garden, radius));
     return x;
   }
 }

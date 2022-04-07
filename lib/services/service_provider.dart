@@ -1,4 +1,5 @@
 import 'package:biodiversity/services/biodiversity_service.dart';
+import 'package:biodiversity/services/connection_project_garden_facade_service.dart';
 import 'package:biodiversity/services/connection_project_service.dart';
 import 'package:biodiversity/services/garden_service.dart';
 import 'package:biodiversity/services/image_service.dart';
@@ -17,6 +18,8 @@ class ServiceProvider {
   static final _speciesService = SpeciesService();
   static final _userService = UserService();
   static final _connectionProjectService = ConnectionProjectService();
+  static final _connectionProjectGardenFacadeService =
+      ConnectionProjectGardenFacadeService();
   static final _takeHomeMessageService = TakeHomeMessageService();
   static final _mapMarkerService = MapMarkerService();
   static final _instance = ServiceProvider._privateConstructor();
@@ -42,6 +45,11 @@ class ServiceProvider {
   /// Reference to the ConnectionProjectService
   final ConnectionProjectService connectionProjectService =
       _connectionProjectService;
+
+  /// Reference to the MapMarkerService
+  final ConnectionProjectGardenFacadeService
+      connectionProjectGardenFacadeService =
+      _connectionProjectGardenFacadeService;
 
   /// Reference to the TakeHomeMessageService
   final TakeHomeMessageService takeHomeMessageService = _takeHomeMessageService;

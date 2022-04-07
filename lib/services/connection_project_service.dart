@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as logging;
 
 import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/storage_provider.dart';
@@ -70,10 +71,11 @@ class ConnectionProjectService extends ChangeNotifier {
 
   ///function to delete the ConnectionProject from an user
   Future<void> deleteConnectionProject(
-      ConnectionProject ConnectionProject) async {
-    if (ConnectionProject.reference != null) {
-      _storage.database.doc(ConnectionProject.reference.path).delete();
+      ConnectionProject connectionProject) async {
+    if (connectionProject.reference != null) {
+      _storage.database.doc(connectionProject.reference.path).delete();
     }
+    logging.log('Deleted ConnectionProject' + connectionProject.title);
     _connectionProjects.remove(ConnectionProject);
   }
 }
