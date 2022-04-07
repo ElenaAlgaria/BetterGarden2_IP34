@@ -122,8 +122,9 @@ class _MyAccountDeleteState extends State<MyAccountDelete> {
               ),
             )).then((value) async {
       if (value != null) {
-        ServiceProvider.instance.gardenService.deleteAllGardensFromUser(
-            Provider.of<User>(context, listen: false));
+        ServiceProvider.instance.connectionProjectGardenFacadeService
+            .deleteAllGardensFromUser(
+                Provider.of<User>(context, listen: false));
         final res = await Provider.of<User>(context, listen: false)
             .deleteAccountEmail();
         await Provider.of<User>(context, listen: false).signOut(save: false);

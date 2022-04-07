@@ -9,7 +9,6 @@ import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_add.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -67,16 +66,6 @@ class GardenService extends ChangeNotifier {
     return _gardens.where((garden) => garden.owner == user.userUUID).toList();
   }
 
-  ///Delete all gardens from the user when the account is being deleted
-  void deleteAllGardensFromUser(User user) {
-    final gardens = [];
-
-    gardens.addAll(_gardens.where((garden) => garden.owner == user.userUUID));
-    gardens.forEach((element) {
-      deleteGarden(element);
-    });
-  }
-
   /// Returns a list of all registered Gardens
   List<Garden> getAllGardens() {
     return _gardens;
@@ -95,7 +84,8 @@ class GardenService extends ChangeNotifier {
 
   /// returns a single Garden referenced by the provided reference
   Garden getGardenByReference(DocumentReference reference) {
-    return _gardens.firstWhere((element) => element.reference == reference, orElse: () => null);
+    return _gardens.firstWhere((element) => element.reference == reference,
+        orElse: () => null);
   }
 
   /// returns the nickname of the garden owner if showGardenOnMap is set to true for this user

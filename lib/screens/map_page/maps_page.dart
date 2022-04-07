@@ -122,11 +122,11 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     for (var g in _allGardens) {
       ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(g,
           onTapCallback: (element) {
-            setState(() {
-              _tappedGarden = element;
-            });
-            displayModalBottomSheetGarden(context);
-          }).then((marker) {
+        setState(() {
+          _tappedGarden = element;
+        });
+        displayModalBottomSheetGarden(context);
+      }).then((marker) {
         setState(() {
           _allGardenMarkers.add(marker);
         });
@@ -135,12 +135,12 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
 
     ServiceProvider.instance.mapMarkerService.getConnectionProjectMarkerSet(
         onTapCallback: (element) {
-          setState(() {
-            _tappedConnectionProject = element;
-          });
-          displayModalBottomSheetConnectionProject(context);
-          displayConnectionProjectGardensWithCircles(element.reference);
-        }).then((markers) {
+      setState(() {
+        _tappedConnectionProject = element;
+      });
+      displayModalBottomSheetConnectionProject(context);
+      displayConnectionProjectGardensWithCircles(element.reference);
+    }).then((markers) {
       setState(() {
         _allConnectionProjectMarkers.addAll(markers);
       });
@@ -212,43 +212,29 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           strokeWidth: 1));
     });
 
-    allGardensNotInProject.forEach((element) {
-      setJoinableMarkers(element, gardensOfConnectionProject, radius);
-    });
+    allGardensNotInProject
+        .where((element) => ServiceProvider
+            .instance.connectionProjectGardenFacadeService
+            .isGardenInRangeOfConnectionProject(element, connectionProject))
+        .forEach((element) => setJoinableMarkers(element));
   }
 
-  void setJoinableMarkers(Garden gardenOfConnectionProject,
-      List<Garden> gardensToCompareWith, int radius) {
-    // Iterate through all gardens to compare them with the garden of the connectionProject
-
-    if (gardensToCompareWith.any((element) =>
-        element.isInRange(element, gardenOfConnectionProject, radius))) {
-      ServiceProvider.instance.mapMarkerService.getJoinableMarker(
-          gardenOfConnectionProject, onTapCallback: (element) {
-        setState(() {
-          _tappedGarden = element;
-        });
-        displayModalBottomSheetGarden(context);
-      }).then((marker) {
-        setState(() {
-          _joinableConnectionProjectMarkers = {..._allConnectionProjectMarkers};
-          _joinableConnectionProjectMarkers.removeWhere((element) =>
-              element.markerId.value ==
-              'garden' + gardenOfConnectionProject.reference.id);
-          _joinableConnectionProjectMarkers.add(marker);
-        });
+  void setJoinableMarkers(Garden gardenOfConnectionProject) {
+    ServiceProvider.instance.mapMarkerService
+        .getJoinableMarker(gardenOfConnectionProject, onTapCallback: (element) {
+      setState(() {
+        _tappedGarden = element;
       });
-    }
-  }
-
-  bool GardenIsInRange(Garden g1, Garden g2, int radius) {
-    var distance = Geolocator.distanceBetween(
-      g1.getLatLng().latitude,
-      g1.getLatLng().longitude,
-      g2.getLatLng().latitude,
-      g2.getLatLng().longitude,
-    );
-    return (distance <= radius * 2 && distance != 0.0);
+      displayModalBottomSheetGarden(context);
+    }).then((marker) {
+      setState(() {
+        _joinableConnectionProjectMarkers = {..._allConnectionProjectMarkers};
+        _joinableConnectionProjectMarkers.removeWhere((element) =>
+            element.markerId.value ==
+            'garden' + gardenOfConnectionProject.reference.id);
+        _joinableConnectionProjectMarkers.add(marker);
+      });
+    });
   }
 
   void loadUserLocation() async {
@@ -442,8 +428,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                             onPressed: () {
                               _allGardenMarkersVisible =
                                   !_allGardenMarkersVisible;
-                              setState(() {
-                              });
+                              setState(() {});
                             },
                           ),
                           ElevatedButton(
@@ -451,8 +436,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                             onPressed: () {
                               _allConnectionProjectMarkersVisible =
                                   !_allConnectionProjectMarkersVisible;
-                              setState(() {
-                              });
+                              setState(() {});
                             },
                           ),
                           /* ElevatedButton(
@@ -468,9 +452,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                   ),
                 );
               });
-        }).whenComplete(() => {
-
-        });
+        }).whenComplete(() => {});
   }
 
   Future<Widget> displayModalBottomSheetGarden(BuildContext context) async {

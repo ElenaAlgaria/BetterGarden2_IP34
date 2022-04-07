@@ -27,12 +27,14 @@ class joinConnectionProjectButtonState
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
-    var _gardensList =
-        ServiceProvider.instance.gardenService.getAllGardensFromUser(user);
+    var _gardensList = ServiceProvider.instance.gardenService
+        .getAllGardensFromUser(user)
+        .where((element) => ServiceProvider
+            .instance.connectionProjectGardenFacadeService
+            .isGardenInRangeOfConnectionProject(
+                element, widget.connectionProject));
 
-    // TODO: disable when no
-    var _disabled = false;
-    // var _disabled = _gardensList.any((element) => );
+    var _disabled = _gardensList.isEmpty;
 
     return ElevatedButton.icon(
       onPressed: _disabled
@@ -86,7 +88,6 @@ class joinConnectionProjectButtonState
                                               0, 20.0, 0, 0),
                                           child: ElevatedButton.icon(
                                             onPressed: () {
-
                                               if (!_formKey.currentState
                                                   .validate()) {
                                                 return;

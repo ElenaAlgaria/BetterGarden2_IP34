@@ -36,31 +36,17 @@ class DevToolsPage extends StatelessWidget {
                 ),
               ),
               ElevatedButton.icon(
-                  onPressed: () {
-                    var hashMap =
-                        HashMap<DocumentReference, ConnectionProject>();
-                    ServiceProvider.instance.connectionProjectService
-                        .getAllConnectionProjects()
-                        .forEach((project) => {
-                              project.gardens.forEach((element) {
-                                if (ServiceProvider.instance.gardenService
-                                        .getGardenByReference(element) ==
-                                    null) {
-                                  hashMap.putIfAbsent(element, () => project);
-                                }
-                              })
-                            });
-                    hashMap.forEach((key, value) {
-                      value.removeGarden(key);
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(
-                              'removed invalid gardenReference: ' + key.id)));
-                      logging.log('removed invalid gardenReference: ' + key.id);
-                    });
-                  },
+                  onPressed: () => fixInvalidGardenReferences(context),
                   icon: const Icon(Icons.sync_alt),
                   label: const Text(
                     'fix invalid gardenReferences',
+                    textScaleFactor: 1.3,
+                  )),
+              ElevatedButton.icon(
+                  onPressed: () => fixEmptyConnectionProjects(context),
+                  icon: const Icon(Icons.sync_alt),
+                  label: const Text(
+                    'fix empty connectionProjects',
                     textScaleFactor: 1.3,
                   )),
               const Padding(
@@ -80,5 +66,44 @@ class DevToolsPage extends StatelessWidget {
             ]))
       ]),
     );
+  }
+
+  void fixInvalidGardenReferences(BuildContext context) {
+    var hashMap = HashMap<DocumentReference, ConnectionProject>();
+    ServiceProvider.instance.connectionProjectService
+        .getAllConnectionProjects()
+        .forEach((project) => {
+              project.gardens.forEach((element) {
+                if (ServiceProvider.instance.gardenService
+                        .getGardenByReference(element) ==
+                    null) {
+                  hashMap.putIfAbsent(element, () => project);
+                }
+              })
+            });
+    hashMap.forEach((key, value) {
+      value.removeGarden(key);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('removed invalid gardenReference: ' + key.id)));
+      logging.log('removed invalid gardenReference: ' + key.id);
+    });
+  }
+
+  void fixEmptyConnectionProjects(BuildContext context) {
+    var projectsToDelete = <ConnectionProject>[];
+    ServiceProvider.instance.connectionProjectService
+        .getAllConnectionProjects()
+        ?.forEach((element) {
+      if (element.gardens.isEmpty) {
+        projectsToDelete.add(element);
+      }
+    });
+    projectsToDelete.forEach((element) {
+      ServiceProvider.instance.connectionProjectService
+          .deleteConnectionProject(element);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('removed empty connectionProject: ' + element.title)));
+      logging.log('removed empty connectionProject: ' + element.title);
+    });
   }
 }

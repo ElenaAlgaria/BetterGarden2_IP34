@@ -179,6 +179,6 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
         .map((e) =>
             ServiceProvider.instance.gardenService.getGardenByReference(e) ??
             Garden.empty())
-        .any((element) => element.isInRange(element, garden, radius));
+        .any((element) => element.isInRange(garden, radius));
   }
 }

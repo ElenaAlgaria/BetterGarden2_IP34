@@ -40,17 +40,13 @@ class _MyGardenDeleteState extends State<MyGardenDelete> {
       saveIcon: Icons.delete_forever,
       saveCallback: () {
         final user = Provider.of<User>(context, listen: false);
-        user.deleteGarden(garden);
 
-        // remove garden from all connectionProjects
-        ServiceProvider.instance.connectionProjectService
-            .getAllConnectionProjects()
-            .where((element) => element.gardens.contains(garden.reference))
-            .forEach((element) => element.removeGarden(garden.reference));
+        ServiceProvider.instance.connectionProjectGardenFacadeService
+            .fullyDeleteGarden(garden);
 
-        ServiceProvider.instance.gardenService.deleteGarden(garden);
-
-        final nextGarden = ServiceProvider.instance.gardenService.getAllGardensFromUser(user)?.first;
+        final nextGarden = ServiceProvider.instance.gardenService
+            .getAllGardensFromUser(user)
+            ?.first;
         Provider.of<Garden>(context, listen: false)
             .switchGarden(nextGarden ?? Garden.empty());
         Navigator.pushReplacement(
