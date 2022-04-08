@@ -280,27 +280,20 @@ class _ExpandableConnectionProjectCardState
                         padding: const EdgeInsets.only(left: 16, top: 10),
                         child: RichText(
                             text: TextSpan(children: <TextSpan>[
-                          flag
-                              ? TextSpan(
-                                  text: 'Teilnehmende (' +
-                                      widget.object.gardens.length.toString() +
-                                      ')',
-                                  style: const TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold))
-                              : TextSpan(
-                                  text: 'Teilnehmende (' +
-                                      widget.object.gardens.length.toString() +
-                                      ') \n',
-                                  style: const TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold)),
+                          TextSpan(
+                              text: 'Teilnehmende (' +
+                                  widget.object.gardens.length.toString() +
+                                  ')',
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold)),
                           flag
                               ? const TextSpan(text: '')
                               : TextSpan(
-                                  text: getLinksOfGardensOfProject(
-                                          widget.object.gardens)
-                                      .join('\n'),
+                                  text: '\n' +
+                                      getLinksOfGardensOfProject(
+                                              widget.object.gardens)
+                                          .join('\n'),
                                   style: const TextStyle(color: Colors.black))
                         ]))),
                   ),
