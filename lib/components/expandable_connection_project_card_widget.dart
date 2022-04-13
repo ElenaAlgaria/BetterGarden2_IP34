@@ -277,19 +277,25 @@ class _ExpandableConnectionProjectCardState
                 children: [
                   Expanded(
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.only(left: 16),
-                      child: Text(
-                        flag
-                            ? widget.object.gardens.length.toString() +
-                                ' Teilnehmer'
-                            : widget.object.gardens.length.toString() +
-                                ' Teilnehmer' +
-                                '\n' +
-                                getLinksOfGardensOfProject(
-                                        widget.object.gardens)
-                                    .join('\n'),
-                      ),
-                    ),
+                        padding: const EdgeInsets.only(left: 16, top: 10),
+                        child: RichText(
+                            text: TextSpan(children: <TextSpan>[
+                          TextSpan(
+                              text: 'Teilnehmende (' +
+                                  widget.object.gardens.length.toString() +
+                                  ')',
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold)),
+                          flag
+                              ? const TextSpan(text: '')
+                              : TextSpan(
+                                  text: '\n' +
+                                      getLinksOfGardensOfProject(
+                                              widget.object.gardens)
+                                          .join('\n'),
+                                  style: const TextStyle(color: Colors.black))
+                        ]))),
                   ),
                   InkWell(
                     onTap: () {
@@ -346,6 +352,7 @@ class _ExpandableConnectionProjectCardState
     var allUsers = ServiceProvider.instance.userService.getAllUsers();
     var gardenNames = gardens
         .map((e) =>
+            '  •  ' +
             e.name +
             ' von ' +
             (allUsers
