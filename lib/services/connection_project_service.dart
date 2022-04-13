@@ -81,4 +81,9 @@ class ConnectionProjectService extends ChangeNotifier {
     _connectionProjects.remove(ConnectionProject);
     notifyListeners();
   }
+
+  void addCreatedConnectionProject(ConnectionProject newConnectionProject) {
+    _connectionProjects.add(newConnectionProject);
+    notifyListeners();
+  }
 }

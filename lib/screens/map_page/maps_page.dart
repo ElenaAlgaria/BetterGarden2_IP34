@@ -96,6 +96,17 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       });
     }
 
+    initializeConnetionProjectMarkers();
+
+    speciesList =
+        ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
+    _fabController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+  }
+
+  void initializeConnetionProjectMarkers() {
     ServiceProvider.instance.mapMarkerService.getConnectionProjectMarkerSet(
         onTapCallback: (element) {
       setState(() {
@@ -108,13 +119,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         _allConnectionProjectMarkers.addAll(markers);
       });
     });
-
-    speciesList =
-        ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
-    _fabController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    );
   }
 
   void addNewConnectionProjectMarker() {
@@ -133,18 +137,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       });
     }
 
-    ServiceProvider.instance.mapMarkerService.getConnectionProjectMarkerSet(
-        onTapCallback: (element) {
-      setState(() {
-        _tappedConnectionProject = element;
-      });
-      displayModalBottomSheetConnectionProject(context);
-      displayConnectionProjectGardensWithCircles(element.reference);
-    }).then((markers) {
-      setState(() {
-        _allConnectionProjectMarkers.addAll(markers);
-      });
-    });
+    initializeConnetionProjectMarkers();
   }
 
   void modifyPerimeterCircle(String name) {
@@ -633,6 +626,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                   builder: (context) => CreateProjectPage(
                     onConnectionProjectAdded: (newConnectionProject) {
                       _newConnectionProjet = newConnectionProject;
+                      setState(() {
+                        initializeConnetionProjectMarkers();
+                      });
                     },
                   ),
                   settings: RouteSettings(
@@ -643,7 +639,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 ),
               );
               setState(() {
-                addNewConnectionProjectMarker();
               });
             },
             child: Icon(icons[2], color: Theme.of(context).backgroundColor),

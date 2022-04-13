@@ -152,6 +152,8 @@ class _CreateProjectPageState extends State<CreateProjectPage>
     newConnectionProject.targetSpecies = _currentSpecies.reference;
     newConnectionProject.saveConnectionProject();
 
+    ServiceProvider.instance.connectionProjectService.addCreatedConnectionProject(newConnectionProject);
+
     widget.onConnectionProjectAdded(newConnectionProject);
 
     log('saved following connectionProject');

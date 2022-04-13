@@ -14,34 +14,20 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 /// a service which loads and stores all map markers
 class MapMarkerService extends ChangeNotifier {
   final Map<String, BitmapDescriptor> _icons = <String, BitmapDescriptor>{};
-  final List<Garden> _gardens = [];
-  final List<ConnectionProject> _connectionProjects = [];
   bool _initialized = false;
-  final StorageProvider _storage;
-  StreamSubscription _gardenStreamSubscription;
 
   ///init of the service, should only be used once
-  MapMarkerService({StorageProvider storageProvider})
-      : _storage = storageProvider ?? StorageProvider.instance {
-    _gardenStreamSubscription = _storage.database
-        .collectionGroup('gardens')
-        .snapshots()
-        .listen(updateElements);
+  MapMarkerService({StorageProvider storageProvider}) {
     _loadIcons();
+    updateElements();
   }
 
   @override
   void dispose() {
-    _gardenStreamSubscription.cancel();
     super.dispose();
   }
 
-  void updateElements(QuerySnapshot snapshots) {
-    _gardens.clear();
-    _gardens.addAll(ServiceProvider.instance.gardenService.getAllGardens());
-    _connectionProjects.clear();
-    _connectionProjects.addAll(ServiceProvider.instance.connectionProjectService
-        .getAllConnectionProjects());
+  void updateElements() {
     _initialized = true;
     notifyListeners();
   }
@@ -131,7 +117,7 @@ class MapMarkerService extends ChangeNotifier {
     }
 
     final list = <Marker>{};
-    _connectionProjects.forEach((project) {
+    ServiceProvider.instance.connectionProjectService.getAllConnectionProjects().forEach((project) {
       var allGardenCoordinates = project.gardens.map((e) => ServiceProvider
           .instance.gardenService
           .getGardenByReference(e)
