@@ -108,7 +108,9 @@ class GardenService extends ChangeNotifier {
         ServiceProvider.instance.imageService
             .deleteImage(imageURL: garden.imageURL);
       }
-      _storage.database.doc(garden.reference.path).delete();
+      await _storage.database.runTransaction((Transaction myTransaction) async {
+        myTransaction.delete(garden.reference);
+      });
     }
     _gardens.remove(garden);
   }

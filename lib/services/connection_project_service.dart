@@ -73,9 +73,12 @@ class ConnectionProjectService extends ChangeNotifier {
   Future<void> deleteConnectionProject(
       ConnectionProject connectionProject) async {
     if (connectionProject.reference != null) {
-      _storage.database.doc(connectionProject.reference.path).delete();
+      await _storage.database.runTransaction((Transaction myTransaction) async {
+        myTransaction.delete(connectionProject.reference);
+      });
     }
     logging.log('Deleted ConnectionProject' + connectionProject.title);
     _connectionProjects.remove(ConnectionProject);
+    notifyListeners();
   }
 }

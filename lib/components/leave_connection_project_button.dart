@@ -119,7 +119,7 @@ class leaveConnectionProjectButtonState
 
       // Delete ConnectionProject if no garden is remaining
       if (widget.connectionProject.gardens.isEmpty) {
-        ServiceProvider.instance.connectionProjectService
+        await ServiceProvider.instance.connectionProjectService
             .deleteConnectionProject(widget.connectionProject);
       }
       Navigator.of(context).pop();

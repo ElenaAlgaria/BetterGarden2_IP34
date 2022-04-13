@@ -100,10 +100,13 @@ class DevToolsPage extends StatelessWidget {
     });
     projectsToDelete.forEach((element) {
       ServiceProvider.instance.connectionProjectService
-          .deleteConnectionProject(element);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('removed empty connectionProject: ' + element.title)));
-      logging.log('removed empty connectionProject: ' + element.title);
+          .deleteConnectionProject(element)
+          .then((value) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content:
+                Text('removed empty connectionProject: ' + element.title)));
+        logging.log('removed empty connectionProject: ' + element.title);
+      });
     });
   }
 }
