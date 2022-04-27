@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
-import 'dart:ffi';
 
 import 'package:biodiversity/components/white_redirect_page.dart';
 import 'package:biodiversity/models/biodiversity_measure.dart';
@@ -64,7 +62,7 @@ class GardenService extends ChangeNotifier {
 
   /// Returns a list of Gardens which the provided User has
   List<Garden> getAllGardensFromUser(User user) {
-    return user.gardenReferences.map((e) => getGardenByReference(e)).toList();
+    return _gardens.where((element) => user.gardenReferences.contains(element.reference)).toList();
   }
 
   /// Returns a list of all registered Gardens
@@ -102,7 +100,7 @@ class GardenService extends ChangeNotifier {
     return 'Anonym';
   }
 
-  ///function to delete the garden from an user
+  ///function to delete the garden from a user
   Future<void> deleteGarden(Garden garden) async {
     if (garden.reference != null) {
       if (garden.imageURL != null && garden.imageURL.isNotEmpty) {
