@@ -87,6 +87,11 @@ class DevToolsPage extends StatelessWidget {
           content: Text('removed invalid gardenReference: ' + key.id)));
       logging.log('removed invalid gardenReference: ' + key.id);
     });
+    if(hashMap.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content:
+          Text('no empty invalid gardenReferences found :)')));
+    }
   }
 
   void fixEmptyConnectionProjects(BuildContext context) {
@@ -108,5 +113,10 @@ class DevToolsPage extends StatelessWidget {
         logging.log('removed empty connectionProject: ' + element.title);
       });
     });
+    if(projectsToDelete.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content:
+          Text('no empty connectionProjects found :)')));
+    }
   }
 }
