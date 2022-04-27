@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
                 ChangeNotifierProxyProvider<User, Garden>(
                     create: (context) => Garden.empty(),
                     update: (context, user, garden) =>
-                        garden..loadGardenFromUser(user),
+                        garden..loadFirstGardenFromUser(user),
                     lazy: false),
                 ChangeNotifierProvider(
                     create: (context) => MapInteractionContainer.empty()),
