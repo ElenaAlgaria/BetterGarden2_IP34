@@ -16,7 +16,9 @@ class CreateProjectPage extends StatefulWidget {
   final ValueChanged<ConnectionProject> onConnectionProjectAdded;
 
   /// Display the create project page
-  CreateProjectPage({Key key, this.onConnectionProjectAdded, Species currentSpecies}) : super(key: key);
+  CreateProjectPage(
+      {Key key, this.onConnectionProjectAdded, Species currentSpecies})
+      : super(key: key);
 
   @override
   _CreateProjectPageState createState() => _CreateProjectPageState();
@@ -71,8 +73,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                                       hintText: 'Projekttitel',
                                       labelStyle: TextStyle(
                                         fontSize: 15,
-                                      )
-                                  ),
+                                      )),
                                   maxLength: 20,
                                   controller: _titleController,
                                   validator: (value) {
@@ -82,7 +83,6 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                                       return null;
                                     }
                                   },
-
                                 ),
                                 TextFormField(
                                   controller: _descriptionController,
@@ -115,20 +115,22 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                                           .getAllGardensFromUser(user)),
                                 ),
                                 ElevatedButton.icon(
-                                  key: const Key ('saveConnectionProject'),
+                                  key: const Key('saveConnectionProject'),
                                   onPressed: () {
                                     if (!_formkey.currentState.validate()) {
                                       return;
                                     } else {
                                       var species =
-                                          getJoinableConnectionProjectsForSpecies(
+                                          getJoinableConnectionProjectForSpecies(
                                               _currentSpecies, _selectedGarden);
                                       if (species != null) {
                                         Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  ProjectAlreadyExistsPage(species, _selectedGarden)),
+                                                  ProjectAlreadyExistsPage(
+                                                      species,
+                                                      _selectedGarden)),
                                         );
                                       } else {
                                         saveProject();
@@ -150,7 +152,8 @@ class _CreateProjectPageState extends State<CreateProjectPage>
     newConnectionProject.targetSpecies = _currentSpecies.reference;
     newConnectionProject.saveConnectionProject();
 
-    ServiceProvider.instance.connectionProjectService.addCreatedConnectionProject(newConnectionProject);
+    ServiceProvider.instance.connectionProjectService
+        .addCreatedConnectionProject(newConnectionProject);
 
     widget.onConnectionProjectAdded(newConnectionProject);
 
@@ -192,26 +195,27 @@ class _CreateProjectPageState extends State<CreateProjectPage>
     );
   }
 
-  ConnectionProject getJoinableConnectionProjectsForSpecies(
+  ConnectionProject getJoinableConnectionProjectForSpecies(
       Species specie, Garden garden) {
-    var project = ServiceProvider.instance.connectionProjectService
+    return ServiceProvider.instance.connectionProjectService
         .getAllConnectionProjects()
         .where((element) => !element.gardens.contains(garden.reference))
         .where((element) => element.targetSpecies.path == specie.reference.path)
-        .where((element) => getConnectionProjectsInRadius(
-        garden,
-        element,
-        ServiceProvider.instance.speciesService
-            .getSpeciesByReference(element.targetSpecies)
-            .radius)).toList();
-    return project?.first;
+        .firstWhere(
+            (element) => getConnectionProjectsInRadius(
+                garden,
+                element,
+                ServiceProvider.instance.speciesService
+                    .getSpeciesByReference(element.targetSpecies)
+                    .radius),
+            orElse: () => null);
   }
 
   bool getConnectionProjectsInRadius(
       Garden garden, ConnectionProject projectToCompareWith, int radius) {
-   var x = projectToCompareWith.gardens
+    var x = projectToCompareWith.gardens
         .map((e) =>
-        ServiceProvider.instance.gardenService.getGardenByReference(e))
+            ServiceProvider.instance.gardenService.getGardenByReference(e))
         .any((element) => element.isInRange(garden, radius));
     return x;
   }
