@@ -29,6 +29,8 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
   AnimationController _fabController;
   List<Species> speciesList = [];
   List<Garden> gardens;
+  Garden garden;
+
 
   static const List<IconData> icons = [
     Icons.playlist_add,
@@ -51,6 +53,10 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
     final user = Provider.of<User>(context);
     gardens =
         ServiceProvider.instance.gardenService.getAllGardensFromUser(user);
+    garden = Provider.of<Garden>(context);
+    if (gardens.isNotEmpty && garden.isEmpty) {
+      garden = gardens.first;
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -104,13 +110,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const Padding(
-              padding: EdgeInsets.all(20),
-              child: Text(
-                'Aktueller Garten',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-              )
-            ),
+            Text("Aktueller Garten: " + garden.name),
             const Padding(
               padding: EdgeInsets.all(20),
               child: Text(
