@@ -11,7 +11,6 @@ import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart' as fb_auth;
 import 'package:google_sign_in/google_sign_in.dart';
@@ -465,6 +464,7 @@ class User extends ChangeNotifier {
     } catch (e) {
       return LoginResult('Ein Fehler ist aufgetreten. Versuche es erneut');
     }
+    return null;
   }
 
   ///Displays the google account selection popup and the privacy agreement.<br>

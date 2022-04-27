@@ -16,10 +16,8 @@ import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/src/iterable_extensions.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -41,7 +39,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   AnimationController _fabController;
   Garden _tappedGarden = Garden.empty();
   ConnectionProject _tappedConnectionProject = ConnectionProject.empty();
-  ConnectionProject _newConnectionProjet = ConnectionProject.empty();
 
   static const List<IconData> icons = [
     Icons.playlist_add,
@@ -620,12 +617,11 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             tooltip: 'Vernetzungsprojekt erstellen',
             backgroundColor: Theme.of(context).cardColor,
             onPressed: () async {
-              final value = await Navigator.push(
+              await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => CreateProjectPage(
                     onConnectionProjectAdded: (newConnectionProject) {
-                      _newConnectionProjet = newConnectionProject;
                       setState(() {
                         initializeConnetionProjectMarkers();
                       });

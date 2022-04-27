@@ -5,7 +5,6 @@ import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/information_object.dart';
 import 'package:biodiversity/models/information_object_amount_container.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
