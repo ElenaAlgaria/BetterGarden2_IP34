@@ -137,7 +137,8 @@ class _CreateProjectPageState extends State<CreateProjectPage>
                                       }
                                     }
                                   },
-                                  label: const Text('Vernetzungsprojekt starten'),
+                                  label:
+                                      const Text('Vernetzungsprojekt starten'),
                                   icon: const Icon(Icons.save),
                                 )
                               ],
@@ -213,10 +214,9 @@ class _CreateProjectPageState extends State<CreateProjectPage>
 
   bool getConnectionProjectsInRadius(
       Garden garden, ConnectionProject projectToCompareWith, int radius) {
-    var x = projectToCompareWith.gardens
+    return projectToCompareWith.gardens
         .map((e) =>
             ServiceProvider.instance.gardenService.getGardenByReference(e))
         .any((element) => element.isInRange(garden, radius));
-    return x;
   }
 }
