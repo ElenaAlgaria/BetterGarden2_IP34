@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:biodiversity/components/connection_project_list_widget.dart';
 import 'package:biodiversity/components/drawer.dart';
+import 'package:biodiversity/components/garden_dropdown_widget.dart';
 import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/species.dart';
@@ -26,6 +27,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
     with TickerProviderStateMixin {
   AnimationController _fabController;
   List<Species> speciesList = [];
+  List<Garden> gardens;
 
   static const List<IconData> icons = [
     Icons.playlist_add,
@@ -60,10 +62,52 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
               icon: const Icon(Icons.help))
         ],
       ),
+
       drawer: MyDrawer(),
       body: SingleChildScrollView(
         child: Column(
           children: [
+            const Padding(
+              padding: EdgeInsets.all(20),
+              child: Text(
+                'Aktueller Garten',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+              )
+            ),
+            PopupMenuButton(
+              itemBuilder: (context) {
+                final _gardens = gardens.map((garden) => garden.name);
+                final _menuItems = [
+                ];
+                if (_gardens.length < 2) {
+                  return _menuItems;
+                }
+                for (final _garden in _gardens) {
+                  if (_garden !=
+                      Provider.of<Garden>(context, listen: false).name) {
+                    _menuItems.add(PopupMenuItem(
+                      value: _garden,
+                      child: Row(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(right: 10),
+                            child: Icon(
+                              Icons.home,
+                              color: Colors.black,
+                            ),
+                          ),
+                          Flexible(
+                              child: Text(
+                                'Zu $_garden wechseln',
+                              )),
+                        ],
+                      ),
+                    ));
+                  }
+                }
+                return _menuItems;
+              },
+            ),
             const Padding(
               padding: EdgeInsets.all(20),
               child: Text(
