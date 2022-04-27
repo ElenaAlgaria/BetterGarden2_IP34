@@ -6,6 +6,7 @@ import 'package:biodiversity/components/garden_dropdown_widget.dart';
 import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/species.dart';
+import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
 import 'package:biodiversity/screens/project_page/project_general_information_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
@@ -47,6 +48,10 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User>(context);
+    gardens =
+        ServiceProvider.instance.gardenService.getAllGardensFromUser(user);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Vernetzungsprojekte'),
@@ -59,7 +64,39 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
                     MaterialPageRoute(builder: (context) => ProjectGeneralInformationPage()),
                 );
               },
-              icon: const Icon(Icons.help))
+              icon: const Icon(Icons.help)),
+          PopupMenuButton(
+
+            itemBuilder: (context) {
+              final _gardens = gardens.map((garden) => garden.name);
+              final _menuItems = [];
+
+              for (final _garden in _gardens) {
+                if (_garden !=
+                    Provider.of<Garden>(context, listen: false).name) {
+                  _menuItems.add(PopupMenuItem(
+                    value: _garden,
+                    child: Row(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(right: 10),
+                          child: Icon(
+                            Icons.home,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Flexible(
+                            child: Text(
+                              'Zu $_garden wechseln',
+                            )),
+                      ],
+                    ),
+                  ));
+                }
+              }
+              return _menuItems;
+            },
+          ),
         ],
       ),
 
@@ -73,40 +110,6 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
                 'Aktueller Garten',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
               )
-            ),
-            PopupMenuButton(
-              itemBuilder: (context) {
-                final _gardens = gardens.map((garden) => garden.name);
-                final _menuItems = [
-                ];
-                if (_gardens.length < 2) {
-                  return _menuItems;
-                }
-                for (final _garden in _gardens) {
-                  if (_garden !=
-                      Provider.of<Garden>(context, listen: false).name) {
-                    _menuItems.add(PopupMenuItem(
-                      value: _garden,
-                      child: Row(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(right: 10),
-                            child: Icon(
-                              Icons.home,
-                              color: Colors.black,
-                            ),
-                          ),
-                          Flexible(
-                              child: Text(
-                                'Zu $_garden wechseln',
-                              )),
-                        ],
-                      ),
-                    ));
-                  }
-                }
-                return _menuItems;
-              },
             ),
             const Padding(
               padding: EdgeInsets.all(20),
@@ -224,5 +227,9 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
             ServiceProvider.instance.gardenService.getGardenByReference(e) ??
             Garden.empty())
         .any((element) => element.isInRange(garden, radius));
+  }
+  void _handleTopMenu(String value) {
+      final _garden = gardens.where((garden) => garden.name == value).first;
+      Provider.of<Garden>(context, listen: false).switchGarden(_garden);
   }
 }
