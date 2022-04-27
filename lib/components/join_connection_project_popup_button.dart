@@ -32,7 +32,7 @@ class joinConnectionProjectButtonState
         .where((element) => ServiceProvider
             .instance.connectionProjectGardenFacadeService
             .isGardenInRangeOfConnectionProject(
-                element, widget.connectionProject));
+                element, widget.connectionProject)).toList();
 
     var _disabled = _gardensList.isEmpty;
 
