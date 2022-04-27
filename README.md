@@ -5,9 +5,13 @@ can improve biodiversity in their gardens. The app also connects garden owners o
 
 ## Customers and Developers
 
-Project initiators: Robert and Miriam
+###Project initiators
+Robert and Miriam
 
-Development team: Sina, Santiago, Andreas, Thierry and Gabriel
+###Development team
+Phase 1: Sina, Santiago, Andreas, Thierry and Gabriel
+
+Phase 2: Colin Herzog, Lionel Vallotton, Kevin Schlatter, Elena Algaria, Zoe Vocat, Geremia Walzer, Simona Mavillio, Florian Unger
 
 ## Documentation
 

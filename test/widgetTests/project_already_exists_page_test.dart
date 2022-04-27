@@ -3,7 +3,6 @@ import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/screens/map_page/project_already_exists_page.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +31,7 @@ void main() {
 
     final gardenAttributes1 = {
       'reference' : gartenRef1,
-      'name': "Mr. Lewis Garden",
+      'name': 'Mr. Lewis Garden',
       'street': 'via G.G. Nessi 4B',
       'owner': 'Lisa',
       'coordinates': const GeoPoint(46.948915, 7.445423),
@@ -41,7 +40,7 @@ void main() {
     };
     final gardenAttributes2 = {
       'reference' : gartenRef2,
-      'name': "Ms. Lewis Garden",
+      'name': 'Ms. Lewis Garden',
       'street': 'via G.G. Nessi 4B',
       'owner': 'Lisa',
       'coordinates': const GeoPoint(46.948916, 7.445423),
@@ -49,12 +48,12 @@ void main() {
       'ownedLinkingProjects': ['grasfroschteam']
     };
     final connectionProjectAttributes1 = {
-      'description': "My Project",
+      'description': 'My Project',
       'gardens': [gartenRef1],
       'targetSpecies': ameise
     };
     final connectionProjectAttributes2 = {
-      'description': "My Test Project",
+      'description': 'My Test Project',
       'gardens': [gartenRef2],
       'targetSpecies': ameise
     };

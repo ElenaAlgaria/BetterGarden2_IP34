@@ -9,9 +9,7 @@ import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/map_page/project_already_exists_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 class CreateProjectPage extends StatefulWidget {
@@ -206,9 +204,7 @@ class _CreateProjectPageState extends State<CreateProjectPage>
         ServiceProvider.instance.speciesService
             .getSpeciesByReference(element.targetSpecies)
             .radius)).toList();
-    if(project.isNotEmpty){
-      return project.first;
-    }
+    return project?.first;
   }
 
   bool getConnectionProjectsInRadius(
