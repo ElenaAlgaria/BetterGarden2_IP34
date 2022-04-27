@@ -31,7 +31,6 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
   List<Garden> gardens;
   Garden garden;
 
-
   static const List<IconData> icons = [
     Icons.playlist_add,
     Icons.house,
@@ -66,51 +65,108 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
           IconButton(
               onPressed: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ProjectGeneralInformationPage()),
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ProjectGeneralInformationPage()),
                 );
               },
               icon: const Icon(Icons.help)),
-          PopupMenuButton(
-
-            itemBuilder: (context) {
-              final _gardens = gardens.map((garden) => garden.name);
-              final _menuItems = [];
-
-              for (final _garden in _gardens) {
-                if (_garden !=
-                    Provider.of<Garden>(context, listen: false).name) {
-                  _menuItems.add(PopupMenuItem(
-                    value: _garden,
-                    child: Row(
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.only(right: 10),
-                          child: Icon(
-                            Icons.home,
-                            color: Colors.black,
-                          ),
-                        ),
-                        Flexible(
-                            child: Text(
-                              'Zu $_garden wechseln',
-                            )),
-                      ],
-                    ),
-                  ));
-                }
-              }
-              return _menuItems;
-            },
-          ),
         ],
       ),
-
       drawer: MyDrawer(),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Text("Aktueller Garten: " + garden.name),
+            Text(
+              "Aktueller Garten: " + garden.name,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+            ),
+            IconButton(
+                onPressed: () {
+                  itemBuilder: (context) {
+                    final _gardens = gardens.map((garden) => garden.name);
+                    final _menuItems = [
+                      PopupMenuItem(
+                        value: 'gardenAddPage',
+                        child: Row(
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(right: 10),
+                              child: Icon(
+                                Icons.add,
+                                color: Colors.black,
+                              ),
+                            ),
+                            const Text('Garten hinzufügen')
+                          ],
+                        ),
+                      )
+                    ];
+                    if (gardens.isNotEmpty) {
+                      _menuItems.addAll([
+                        PopupMenuItem(
+                          value: 'MyGardenEdit',
+                          child: Row(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(right: 10),
+                                child: Icon(
+                                  Icons.perm_contact_calendar_sharp,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              const Text('Garten bearbeiten'),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'MyGardenDelete',
+                          child: Row(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(right: 10),
+                                child: Icon(
+                                  Icons.delete_forever,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              const Text('Garten löschen')
+                            ],
+                          ),
+                        ),
+                      ]);
+                    }
+
+                    if (_gardens.length < 2) {
+                      return _menuItems;
+                    }
+                    for (final _garden in _gardens) {
+                      if (_garden !=
+                          Provider.of<Garden>(context, listen: false).name) {
+                        _menuItems.add(PopupMenuItem(
+                          value: _garden,
+                          child: Row(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(right: 10),
+                                child: Icon(
+                                  Icons.home,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              Flexible(
+                                  child: Text(
+                                    'Zu $_garden wechseln',
+                                  )),
+                            ],
+                          ),
+                        ));
+                      }
+                    }
+                    return _menuItems;
+                  };
+                },
+                icon: const Icon(Icons.add)),
             const Padding(
               padding: EdgeInsets.all(20),
               child: Text(
@@ -153,7 +209,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
               builder: (context, child) {
                 return Transform(
                   transform:
-                      Matrix4.rotationZ(_fabController.value * 1.25 * math.pi),
+                  Matrix4.rotationZ(_fabController.value * 1.25 * math.pi),
                   alignment: FractionalOffset.center,
                   child: Icon(
                     _fabController.isDismissed ? Icons.add : Icons.add,
@@ -182,7 +238,9 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
           child: FloatingActionButton(
             heroTag: null,
             tooltip: 'Vernetzungsprojekt erstellen',
-            backgroundColor: Theme.of(context).cardColor,
+            backgroundColor: Theme
+                .of(context)
+                .cardColor,
             onPressed: () {
               Navigator.push(
                 context,
@@ -191,7 +249,9 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
                 ),
               );
             },
-            child: Icon(icons[2], color: Theme.of(context).backgroundColor),
+            child: Icon(icons[2], color: Theme
+                .of(context)
+                .backgroundColor),
           ),
         ),
       )
@@ -202,7 +262,9 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
     return ServiceProvider.instance.connectionProjectService
         .getAllConnectionProjects()
         .where((element) =>
-            element.gardens.contains(Provider.of<Garden>(context).reference))
+        element.gardens.contains(Provider
+            .of<Garden>(context)
+            .reference))
         .toList();
   }
 
@@ -210,8 +272,11 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
     return ServiceProvider.instance.connectionProjectService
         .getAllConnectionProjects()
         .where((element) =>
-            !element.gardens.contains(Provider.of<Garden>(context).reference))
-        .where((element) => getConnectionProjectsInRadius(
+    !element.gardens.contains(Provider
+        .of<Garden>(context)
+        .reference))
+        .where((element) =>
+        getConnectionProjectsInRadius(
             Provider.of<Garden>(context),
             element,
             ServiceProvider.instance.speciesService
@@ -220,14 +285,15 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
         ?.toList();
   }
 
-  bool getConnectionProjectsInRadius(
-      Garden garden, ConnectionProject projectToCompareWith, int radius) {
+  bool getConnectionProjectsInRadius(Garden garden,
+      ConnectionProject projectToCompareWith, int radius) {
     return projectToCompareWith.gardens
         .map((e) =>
-            ServiceProvider.instance.gardenService.getGardenByReference(e) ??
-            Garden.empty())
+    ServiceProvider.instance.gardenService.getGardenByReference(e) ??
+        Garden.empty())
         .any((element) => element.isInRange(garden, radius));
   }
+
   void _handleTopMenu(String value) {
       final _garden = gardens.where((garden) => garden.name == value).first;
       Provider.of<Garden>(context, listen: false).switchGarden(_garden);
