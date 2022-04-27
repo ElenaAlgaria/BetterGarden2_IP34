@@ -60,12 +60,12 @@ class Garden extends ChangeNotifier {
   }
 
   /// loads the first garden of a user if one is present
-  void loadGardenFromUser(User user) {
+  void loadFirstGardenFromUser(User user) {
     if (!user.isLoggedIn || user.gardens.isEmpty) {
       return;
     }
     final gardens =
-        ServiceProvider.instance.gardenService.getAllGardensFromUser(user);
+    ServiceProvider.instance.gardenService.getAllGardensFromUser(user);
     if (gardens.isNotEmpty) {
       logging
           .log('load garden ${gardens.first.name} from user ${user.nickname}');

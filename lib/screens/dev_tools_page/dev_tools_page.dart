@@ -5,6 +5,7 @@ import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/join_connection_project_popup_button.dart';
 import 'package:biodiversity/components/leave_connection_project_button.dart';
 import 'package:biodiversity/models/connection_project.dart';
+import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +50,13 @@ class DevToolsPage extends StatelessWidget {
                     'fix empty connectionProjects',
                     textScaleFactor: 1.3,
                   )),
+              ElevatedButton.icon(
+                  onPressed: () => deleteInvalidUsers(context),
+                  icon: const Icon(Icons.sync_alt),
+                  label: const Text(
+                    'delete invalid users',
+                    textScaleFactor: 1.3,
+                  )),
               const Padding(
                 padding: EdgeInsets.all(15), //apply padding to all four sides
                 child: Text(
@@ -87,10 +95,9 @@ class DevToolsPage extends StatelessWidget {
           content: Text('removed invalid gardenReference: ' + key.id)));
       logging.log('removed invalid gardenReference: ' + key.id);
     });
-    if(hashMap.isEmpty) {
+    if (hashMap.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content:
-          Text('no empty invalid gardenReferences found :)')));
+          content: Text('no empty invalid gardenReferences found :)')));
     }
   }
 
@@ -113,10 +120,31 @@ class DevToolsPage extends StatelessWidget {
         logging.log('removed empty connectionProject: ' + element.title);
       });
     });
-    if(projectsToDelete.isEmpty) {
+    if (projectsToDelete.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content:
-          Text('no empty connectionProjects found :)')));
+          content: Text('no empty connectionProjects found :)')));
+    }
+  }
+
+  void deleteInvalidUsers(BuildContext context) {
+    var usersToDelete = <User>[];
+    ServiceProvider.instance.userService.getAllUsers()?.forEach((element) {
+      if (element.gardenReferences == null) {
+        usersToDelete.add(element);
+      }
+    });
+    usersToDelete.forEach((element) {
+      ServiceProvider.instance.userService
+          .deleteUserAccount(element)
+          .then((value) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('removed invalid user: ' + element.nickname)));
+        logging.log('removed invalid user: ' + element.nickname);
+      });
+    });
+    if (usersToDelete.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('no invalid users found :)')));
     }
   }
 }
