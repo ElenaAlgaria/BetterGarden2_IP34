@@ -162,7 +162,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         circleId: const CircleId('circleOneTest'),
         radius: radius.toDouble(),
         center: LatLng(lat, lon),
-        fillColor: const Color(0x339fc476),
+        fillColor: const Color(0x33ace866),
         strokeWidth: 10));
     setState(() {
       _circles = c;
