@@ -2,15 +2,11 @@ import 'dart:developer';
 
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/dropdown_formfield.dart';
-import 'package:biodiversity/components/garden_dropdown_widget.dart';
 import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/species.dart';
-import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/services/service_provider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class EditProjectPage extends StatefulWidget {
   final ValueChanged<ConnectionProject> onConnectionProjectChanged;
@@ -51,7 +47,6 @@ class _EditProjectPageState extends State<EditProjectPage>
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<User>(context);
     if (ModalRoute.of(context).settings.arguments != '' &&
         _currentSpecies == null) {
       _currentSpecies = ModalRoute.of(context).settings.arguments as Species;

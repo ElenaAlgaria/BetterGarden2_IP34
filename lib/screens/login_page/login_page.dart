@@ -3,7 +3,6 @@ import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/login_page/email_login_page.dart';
 import 'package:biodiversity/screens/login_page/register_page.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
