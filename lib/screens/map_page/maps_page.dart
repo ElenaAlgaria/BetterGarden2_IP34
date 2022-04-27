@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:biodiversity/components/circlesOverview.dart';
@@ -141,8 +142,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
 
   void modifyPerimeterCircle(String name) {
     if (name != '') {
-      //Todo radius variable
-      addCircle(500);
+      addCircle(speciesList.firstWhere((element) => element.name == name).radius);
     } else {
       removeCircle();
     }
@@ -162,7 +162,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         circleId: const CircleId('circleOneTest'),
         radius: radius.toDouble(),
         center: LatLng(lat, lon),
-        fillColor: const Color(0x339fc476),
+        fillColor: const Color(0x33ace866),
         strokeWidth: 10));
     setState(() {
       _circles = c;
