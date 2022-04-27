@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:developer';
+import 'dart:ffi';
 
 import 'package:biodiversity/components/white_redirect_page.dart';
 import 'package:biodiversity/models/biodiversity_measure.dart';
@@ -62,7 +64,7 @@ class GardenService extends ChangeNotifier {
 
   /// Returns a list of Gardens which the provided User has
   List<Garden> getAllGardensFromUser(User user) {
-    return _gardens.where((garden) => garden.owner == user.userUUID).toList();
+    return user.gardenReferences.map((e) => getGardenByReference(e)).toList();
   }
 
   /// Returns a list of all registered Gardens
