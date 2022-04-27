@@ -128,9 +128,7 @@ class DevToolsPage extends StatelessWidget {
 
   void deleteInvalidUsers(BuildContext context) {
     var usersToDelete = <User>[];
-    ServiceProvider.instance.userService
-        .getAllUsers()
-        ?.forEach((element) {
+    ServiceProvider.instance.userService.getAllUsers()?.forEach((element) {
       if (element.gardenReferences == null) {
         usersToDelete.add(element);
       }
@@ -140,14 +138,13 @@ class DevToolsPage extends StatelessWidget {
           .deleteUserAccount(element)
           .then((value) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content:
-                Text('removed invalid user: ' + element.nickname)));
+            content: Text('removed invalid user: ' + element.nickname)));
         logging.log('removed invalid user: ' + element.nickname);
       });
     });
     if (usersToDelete.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('no invalid users found :)')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('no invalid users found :)')));
     }
   }
 }
