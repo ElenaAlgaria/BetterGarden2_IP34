@@ -133,7 +133,7 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
   /// Lets the user take a new Picture with their Camera
   Future<void> _pickImageFromCamera() async {
     final pickedFile =
-        await _picker.pickImage(source: picker.ImageSource.camera);
+      await _picker.pickImage(source: picker.ImageSource.camera);
     setState(() {
       _imageFile = File(pickedFile.path);
       _editMode = true;
@@ -144,7 +144,7 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
   /// Lets the user choose an Image from their Gallery
   Future<void> _pickImageFromGallery() async {
     final pickedFile =
-         await _picker.pickImage(source: picker.ImageSource.gallery);
+      await _picker.pickImage(source: picker.ImageSource.gallery);
     setState(() {
       _imageFile = File(pickedFile.path);
       _editMode = true;
