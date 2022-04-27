@@ -57,7 +57,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   Set<Marker> _joinableConnectionProjectMarkers = {};
 
   Set<Marker> assembleMarkers() {
-    Set<Marker> tempMarkerSet = {};
+    var tempMarkerSet = <Marker>{};
     if (_allGardenMarkersVisible) {
       tempMarkerSet.addAll(_allGardenMarkers);
     }
@@ -101,6 +101,8 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
+
+    loadUserLocation();
   }
 
   void initializeConnetionProjectMarkers() {
@@ -246,7 +248,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final mapInteraction =
         Provider.of<MapInteractionContainer>(context, listen: false);
-    loadUserLocation();
 
     return Scaffold(
       appBar: AppBar(
@@ -295,7 +296,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               right: 20,
               child: CircleAvatar(
                   radius: 20,
-                  backgroundColor: Color(0xfffefffc),
+                  backgroundColor: const Color(0xfffefffc),
                   child: IconButton(
                     icon: const Icon(Icons.layers_outlined,
                         color: Color(0xff6c6c6c)),
@@ -359,7 +360,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 value: '',
                 child: Text(
                   'Keine',
-                  style: TextStyle(fontFamily: "Gotham"),
+                  style: TextStyle(fontFamily: 'Gotham'),
                 ),
               ),
               ...speciesList.map((species) {
@@ -367,7 +368,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                   value: species.name,
                   child: Text(
                     species.name,
-                    style: const TextStyle(fontFamily: "Gotham"),
+                    style: const TextStyle(fontFamily: 'Gotham'),
                   ),
                 );
               }).toList()
@@ -467,7 +468,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 child: ListView(
                   controller: scrollController,
                   children: <Widget>[
-                    Icon(Icons.horizontal_rule_rounded,
+                    const Icon(Icons.horizontal_rule_rounded,
                         color: Color(0xFFE36F00), size: 34.0),
                     TextFieldWithDescriptor(
                         'Spitzname Garten', Text(_tappedGarden.name ?? '')),
