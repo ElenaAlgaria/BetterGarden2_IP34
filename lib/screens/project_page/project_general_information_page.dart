@@ -1,5 +1,3 @@
-import 'package:biodiversity/components/drawer.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Explains, what a connection project actually is. Hard-Coded Text

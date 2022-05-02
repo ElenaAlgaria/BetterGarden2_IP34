@@ -9,7 +9,6 @@ import 'package:biodiversity/screens/information_list_page/delete_element_garden
 import 'package:biodiversity/screens/information_list_page/edit_element_to_garden_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 /// an unspecific expandable card which displays an InformationObject

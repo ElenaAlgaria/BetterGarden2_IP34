@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:biodiversity/components/circlesOverview.dart';
@@ -15,10 +16,8 @@ import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/src/iterable_extensions.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -40,7 +39,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   AnimationController _fabController;
   Garden _tappedGarden = Garden.empty();
   ConnectionProject _tappedConnectionProject = ConnectionProject.empty();
-  ConnectionProject _newConnectionProjet = ConnectionProject.empty();
 
   static const List<IconData> icons = [
     Icons.playlist_add,
@@ -60,7 +58,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   Set<Marker> _joinableConnectionProjectMarkers = {};
 
   Set<Marker> assembleMarkers() {
-    Set<Marker> tempMarkerSet = {};
+    var tempMarkerSet = <Marker>{};
     if (_allGardenMarkersVisible) {
       tempMarkerSet.addAll(_allGardenMarkers);
     }
@@ -104,6 +102,8 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
+
+    loadUserLocation();
   }
 
   void initializeConnetionProjectMarkers() {
@@ -142,8 +142,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
 
   void modifyPerimeterCircle(String name) {
     if (name != '') {
-      //Todo radius variable
-      addCircle(500);
+      addCircle(speciesList.firstWhere((element) => element.name == name).radius);
     } else {
       removeCircle();
     }
@@ -163,7 +162,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         circleId: const CircleId('circleOneTest'),
         radius: radius.toDouble(),
         center: LatLng(lat, lon),
-        fillColor: const Color(0x339fc476),
+        fillColor: const Color(0x33ace866),
         strokeWidth: 10));
     setState(() {
       _circles = c;
@@ -249,7 +248,6 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final mapInteraction =
         Provider.of<MapInteractionContainer>(context, listen: false);
-    loadUserLocation();
 
     return Scaffold(
       appBar: AppBar(
@@ -298,7 +296,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               right: 20,
               child: CircleAvatar(
                   radius: 20,
-                  backgroundColor: Color(0xfffefffc),
+                  backgroundColor: const Color(0xfffefffc),
                   child: IconButton(
                     icon: const Icon(Icons.layers_outlined,
                         color: Color(0xff6c6c6c)),
@@ -362,7 +360,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 value: '',
                 child: Text(
                   'Keine',
-                  style: TextStyle(fontFamily: "Gotham"),
+                  style: TextStyle(fontFamily: 'Gotham'),
                 ),
               ),
               ...speciesList.map((species) {
@@ -370,7 +368,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                   value: species.name,
                   child: Text(
                     species.name,
-                    style: const TextStyle(fontFamily: "Gotham"),
+                    style: const TextStyle(fontFamily: 'Gotham'),
                   ),
                 );
               }).toList()
@@ -470,7 +468,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 child: ListView(
                   controller: scrollController,
                   children: <Widget>[
-                    Icon(Icons.horizontal_rule_rounded,
+                    const Icon(Icons.horizontal_rule_rounded,
                         color: Color(0xFFE36F00), size: 34.0),
                     TextFieldWithDescriptor(
                         'Spitzname Garten', Text(_tappedGarden.name ?? '')),
@@ -620,12 +618,11 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             tooltip: 'Vernetzungsprojekt erstellen',
             backgroundColor: Theme.of(context).cardColor,
             onPressed: () async {
-              final value = await Navigator.push(
+              await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => CreateProjectPage(
                     onConnectionProjectAdded: (newConnectionProject) {
-                      _newConnectionProjet = newConnectionProject;
                       setState(() {
                         initializeConnetionProjectMarkers();
                       });
