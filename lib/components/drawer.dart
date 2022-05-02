@@ -1,9 +1,9 @@
 import 'package:biodiversity/components/white_redirect_page.dart';
 import 'package:biodiversity/models/user.dart';
+import 'package:biodiversity/screens/about_the_app_page/about_the_app.dart';
 import 'package:biodiversity/screens/account_page/account_page.dart';
 import 'package:biodiversity/screens/dev_tools_page/dev_tools_page.dart';
 import 'package:biodiversity/screens/favored_list_page/favored_list_page.dart';
-import 'package:biodiversity/screens/impressum_page/impressum_page.dart';
 import 'package:biodiversity/screens/information_list_page/biodiversity_elements_list_page.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
