@@ -1,7 +1,6 @@
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/services/service_provider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 /// same as expandable\_connection\_project\_card\_widget.dart, but with less infos,
@@ -18,9 +17,6 @@ class SimpleConnectionProjectCard extends StatelessWidget {
 
   /// what should happen if you tap on the card
   final Function onTapHandler;
-
-  /// additional Info to be displayed
-  //final String additionalInfo;
 
   final ServiceProvider _serviceProvider;
 

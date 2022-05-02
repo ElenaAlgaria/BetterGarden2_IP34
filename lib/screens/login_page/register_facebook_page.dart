@@ -1,7 +1,6 @@
 import 'package:biodiversity/components/screen_with_logo_and_waves.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

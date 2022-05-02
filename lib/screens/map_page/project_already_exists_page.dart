@@ -8,15 +8,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProjectAlreadyExistsPage extends StatelessWidget {
-
   final ConnectionProject connectionProject;
   Garden selectedGarden;
 
-  ProjectAlreadyExistsPage(this.connectionProject, this.selectedGarden, {Key key}) : super(key: key);
+  ProjectAlreadyExistsPage(this.connectionProject, this.selectedGarden,
+      {Key key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    builder: (context) {
+    builder:
+    (context) {
       Provider.of<Garden>(context).switchGarden(selectedGarden);
     };
     return Scaffold(
@@ -25,27 +27,29 @@ class ProjectAlreadyExistsPage extends StatelessWidget {
         Padding(
             padding: const EdgeInsets.all(25.0),
             child: Column(children: [
-              ServiceProvider.instance.imageService
-                  .getImage(connectionProject.targetSpecies.toString().substring(48, connectionProject.targetSpecies.toString().length-1), "species"),
+              ServiceProvider.instance.imageService.getImage(
+                  connectionProject.targetSpecies.toString().substring(48,
+                      connectionProject.targetSpecies.toString().length - 1),
+                  "species"),
               const Padding(
                 padding: EdgeInsets.all(25.0),
-                child: Text('Es gibt bereits ein Vernetzungsprojekt in deiner Nähe. Sieh dir das Projekt an oder wähle eine andere Spezies.'),
+                child: Text(
+                    'Es gibt bereits ein Vernetzungsprojekt in deiner Nähe. Sieh dir das Projekt an oder wähle eine andere Spezies.'),
               ),
               ElevatedButton(
                 onPressed: () {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            ProjectsOverviewPage()),
+                        builder: (context) => ProjectsOverviewPage()),
                   );
                 },
                 child: const Align(
                   alignment: Alignment.center,
-                  child: Text (
+                  child: Text(
                     'Zu verfügbare Vernetzungsprojekte',
                     textAlign: TextAlign.center,
-                ),
+                  ),
                 ),
               ),
               TextButton(
@@ -53,13 +57,12 @@ class ProjectAlreadyExistsPage extends StatelessWidget {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            CreateProjectPage()),
+                        builder: (context) => CreateProjectPage()),
                   );
                 },
                 child: const Align(
                   alignment: Alignment.center,
-                  child: Text (
+                  child: Text(
                     'Andere Spezies wählen',
                     textAlign: TextAlign.center,
                   ),

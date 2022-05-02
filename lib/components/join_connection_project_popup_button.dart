@@ -5,7 +5,6 @@ import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -32,7 +31,7 @@ class joinConnectionProjectButtonState
         .where((element) => ServiceProvider
             .instance.connectionProjectGardenFacadeService
             .isGardenInRangeOfConnectionProject(
-                element, widget.connectionProject));
+                element, widget.connectionProject)).toList();
 
     var _disabled = _gardensList.isEmpty;
 
