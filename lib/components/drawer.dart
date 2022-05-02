@@ -200,14 +200,14 @@ class MyDrawer extends StatelessWidget {
                             ..._loginLogoutButton(context),
                             ListTile(
                               title: const Text(
-                                'Impressum',
+                                'Über die App',
                                 style: TextStyle(fontSize: 12),
                               ),
                               onTap: () {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => ImpressumPage()),
+                                      builder: (context) => AboutTheApp()),
                                 );
                               },
                             ),
