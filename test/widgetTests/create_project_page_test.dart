@@ -1,10 +1,4 @@
-import 'package:biodiversity/main.dart';
-import 'package:biodiversity/screens/button_example/button_page.dart';
-import 'package:biodiversity/screens/login_page/login_page.dart';
-import 'package:biodiversity/screens/login_page/register_email_page.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
-import 'package:biodiversity/screens/project_page/projects_overview_page.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

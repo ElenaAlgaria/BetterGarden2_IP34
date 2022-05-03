@@ -5,7 +5,6 @@ import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -27,12 +26,14 @@ class joinConnectionProjectButtonState
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
-    var _gardensList =
-        ServiceProvider.instance.gardenService.getAllGardensFromUser(user);
+    var _gardensList = ServiceProvider.instance.gardenService
+        .getAllGardensFromUser(user)
+        .where((element) => ServiceProvider
+            .instance.connectionProjectGardenFacadeService
+            .isGardenInRangeOfConnectionProject(
+                element, widget.connectionProject)).toList();
 
-    // TODO: disable when no
-    var _disabled = false;
-    // var _disabled = _gardensList.any((element) => );
+    var _disabled = _gardensList.isEmpty;
 
     return ElevatedButton.icon(
       onPressed: _disabled
@@ -86,7 +87,6 @@ class joinConnectionProjectButtonState
                                               0, 20.0, 0, 0),
                                           child: ElevatedButton.icon(
                                             onPressed: () {
-
                                               if (!_formKey.currentState
                                                   .validate()) {
                                                 return;

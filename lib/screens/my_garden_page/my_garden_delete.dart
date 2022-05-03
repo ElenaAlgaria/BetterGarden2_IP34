@@ -6,7 +6,6 @@ import 'package:biodiversity/models/information_object_amount_container.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -40,17 +39,13 @@ class _MyGardenDeleteState extends State<MyGardenDelete> {
       saveIcon: Icons.delete_forever,
       saveCallback: () {
         final user = Provider.of<User>(context, listen: false);
-        user.deleteGarden(garden);
 
-        // remove garden from all connectionProjects
-        ServiceProvider.instance.connectionProjectService
-            .getAllConnectionProjects()
-            .where((element) => element.gardens.contains(garden.reference))
-            .forEach((element) => element.removeGarden(garden.reference));
+        ServiceProvider.instance.connectionProjectGardenFacadeService
+            .fullyDeleteGarden(garden);
 
-        ServiceProvider.instance.gardenService.deleteGarden(garden);
-
-        final nextGarden = ServiceProvider.instance.gardenService.getAllGardensFromUser(user)?.first;
+        final nextGarden = ServiceProvider.instance.gardenService
+            .getAllGardensFromUser(user)
+            ?.first;
         Provider.of<Garden>(context, listen: false)
             .switchGarden(nextGarden ?? Garden.empty());
         Navigator.pushReplacement(

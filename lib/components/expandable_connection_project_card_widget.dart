@@ -1,15 +1,12 @@
 import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/connection_project.dart';
-import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/project_page/project_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:biodiversity/services/services_library.dart';
-import 'package:biodiversity/services/user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 /// an unspecific expandable card which displays a ConnectionProject
@@ -66,7 +63,6 @@ class _ExpandableConnectionProjectCardState
   Widget build(BuildContext context) {
     final _screenWidth = MediaQuery.of(context).size.width;
     String _unit;
-    final garden = Provider.of<Garden>(context, listen: false);
     if (widget.object.runtimeType == BiodiversityMeasure) {
       final biodiversityObject = widget.object as BiodiversityMeasure;
       if (biodiversityObject.dimension == 'Fläche') {
@@ -277,19 +273,25 @@ class _ExpandableConnectionProjectCardState
                 children: [
                   Expanded(
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.only(left: 16),
-                      child: Text(
-                        flag
-                            ? widget.object.gardens.length.toString() +
-                                ' Teilnehmer'
-                            : widget.object.gardens.length.toString() +
-                                ' Teilnehmer' +
-                                '\n' +
-                                getLinksOfGardensOfProject(
-                                        widget.object.gardens)
-                                    .join('\n'),
-                      ),
-                    ),
+                        padding: const EdgeInsets.only(left: 16, top: 10),
+                        child: RichText(
+                            text: TextSpan(children: <TextSpan>[
+                          TextSpan(
+                              text: 'Teilnehmende (' +
+                                  widget.object.gardens.length.toString() +
+                                  ')',
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold)),
+                          flag
+                              ? const TextSpan(text: '')
+                              : TextSpan(
+                                  text: '\n' +
+                                      getLinksOfGardensOfProject(
+                                              widget.object.gardens)
+                                          .join('\n'),
+                                  style: const TextStyle(color: Colors.black))
+                        ]))),
                   ),
                   InkWell(
                     onTap: () {
@@ -339,13 +341,12 @@ class _ExpandableConnectionProjectCardState
   ///returns a list of links of a project, tap on link to see location of garden on map
   List<String> getLinksOfGardensOfProject(
       List<DocumentReference<Object>> gardenRef) {
-    List<User> users;
-    users = ServiceProvider.instance.userService.getAllUsers();
     var gardens = gardenRef.map(
         (e) => ServiceProvider.instance.gardenService.getGardenByReference(e));
     var allUsers = ServiceProvider.instance.userService.getAllUsers();
     var gardenNames = gardens
         .map((e) =>
+            '  •  ' +
             e.name +
             ' von ' +
             (allUsers

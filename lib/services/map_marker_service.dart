@@ -6,7 +6,6 @@ import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/storage_provider.dart';
 import 'package:biodiversity/services/service_provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -14,34 +13,20 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 /// a service which loads and stores all map markers
 class MapMarkerService extends ChangeNotifier {
   final Map<String, BitmapDescriptor> _icons = <String, BitmapDescriptor>{};
-  final List<Garden> _gardens = [];
-  final List<ConnectionProject> _connectionProjects = [];
   bool _initialized = false;
-  final StorageProvider _storage;
-  StreamSubscription _gardenStreamSubscription;
 
   ///init of the service, should only be used once
-  MapMarkerService({StorageProvider storageProvider})
-      : _storage = storageProvider ?? StorageProvider.instance {
-    _gardenStreamSubscription = _storage.database
-        .collectionGroup('gardens')
-        .snapshots()
-        .listen(updateElements);
+  MapMarkerService({StorageProvider storageProvider}) {
     _loadIcons();
+    updateElements();
   }
 
   @override
   void dispose() {
-    _gardenStreamSubscription.cancel();
     super.dispose();
   }
 
-  void updateElements(QuerySnapshot snapshots) {
-    _gardens.clear();
-    _gardens.addAll(ServiceProvider.instance.gardenService.getAllGardens());
-    _connectionProjects.clear();
-    _connectionProjects.addAll(ServiceProvider.instance.connectionProjectService
-        .getAllConnectionProjects());
+  void updateElements() {
     _initialized = true;
     notifyListeners();
   }
@@ -131,7 +116,8 @@ class MapMarkerService extends ChangeNotifier {
     }
 
     final list = <Marker>{};
-    _connectionProjects.forEach((project) {
+    final latLngList = <LatLng>{};
+    ServiceProvider.instance.connectionProjectService.getAllConnectionProjects().forEach((project) {
       var allGardenCoordinates = project.gardens.map((e) => ServiceProvider
           .instance.gardenService
           .getGardenByReference(e)
@@ -147,10 +133,18 @@ class MapMarkerService extends ChangeNotifier {
         var minLng = allGardenCoordinates.map((e) => e.longitude).reduce(min);
         midLat = (maxLat + minLat) / 2;
         midLng = (maxLng + minLng) / 2;
+        //latLngList.add(LatLng(midLat, midLng));
       } else {
         midLat = allGardenCoordinates.elementAt(0).latitude - 0.0002;
         midLng = allGardenCoordinates.elementAt(0).longitude - 0.0002;
       }
+
+      while(latLngList.contains(LatLng(midLat, midLng))) {
+        midLat -= 0.00005;
+        midLng -= 0.00005;
+      }
+
+      latLngList.add(LatLng(midLat, midLng));
 
       logging.log('Create connection project marker at ' +
           midLat.toString() +

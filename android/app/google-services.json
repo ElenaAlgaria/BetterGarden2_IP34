@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "658901568912-0p54im18ma521df9l1a0467sjkpmtt2k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bettergardens.ch.biodiversity",
+            "certificate_hash": "ab751865c2349d3c8ae6f598096c545afd318f11"
+          }
+        },
+        {
+          "client_id": "658901568912-29h5q22th3ajcpk56vmv18s1240l30rj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bettergardens.ch.biodiversity",
+            "certificate_hash": "d24b4e46c7ffe2651a5d0b781156d843408ea622"
+          }
+        },
+        {
           "client_id": "658901568912-4e1a2istkkmmfepm7jfrfgsuulibmnu8.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -82,6 +98,22 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "658901568912-fjhn9g5t7r9dhc0i1ihdhc9bs85g7vol.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bettergardens.fibl.fhnw.ch",
+            "certificate_hash": "af008109c6470659ddb3000ed5d22f8833c0bb96"
+          }
+        },
+        {
+          "client_id": "658901568912-iqp17qga1a18t13ahcr9334lt6iadqdp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bettergardens.fibl.fhnw.ch",
+            "certificate_hash": "ab751865c2349d3c8ae6f598096c545afd318f11"
+          }
+        },
         {
           "client_id": "658901568912-jqau65ot537gf9snivq7u7qqd3b4q7tc.apps.googleusercontent.com",
           "client_type": 1,

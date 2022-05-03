@@ -6,7 +6,6 @@ import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/services/service_provider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -119,8 +118,8 @@ class leaveConnectionProjectButtonState
 
       // Delete ConnectionProject if no garden is remaining
       if (widget.connectionProject.gardens.isEmpty) {
-        widget.connectionProject
-            .deleteConnectionProject(widget.connectionProject.reference);
+        await ServiceProvider.instance.connectionProjectService
+            .deleteConnectionProject(widget.connectionProject);
       }
       Navigator.of(context).pop();
       return logging.log(

@@ -3,7 +3,6 @@ import 'package:biodiversity/components/simple_information_object_card_widget.da
 import 'package:biodiversity/models/information_object.dart';
 import 'package:biodiversity/models/information_object_amount_container.dart';
 import 'package:biodiversity/screens/information_list_page/add_element_to_garden_location_page.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

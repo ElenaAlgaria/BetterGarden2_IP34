@@ -60,12 +60,12 @@ class Garden extends ChangeNotifier {
   }
 
   /// loads the first garden of a user if one is present
-  void loadGardenFromUser(User user) {
+  void loadFirstGardenFromUser(User user) {
     if (!user.isLoggedIn || user.gardens.isEmpty) {
       return;
     }
     final gardens =
-        ServiceProvider.instance.gardenService.getAllGardensFromUser(user);
+    ServiceProvider.instance.gardenService.getAllGardensFromUser(user);
     if (gardens.isNotEmpty) {
       logging
           .log('load garden ${gardens.first.name} from user ${user.nickname}');
@@ -193,11 +193,11 @@ class Garden extends ChangeNotifier {
         .length;
   }
 
-  bool isInRange(Garden g1, Garden g2, int radius) {
-    debugPrint(g1.name + g2.name);
+  bool isInRange(Garden g2, int radius) {
+    debugPrint(name + g2.name);
     var distance = Geolocator.distanceBetween(
-      g1.getLatLng().latitude,
-      g1.getLatLng().longitude,
+      getLatLng().latitude,
+      getLatLng().longitude,
       g2.getLatLng().latitude,
       g2.getLatLng().longitude,
     );

@@ -4,7 +4,6 @@ import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/login_page/login_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -122,8 +121,9 @@ class _MyAccountDeleteState extends State<MyAccountDelete> {
               ),
             )).then((value) async {
       if (value != null) {
-        ServiceProvider.instance.gardenService.deleteAllGardensFromUser(
-            Provider.of<User>(context, listen: false));
+        ServiceProvider.instance.connectionProjectGardenFacadeService
+            .deleteAllGardensFromUser(
+                Provider.of<User>(context, listen: false));
         final res = await Provider.of<User>(context, listen: false)
             .deleteAccountEmail();
         await Provider.of<User>(context, listen: false).signOut(save: false);

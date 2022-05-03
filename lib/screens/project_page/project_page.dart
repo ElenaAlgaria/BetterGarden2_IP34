@@ -4,7 +4,6 @@ import 'package:biodiversity/components/leave_connection_project_button.dart';
 import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/screens/project_page/edit_project_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ProjectPage extends StatefulWidget {
@@ -45,23 +44,23 @@ class _ProjectPageState extends State<ProjectPage> {
             children: [
               Text(
                 project.title,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
               ),
-              Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 40)),
+              const Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 40)),
               Container(
                 width: 200.0,
                 height: 60.0,
                 child: TextField(
                   readOnly: true,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                   ),
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(50.0),
-                      borderSide: BorderSide(color: Colors.grey, width: 2.0),
+                      borderSide: const BorderSide(color: Colors.grey, width: 2.0),
                     ),
                     hintText: ServiceProvider.instance.speciesService
                         .getSpeciesByReference(project.targetSpecies)
@@ -69,12 +68,12 @@ class _ProjectPageState extends State<ProjectPage> {
                   ),
                 ),
               ),
-              Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 20)),
+              const Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 20)),
               Text(
                 project.description,
-                style: TextStyle(fontWeight: FontWeight.normal, fontSize: 18),
+                style: const TextStyle(fontWeight: FontWeight.normal, fontSize: 18),
               ),
-              Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 20)),
+              const Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 20)),
               widget.joinedProject
                   ? leaveConnectionProjectButton(connectionProject: project)
                   : joinConnectionProjectButton(connectionProject: project),
@@ -83,7 +82,7 @@ class _ProjectPageState extends State<ProjectPage> {
                 padding: const EdgeInsets.only(left: 8, bottom: 15),
                 child: TextButton(
                   onPressed: () async {
-                    final value = await Navigator.push(
+                    await Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
