@@ -24,7 +24,7 @@ class _ProjectGeneralInformationPageState extends State<ProjectGeneralInformatio
             const Padding(
               padding: EdgeInsets.fromLTRB(20, 40, 20, 0),
               child: Text(
-                "Seitenbeschreibung",
+                'Seitenbeschreibung',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
                 textAlign: TextAlign.left,
               ),
@@ -37,13 +37,13 @@ class _ProjectGeneralInformationPageState extends State<ProjectGeneralInformatio
                 style: TextStyle(fontWeight: FontWeight.normal, fontSize: 18),
               ),
             ),
-            Divider(
+            const Divider(
               color: Colors.black
             ),
             const Padding(
               padding: EdgeInsets.fromLTRB(20, 30, 20, 0),
               child: Text(
-                "Was ist ein Vernetzungsprojekt?",
+                'Was ist ein Vernetzungsprojekt?',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
                 textAlign: TextAlign.left,
               ),

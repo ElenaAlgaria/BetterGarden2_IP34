@@ -24,7 +24,6 @@ class Species implements InformationObject {
   @override
   String get additionalInfo => null;
 
-  @override
   final int radius;
 
   /// other species which

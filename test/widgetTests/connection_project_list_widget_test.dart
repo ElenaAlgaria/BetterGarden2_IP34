@@ -1,7 +1,6 @@
 import 'package:biodiversity/components/connection_project_list_widget.dart';
 import 'package:biodiversity/components/expandable_connection_project_card_widget.dart';
 import 'package:biodiversity/components/simple_connection_project_card_widget.dart';
-import 'package:biodiversity/models/connection_project.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
