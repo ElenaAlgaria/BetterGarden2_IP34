@@ -7,17 +7,20 @@ void main() {
   testWidgets('check if all options are present in the drawer', (tester) async {
     await setUpBiodiversityEnvironment(tester: tester, widget: MyDrawer());
 
-    expect(find.text('Karte'), findsOneWidget,
-        reason: 'Karte is missing on the Drawer');
-
     expect(find.text('Mein Garten'), findsOneWidget,
         reason: 'Mein Garten is missing on the Drawer');
 
-    expect(find.text('Lebensräume'), findsOneWidget,
-        reason: 'Lebensräume is missing on the Drawer');
+    expect(find.text('Vernetzungsprojekte'), findsOneWidget,
+        reason: 'Vernetzungsprojekte is missing on the Drawer');
+
+    expect(find.text('Karte'), findsOneWidget,
+        reason: 'Karte is missing on the Drawer');
 
     expect(find.text('Arten'), findsOneWidget,
         reason: 'Arten is missing on the Drawer');
+
+    expect(find.text('Lebensräume'), findsOneWidget,
+        reason: 'Lebensräume is missing on the Drawer');
 
     expect(find.text('Merkliste'), findsOneWidget,
         reason: 'Merkliste is missing on the Drawer');
@@ -27,5 +30,8 @@ void main() {
 
     expect(find.text('Login'), findsOneWidget,
         reason: 'Login is missing on the Drawer');
+
+    expect(find.text('Über die App'), findsOneWidget,
+        reason: 'Über die App is missing on the Drawer');
   });
 }
