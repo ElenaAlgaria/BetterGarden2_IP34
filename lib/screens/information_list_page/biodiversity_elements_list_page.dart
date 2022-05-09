@@ -1,6 +1,6 @@
 import 'package:biodiversity/components/drawer.dart';
+import 'package:biodiversity/components/general_information_pages.dart';
 import 'package:biodiversity/components/information_object_list_widget.dart';
-import 'package:biodiversity/screens/information_list_page/biodiversity_elements_general_information_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
 
@@ -20,8 +20,9 @@ class BiodiversityElementListPage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          BioDiversityElementsInformationPage()),
+                      builder: (context) => GeneralInformationPages(
+                          "Lebensräume",
+                          "Hier erhältst Du weitere Informationen über die Schaffung und Pflege von Lebensräumen in Deinem Garten. Am Ende jedes Textes siehst Du, welche Arten mit dem jeweiligen Lebensraum gefördert werden.\n\nAusserdem kannst Du mit Hilfe des “+”-Symbols einen Lebensraum in einem Deiner Gärten registrieren.")),
                 );
               },
               icon: const Icon(Icons.help))

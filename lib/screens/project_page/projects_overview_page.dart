@@ -2,11 +2,11 @@ import 'dart:math' as math;
 
 import 'package:biodiversity/components/connection_project_list_widget.dart';
 import 'package:biodiversity/components/drawer.dart';
+import 'package:biodiversity/components/general_information_pages.dart';
 import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
-import 'package:biodiversity/screens/project_page/project_general_information_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -51,8 +51,11 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
           IconButton(
               onPressed: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ProjectGeneralInformationPage()),
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => GeneralInformationPages(
+                          "Vernetzungsprojekte",
+                          "Auf dieser Seite siehst Du die Vernetzungsprojekte, in denen Du bereits Mitglied bist und jene, zu denen Du beitreten kannst. Die Mitglieder eines Vernetzungsprojekts können sich über die Pinnwand der Projektseite austauschen.\n\nÜber ein Vernetzungsprojekt schliesst Du dich mit anderen Gärtner*innen in Deiner Umgebung zusammen, um gemeinsam eine Art- oder einer Gruppe von Arten zu fördern. Dadurch knüpft Ihr ein Netz aus Lebensräumen, das immer dichter wird, je mehr Leute beitreten. Infos wie Du eine Art fördern kannst, erhältst Du unter “Arten”.")),
                 );
               },
               icon: const Icon(Icons.help))
@@ -65,7 +68,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
             const Padding(
               padding: EdgeInsets.all(20),
               child: Text(
-                'Meine Vernetzungsprojekte',
+                "Meine Vernetzungsprojekte",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
               ),
             ),
@@ -76,7 +79,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
             const Padding(
               padding: EdgeInsets.all(20),
               child: Text(
-                'Verfügbare Vernetzungsprojekte',
+                "Verfügbare Vernetzungsprojekte",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
               ),
             ),
@@ -132,7 +135,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
           ),
           child: FloatingActionButton(
             heroTag: null,
-            tooltip: 'Vernetzungsprojekt erstellen',
+            tooltip: "Vernetzungsprojekt erstellen",
             backgroundColor: Theme.of(context).cardColor,
             onPressed: () {
               Navigator.push(

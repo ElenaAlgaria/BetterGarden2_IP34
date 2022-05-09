@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 
 // Explains, what a connection project actually is. Hard-Coded Text
-class FavoredListGeneralInformationPage extends StatefulWidget {
-  FavoredListGeneralInformationPage({Key key}) : super(key: key);
+class GeneralInformationPages extends StatelessWidget {
+  final String title;
+  final String description;
 
-  @override
-  _FavoredListGeneralInformationPageState createState() =>
-      _FavoredListGeneralInformationPageState();
-}
+  GeneralInformationPages(this.title, this.description, {Key key})
+      : super(key: key);
 
-class _FavoredListGeneralInformationPageState
-    extends State<FavoredListGeneralInformationPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,18 +19,18 @@ class _FavoredListGeneralInformationPageState
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const Padding(
-              padding: EdgeInsets.fromLTRB(20, 40, 20, 0),
+            Padding(
+              padding: EdgeInsets.fromLTRB(30, 40, 20, 0),
               child: Text(
-                "Merkliste",
+                title,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
                 textAlign: TextAlign.left,
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.all(30),
               child: Text(
-                "Die Merkliste speichert alle Texte über Lebensräume und Arten, die Du mit dem Herz-Symbol markiert hast. So sind die für Dich relevanten Informationen mit nur einem Klick erreichbar.",
+                description,
                 style: TextStyle(fontWeight: FontWeight.normal, fontSize: 18),
               ),
             ),

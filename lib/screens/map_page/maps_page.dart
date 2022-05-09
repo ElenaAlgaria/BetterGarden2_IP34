@@ -1,8 +1,8 @@
-import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:biodiversity/components/circlesOverview.dart';
 import 'package:biodiversity/components/drawer.dart';
+import 'package:biodiversity/components/general_information_pages.dart';
 import 'package:biodiversity/components/join_connection_project_popup_button.dart';
 import 'package:biodiversity/components/leave_connection_project_button.dart';
 import 'package:biodiversity/components/text_field_with_descriptor.dart';
@@ -11,7 +11,6 @@ import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/user.dart';
-import 'package:biodiversity/screens/map_page/maps_general_information_page.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
 import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
@@ -143,7 +142,8 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
 
   void modifyPerimeterCircle(String name) {
     if (name != '') {
-      addCircle(speciesList.firstWhere((element) => element.name == name).radius);
+      addCircle(
+          speciesList.firstWhere((element) => element.name == name).radius);
     } else {
       removeCircle();
     }
@@ -258,7 +258,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => MapsGeneralInformationPage()),
+                  MaterialPageRoute(
+                      builder: (context) => GeneralInformationPages("Karte",
+                          "Über die Karte kannst Du alle bereits registrierten Gärten und Vernetzungsprojekte erkunden. Das “+”-Symbol ermöglicht Dir, weitere Gärten oder Vernetzungsprojekte hinzuzufügen. Ausserdem können über das Layer-Symbol die Gärten und Vernetzungsprojekte auf der Karte ein- oder ausgeblendet werden.\n\nWenn Du eine Art oder Artengruppe im Suchfeld oben auswählst, siehst Du wie gross der Aktionsradius dieser Art um Deinen Garten ist. Alle Gärten innerhalb dieses Radius könnten einem Vernetzungsprojekt für diese Art beitreten.")),
                 );
               },
               icon: const Icon(Icons.help))
@@ -646,8 +648,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                   ),
                 ),
               );
-              setState(() {
-              });
+              setState(() {});
             },
             child: Icon(icons[2], color: Theme.of(context).backgroundColor),
           ),

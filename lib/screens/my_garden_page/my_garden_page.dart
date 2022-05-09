@@ -2,14 +2,13 @@ import 'dart:ui';
 
 import 'package:biodiversity/components/circlesOverview.dart';
 import 'package:biodiversity/components/drawer.dart';
+import 'package:biodiversity/components/general_information_pages.dart';
 import 'package:biodiversity/components/information_object_list_widget.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
-import 'package:biodiversity/screens/my_garden_page/garden_general_information_page.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_delete.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_edit.dart';
-import 'package:biodiversity/screens/project_page/project_general_information_page.dart';
 import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +28,8 @@ class MyGarden extends StatefulWidget {
 class _MyGardenState extends State<MyGarden> {
   List<Garden> gardens;
   Garden garden;
+  String title;
+  String description;
 
   @override
   Widget build(BuildContext context) {
@@ -43,13 +44,16 @@ class _MyGardenState extends State<MyGarden> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: const Text('Mein Garten'),
+        title: const Text("Mein Garten"),
         actions: [
           IconButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => GardenGeneralInformationPage() ),
+                  MaterialPageRoute(
+                      builder: (context) => GeneralInformationPages(
+                          "Mein Garten",
+                          "Unter “Mein Garten” siehst Du eine Zusammenfassung der Lebensräume, die Du in Deinem Garten registriert hast. Unter den drei Punkten oben rechts kannst Du den aktuell angezeigten Garten wechseln, deine Gärten bearbeiten oder einen neuen Garten hinzufügen.")),
                 );
               },
               icon: const Icon(Icons.help)),
