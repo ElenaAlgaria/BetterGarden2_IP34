@@ -6,8 +6,10 @@ import 'package:biodiversity/components/information_object_list_widget.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/map_page/maps_page.dart';
+import 'package:biodiversity/screens/my_garden_page/garden_general_information_page.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_delete.dart';
 import 'package:biodiversity/screens/my_garden_page/my_garden_edit.dart';
+import 'package:biodiversity/screens/project_page/project_general_information_page.dart';
 import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +45,14 @@ class _MyGardenState extends State<MyGarden> {
       appBar: AppBar(
         title: const Text('Mein Garten'),
         actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => GardenGeneralInformationPage() ),
+                );
+              },
+              icon: const Icon(Icons.help)),
           PopupMenuButton(
             onSelected: _handleTopMenu,
             itemBuilder: (context) {
