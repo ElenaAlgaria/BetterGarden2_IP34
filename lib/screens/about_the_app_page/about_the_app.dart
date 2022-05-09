@@ -26,6 +26,7 @@ class AboutTheApp extends StatelessWidget {
                 if (text.hasData) {
                   return MarkdownBody(
                     data: text.data,
+                    // ignore: deprecated_member_use
                     onTapLink: (_, url, __) => launch(url),
                   );
                 } else {

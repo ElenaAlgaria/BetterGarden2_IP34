@@ -25,6 +25,7 @@ Future<bool> showPrivacyAgreement(BuildContext context) async {
       content: SizedBox(
         width: MediaQuery.of(context).size.width * .85,
         child: Markdown(
+            // ignore: deprecated_member_use
             data: _privacyAgreement, onTapLink: (_, url, __) => launch(url)),
       ),
     ),

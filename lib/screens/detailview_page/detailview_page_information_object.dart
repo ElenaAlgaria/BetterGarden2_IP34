@@ -79,6 +79,7 @@ class _DetailViewPageInformationObjectState
                 const SizedBox(height: 10),
                 MarkdownBody(
                   data: widget.object.description,
+                  // ignore: deprecated_member_use
                   onTapLink: (text, link, title) => launch(link),
                 ),
                 const SizedBox(

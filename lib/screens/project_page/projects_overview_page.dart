@@ -12,6 +12,7 @@ import 'package:biodiversity/screens/project_page/project_general_information_pa
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 
 /// Displays an overview of all ConnectionProjects
 class ProjectsOverviewPage extends StatefulWidget {
@@ -28,6 +29,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
   List<Species> speciesList = [];
   List<Garden> gardens;
   Garden garden;
+  String selectedValue;
 
   static const List<IconData> icons = [
     Icons.playlist_add,
@@ -76,96 +78,51 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Text(
-              "Aktueller Garten: " + garden.name,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-            ),
-            IconButton(
-                onPressed: () {
-                  itemBuilder: (context) {
-                    final _gardens = gardens.map((garden) => garden.name);
-                    final _menuItems = [
-                      PopupMenuItem(
-                        value: 'gardenAddPage',
-                        child: Row(
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(right: 10),
-                              child: Icon(
-                                Icons.add,
-                                color: Colors.black,
-                              ),
-                            ),
-                            const Text('Garten hinzufügen')
-                          ],
+            DropdownButtonHideUnderline(
+              child: DropdownButton2(
+                hint: Text(
+                  garden.name,
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: Theme
+                        .of(context)
+                        .hintColor,
+                  ),
+                ),
+                isExpanded: true,
+                items: gardens
+                    .map((item) =>
+                    DropdownMenuItem<String>(
+                      value: item.name,
+                      child: Text(
+                        item.name,
+                        style: const TextStyle(
+                          fontSize: 22,
                         ),
-                      )
-                    ];
-                    if (gardens.isNotEmpty) {
-                      _menuItems.addAll([
-                        PopupMenuItem(
-                          value: 'MyGardenEdit',
-                          child: Row(
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.only(right: 10),
-                                child: Icon(
-                                  Icons.perm_contact_calendar_sharp,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              const Text('Garten bearbeiten'),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 'MyGardenDelete',
-                          child: Row(
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.only(right: 10),
-                                child: Icon(
-                                  Icons.delete_forever,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              const Text('Garten löschen')
-                            ],
-                          ),
-                        ),
-                      ]);
-                    }
+                      ),
+                    ))
+                    .toList(),
+                value: selectedValue,
+                onChanged: (value) {
+                  setState(() {
+                    debugPrint("abcde: ");
+                    selectedValue = value as String;
+                    final _garden = gardens
+                        .where((garden) => garden.name == selectedValue)
+                        .first;
 
-                    if (_gardens.length < 2) {
-                      return _menuItems;
-                    }
-                    for (final _garden in _gardens) {
-                      if (_garden !=
-                          Provider.of<Garden>(context, listen: false).name) {
-                        _menuItems.add(PopupMenuItem(
-                          value: _garden,
-                          child: Row(
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.only(right: 10),
-                                child: Icon(
-                                  Icons.home,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              Flexible(
-                                  child: Text(
-                                    'Zu $_garden wechseln',
-                                  )),
-                            ],
-                          ),
-                        ));
-                      }
-                    }
-                    return _menuItems;
-                  };
-                },
-                icon: const Icon(Icons.add)),
+                    Provider.of<Garden>(context, listen: false).switchGarden(
+                        _garden);
+
+                    getJoinedConnectionProjects();
+
+                  });
+                      },
+                buttonHeight: 100,
+                buttonWidth: 300,
+                itemHeight: 60,
+              ),
+            ),
             const Padding(
               padding: EdgeInsets.all(20),
               child: Text(
@@ -291,10 +248,5 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
     ServiceProvider.instance.gardenService.getGardenByReference(e) ??
         Garden.empty())
         .any((element) => element.isInRange(garden, radius));
-  }
-
-  void _handleTopMenu(String value) {
-      final _garden = gardens.where((garden) => garden.name == value).first;
-      Provider.of<Garden>(context, listen: false).switchGarden(_garden);
   }
 }
