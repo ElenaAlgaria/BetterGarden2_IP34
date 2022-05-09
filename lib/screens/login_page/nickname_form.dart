@@ -5,7 +5,6 @@ import 'package:biodiversity/components/screen_with_logo_and_waves.dart';
 import 'package:biodiversity/models/user.dart' as biodiversity_user;
 import 'package:biodiversity/screens/my_garden_page/my_garden_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 /// The page where you can insert your data to register with email and password
@@ -42,8 +41,6 @@ class RegisterForm extends StatefulWidget {
 class _RegisterFormState extends State<RegisterForm> {
   final _formKey = GlobalKey<FormState>();
   String _nickname;
-  String _email;
-  String _password;
   bool _readPrivacyAgreement = false;
 
   @override

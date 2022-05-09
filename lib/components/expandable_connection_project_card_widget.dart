@@ -1,4 +1,3 @@
-import 'package:biodiversity/models/biodiversity_measure.dart';
 import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/user.dart';
@@ -62,17 +61,6 @@ class _ExpandableConnectionProjectCardState
   @override
   Widget build(BuildContext context) {
     final _screenWidth = MediaQuery.of(context).size.width;
-    String _unit;
-    if (widget.object.runtimeType == BiodiversityMeasure) {
-      final biodiversityObject = widget.object as BiodiversityMeasure;
-      if (biodiversityObject.dimension == 'Fläche') {
-        _unit = 'm\u00B2';
-      } else if (biodiversityObject.dimension == 'Linie') {
-        _unit = 'm';
-      } else {
-        _unit = 'Stück';
-      }
-    }
     return Container(
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(5)),

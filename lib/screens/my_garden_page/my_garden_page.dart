@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:biodiversity/components/circlesOverview.dart';
 import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/information_object_list_widget.dart';

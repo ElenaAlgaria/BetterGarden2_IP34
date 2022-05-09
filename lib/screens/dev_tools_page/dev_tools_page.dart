@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 class DevToolsPage extends StatelessWidget {
   DevToolsPage({Key key}) : super(key: key);
 
-  var testProj = ServiceProvider.instance.connectionProjectService
+  final testProj = ServiceProvider.instance.connectionProjectService
       .getAllConnectionProjects()
       .where((element) =>
           element.reference.id == 'ff71ce2b-6e8f-48fe-94b5-b7b4ce0a7f22')

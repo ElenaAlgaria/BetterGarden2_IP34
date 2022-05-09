@@ -59,7 +59,7 @@ class _EditProjectPageState extends State<EditProjectPage>
         body: Builder(
             builder: (context) => Center(
                 child: SingleChildScrollView(
-                    padding: EdgeInsets.all(32),
+                    padding: const EdgeInsets.all(32),
                     child: Form(
                         key: _formkey,
                         child: Padding(
@@ -111,8 +111,8 @@ class _EditProjectPageState extends State<EditProjectPage>
                                       updateProject();
                                     }
                                   },
-                                  label: Text("Vernetzungsprojekt starten"),
-                                  icon: Icon(Icons.save),
+                                  label: const Text('Vernetzungsprojekt starten'),
+                                  icon: const Icon(Icons.save),
                                 )
                               ],
                             )))))));
@@ -171,8 +171,8 @@ class _EditProjectPageState extends State<EditProjectPage>
       },
       dataSource: _speciesList.map((species) {
         return {
-          "display": species.name,
-          "value": species,
+          'display': species.name,
+          'value': species,
         };
       }).toList(),
       textField: 'display',
