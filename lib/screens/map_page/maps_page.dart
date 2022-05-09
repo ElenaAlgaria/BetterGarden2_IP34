@@ -140,7 +140,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   }
 
   void modifyPerimeterCircle(String name) {
-    if (name != '') {
+    if (name == 'Aktionsradius anzeigen') {
+      removeCircle();
+    } else if (name != '') {
       addCircle(speciesList.firstWhere((element) => element.name == name).radius);
     } else {
       removeCircle();
@@ -348,7 +350,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           child: DropdownButton<String>(
             icon: const Icon(Icons.emoji_nature, color: Colors.white),
             hint: Text(
-              _currentSpecies ?? 'Spezies anzeigen',
+              _currentSpecies ?? 'Aktionsradius anzeigen',
               style: const TextStyle(color: Colors.white),
             ),
             iconSize: 24,
@@ -356,7 +358,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             // value: selectedPurpose,
             items: [
               const DropdownMenuItem<String>(
-                value: '',
+                value: 'Aktionsradius anzeigen',
                 child: Text(
                   'Keine',
                   style: TextStyle(fontFamily: 'Gotham'),
