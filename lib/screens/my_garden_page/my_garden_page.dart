@@ -141,7 +141,7 @@ class _MyGardenState extends State<MyGarden> {
                   width: MediaQuery.of(context).size.width,
                   height: 200,
                   fit: BoxFit.fitWidth,
-                  image: const AssetImage('res/myGarden.jpg'),
+                  image: const AssetImage('res/myGarden.JPG'),
                   semanticLabel: garden.name,
                 ),
                 Padding(
@@ -181,7 +181,7 @@ class _MyGardenState extends State<MyGarden> {
                             width: MediaQuery.of(context).size.width,
                             fit: BoxFit.fitWidth)
                         : Image(
-                            image: const AssetImage('res/myGarden.jpg'),
+                            image: const AssetImage('res/myGarden.JPG'),
                             height: 100,
                             width: MediaQuery.of(context).size.width,
                             fit: BoxFit.fitWidth,
