@@ -15,7 +15,7 @@ class _FavoredListGeneralInformationPageState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Informationen'),
+        title: const Text("Informationen"),
         centerTitle: true,
       ),
       //drawer: MyDrawer(),
@@ -33,7 +33,7 @@ class _FavoredListGeneralInformationPageState
             const Padding(
               padding: EdgeInsets.all(30),
               child: Text(
-                'Die Merkliste speichert alle Texte über Lebensräume und Arten, die Du mit dem Herz-Symbol markiert hast. So sind die für Dich relevanten Informationen mit nur einem Klick erreichbar.',
+                "Die Merkliste speichert alle Texte über Lebensräume und Arten, die Du mit dem Herz-Symbol markiert hast. So sind die für Dich relevanten Informationen mit nur einem Klick erreichbar.",
                 style: TextStyle(fontWeight: FontWeight.normal, fontSize: 18),
               ),
             ),

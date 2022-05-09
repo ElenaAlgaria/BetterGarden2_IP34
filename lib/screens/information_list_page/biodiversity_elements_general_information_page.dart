@@ -15,7 +15,7 @@ class _BioDiversityElementsInformationPageState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Informationen'),
+        title: const Text("Informationen"),
         centerTitle: true,
       ),
       //drawer: MyDrawer(),
@@ -33,8 +33,7 @@ class _BioDiversityElementsInformationPageState
             const Padding(
               padding: EdgeInsets.all(30),
               child: Text(
-                "Hier erhältst Du weitere Informationen über die Schaffung und Pflege von Lebensräumen in Deinem Garten. Am Ende jedes Textes siehst Du, welche Arten mit dem jeweiligen Lebensraum gefördert werden.\n\n"
-                  'Ausserdem kannst Du mit Hilfe des “+”-Symbols einen Lebensraum in einem Deiner Gärten registrieren.',
+                "Hier erhältst Du weitere Informationen über die Schaffung und Pflege von Lebensräumen in Deinem Garten. Am Ende jedes Textes siehst Du, welche Arten mit dem jeweiligen Lebensraum gefördert werden.\n\nAusserdem kannst Du mit Hilfe des “+”-Symbols einen Lebensraum in einem Deiner Gärten registrieren.",
                 style: TextStyle(fontWeight: FontWeight.normal, fontSize: 18),
               ),
             ),

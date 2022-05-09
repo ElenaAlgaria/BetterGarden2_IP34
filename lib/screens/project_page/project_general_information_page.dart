@@ -14,7 +14,7 @@ class _ProjectGeneralInformationPageState extends State<ProjectGeneralInformatio
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Informationen'),
+        title: const Text("Informationen"),
         centerTitle: true,
       ),
       //drawer: MyDrawer(),
@@ -32,7 +32,7 @@ class _ProjectGeneralInformationPageState extends State<ProjectGeneralInformatio
             const Padding(
               padding: EdgeInsets.all(30),
               child: Text(
-                'Auf dieser Seite siehst du die Vernetzungsprojekte, in denen du bereits Mitglied bist und jene zu denen du beitreten kannst. Die Mitglieder eines Vernetzungsprojekts können sich über die Pinnwand der Projektseite austauschen.',
+                "Auf dieser Seite siehst du die Vernetzungsprojekte, in denen du bereits Mitglied bist und jene zu denen du beitreten kannst. Die Mitglieder eines Vernetzungsprojekts können sich über die Pinnwand der Projektseite austauschen.",
                 style: TextStyle(fontWeight: FontWeight.normal, fontSize: 18),
               ),
             ),
@@ -50,7 +50,7 @@ class _ProjectGeneralInformationPageState extends State<ProjectGeneralInformatio
             const Padding(
               padding: EdgeInsets.all(30),
               child: Text(
-                'Über ein Vernetzungsprojekt schliesst du dich mit anderen Gärtner*innen in deiner Umgebung zusammen, um gemeinsam Massnahmen zur Förderung einer Art in den Gärten umzusetzen. Dadurch kreiert ihr ein Netz aus Trittsteinen für eine Art und verbessert ihren Lebensraum. Infos wie du eine Art fördern kannst, erhältst du unter “Arten”.',
+                "Über ein Vernetzungsprojekt schliesst du dich mit anderen Gärtner*innen in deiner Umgebung zusammen, um gemeinsam Massnahmen zur Förderung einer Art in den Gärten umzusetzen. Dadurch kreiert ihr ein Netz aus Trittsteinen für eine Art und verbessert ihren Lebensraum. Infos wie du eine Art fördern kannst, erhältst du unter “Arten”.",
                 style: TextStyle(fontWeight: FontWeight.normal, fontSize: 18),
               ),
             ),

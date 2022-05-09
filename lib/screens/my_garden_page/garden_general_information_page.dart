@@ -15,7 +15,7 @@ class _GardenGeneralInformationPageState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Informationen'),
+        title: const Text("Informationen"),
         centerTitle: true,
       ),
       //drawer: MyDrawer(),
@@ -33,7 +33,7 @@ class _GardenGeneralInformationPageState
             const Padding(
               padding: EdgeInsets.all(30),
               child: Text(
-                'Unter “Mein Garten” siehst Du eine Zusammenfassung der Lebensräume, die Du in Deinem Garten registriert hast. Unter den drei Punkten oben rechts kannst Du den aktuell angezeigten Garten wechseln, deine Gärten bearbeiten oder einen neuen Garten hinzufügen.',
+                "Unter “Mein Garten” siehst Du eine Zusammenfassung der Lebensräume, die Du in Deinem Garten registriert hast. Unter den drei Punkten oben rechts kannst Du den aktuell angezeigten Garten wechseln, deine Gärten bearbeiten oder einen neuen Garten hinzufügen.",
                 style: TextStyle(fontWeight: FontWeight.normal, fontSize: 18),
               ),
             ),

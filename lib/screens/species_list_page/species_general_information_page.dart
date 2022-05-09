@@ -15,7 +15,7 @@ class _SpeciesGeneralInformationPageState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Informationen'),
+        title: const Text("Informationen"),
         centerTitle: true,
       ),
       //drawer: MyDrawer(),
@@ -33,7 +33,7 @@ class _SpeciesGeneralInformationPageState
             const Padding(
               padding: EdgeInsets.all(30),
               child: Text(
-                'Hier erhältst Du weitere Informationen über jene Arten und Artengruppen, die Du mit einem Vernetzungsprojekt fördern kannst. Die kurzen Infotexte stellen die wichtigsten Merkmale der Lebensweise einer Art zusammen und geben Tipps, wie die Art im Garten gefördert werden kann. Ausserdem siehst Du am Ende jedes Textes die Verbindung mit anderen Arten und Lebensräumen.',
+                "Hier erhältst Du weitere Informationen über jene Arten und Artengruppen, die Du mit einem Vernetzungsprojekt fördern kannst. Die kurzen Infotexte stellen die wichtigsten Merkmale der Lebensweise einer Art zusammen und geben Tipps, wie die Art im Garten gefördert werden kann. Ausserdem siehst Du am Ende jedes Textes die Verbindung mit anderen Arten und Lebensräumen.",
                 style: TextStyle(fontWeight: FontWeight.normal, fontSize: 18),
               ),
             ),
