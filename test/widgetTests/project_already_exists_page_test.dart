@@ -11,9 +11,9 @@ import '../environment/mock_storage_provider.dart';
 
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
-class MockFirestore extends Mock implements FirebaseFirestore{}
+class MockFirestore extends Mock implements FirebaseFirestore {}
 
-class MockDocumentReference extends Mock implements DocumentReference {}
+class MockDocumentReference extends Mock {}
 
 void main() {
   final storage = MockStorageProvider();
@@ -21,62 +21,45 @@ void main() {
   MockDocumentReference ameise;
   MockDocumentReference gartenRef1;
   MockDocumentReference gartenRef2;
-  MockFirestore instance;
   setUp(() {
-    instance = MockFirestore();
     ameise = MockDocumentReference();
-    gartenRef1  = MockDocumentReference();
-    gartenRef2  = MockDocumentReference();
+    gartenRef1 = MockDocumentReference();
+    gartenRef2 = MockDocumentReference();
   });
 
-    final gardenAttributes1 = {
-      'reference' : gartenRef1,
-      'name': 'Mr. Lewis Garden',
-      'street': 'via G.G. Nessi 4B',
-      'owner': 'Lisa',
-      'coordinates': const GeoPoint(46.948915, 7.445423),
-      'ownedObjects': {'dummy': 9, 'second dummy': 1},
-      'ownedLinkingProjects': ['grasfroschteam']
-    };
-    final gardenAttributes2 = {
-      'reference' : gartenRef2,
-      'name': 'Ms. Lewis Garden',
-      'street': 'via G.G. Nessi 4B',
-      'owner': 'Lisa',
-      'coordinates': const GeoPoint(46.948916, 7.445423),
-      'ownedObjects': {'dummy': 9, 'second dummy': 1},
-      'ownedLinkingProjects': ['grasfroschteam']
-    };
-    final connectionProjectAttributes1 = {
-      'description': 'My Project',
-      'gardens': [gartenRef1],
-      'targetSpecies': ameise
-    };
-    final connectionProjectAttributes2 = {
-      'description': 'My Test Project',
-      'gardens': [gartenRef2],
-      'targetSpecies': ameise
-    };
-    final garden1 = Garden.fromMap(gardenAttributes1, storageProvider: storage);
-    final garden2 = Garden.fromMap(gardenAttributes2, storageProvider: storage);
-    final connectionProject1 = ConnectionProject.fromMap(connectionProjectAttributes1, storageProvider: storage);
-    final connectionProject2 = ConnectionProject.fromMap(connectionProjectAttributes2, storageProvider: storage);
+  final gardenAttributes2 = {
+    'reference': gartenRef2,
+    'name': 'Ms. Lewis Garden',
+    'street': 'via G.G. Nessi 4B',
+    'owner': 'Lisa',
+    'coordinates': const GeoPoint(46.948916, 7.445423),
+    'ownedObjects': {'dummy': 9, 'second dummy': 1},
+    'ownedLinkingProjects': ['grasfroschteam']
+  };
+  final connectionProjectAttributes1 = {
+    'description': 'My Project',
+    'gardens': [gartenRef1],
+    'targetSpecies': ameise
+  };
+  final garden2 = Garden.fromMap(gardenAttributes2, storageProvider: storage);
+  final connectionProject1 = ConnectionProject.fromMap(
+      connectionProjectAttributes1,
+      storageProvider: storage);
 
-    //final saveConnectionProjectFinder = find.byKey(const Key('saveConnectionProject'));
+  //final saveConnectionProjectFinder = find.byKey(const Key('saveConnectionProject'));
 
-    final saveConnectionProjectFinder = find.widgetWithIcon(CreateProjectPage, Icons.save);
+  final saveConnectionProjectFinder =
+      find.widgetWithIcon(CreateProjectPage, Icons.save);
 
-    //debugPrint('Finder: ' + saveConnectionProjectFinder.toString());
+  //debugPrint('Finder: ' + saveConnectionProjectFinder.toString());
 
+  testWidgets('Project already exists page is shown',
+      (WidgetTester tester) async {
+    await tester.tap(saveConnectionProjectFinder);
+    await tester.pumpAndSettle();
+    await tester
+        .pumpWidget(ProjectAlreadyExistsPage(connectionProject1, garden2));
 
-    testWidgets('Project already exists page is shown', (WidgetTester tester) async {
-
-      final mockObserver = MockNavigatorObserver();
-
-      await tester.tap(saveConnectionProjectFinder);
-      await tester.pumpAndSettle();
-      await tester.pumpWidget(ProjectAlreadyExistsPage(connectionProject1, garden2));
-
-      expect(find.byType(ProjectAlreadyExistsPage), findsOneWidget);
-      });
-  }
+    expect(find.byType(ProjectAlreadyExistsPage), findsOneWidget);
+  });
+}

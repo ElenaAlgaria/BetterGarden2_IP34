@@ -6,14 +6,14 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Displays the impressum
-class ImpressumPage extends StatelessWidget {
+class AboutTheApp extends StatelessWidget {
   /// Displays the impressum
-  ImpressumPage({Key key}) : super(key: key);
+  AboutTheApp({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Impressum')),
+      appBar: AppBar(title: const Text('Über die App')),
       drawer: MyDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -21,7 +21,7 @@ class ImpressumPage extends StatelessWidget {
           children: <Widget>[
             FutureBuilder(
               future: StorageProvider.instance
-                  .getTextFromFileStorage('impressum/impressum.md'),
+                    .getTextFromFileStorage('aboutTheApp/aboutTheApp.md'),
               builder: (context, text) {
                 if (text.hasData) {
                   return MarkdownBody(

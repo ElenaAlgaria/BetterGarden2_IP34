@@ -43,6 +43,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
+    super.initState();
   }
 
   @override

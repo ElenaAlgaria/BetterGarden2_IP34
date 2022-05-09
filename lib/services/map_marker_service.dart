@@ -116,6 +116,7 @@ class MapMarkerService extends ChangeNotifier {
     }
 
     final list = <Marker>{};
+    final latLngList = <LatLng>{};
     ServiceProvider.instance.connectionProjectService.getAllConnectionProjects().forEach((project) {
       var allGardenCoordinates = project.gardens.map((e) => ServiceProvider
           .instance.gardenService
@@ -132,10 +133,18 @@ class MapMarkerService extends ChangeNotifier {
         var minLng = allGardenCoordinates.map((e) => e.longitude).reduce(min);
         midLat = (maxLat + minLat) / 2;
         midLng = (maxLng + minLng) / 2;
+        //latLngList.add(LatLng(midLat, midLng));
       } else {
         midLat = allGardenCoordinates.elementAt(0).latitude - 0.0002;
         midLng = allGardenCoordinates.elementAt(0).longitude - 0.0002;
       }
+
+      while(latLngList.contains(LatLng(midLat, midLng))) {
+        midLat -= 0.00005;
+        midLng -= 0.00005;
+      }
+
+      latLngList.add(LatLng(midLat, midLng));
 
       logging.log('Create connection project marker at ' +
           midLat.toString() +

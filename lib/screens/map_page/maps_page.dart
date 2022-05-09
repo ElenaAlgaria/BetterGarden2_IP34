@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:biodiversity/components/circlesOverview.dart';
@@ -49,10 +48,10 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   var _currentSpecies;
   final double _zoom = 14.0;
 
-  Set<Marker> _allGardenMarkers = {};
+  Set<Marker> allGardenMarkers = {};
   bool _allGardenMarkersVisible = true;
 
-  Set<Marker> _allConnectionProjectMarkers = {};
+  Set<Marker> allConnectionProjectMarkers = {};
   bool _allConnectionProjectMarkersVisible = true;
 
   Set<Marker> _joinableConnectionProjectMarkers = {};
@@ -60,10 +59,10 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   Set<Marker> assembleMarkers() {
     var tempMarkerSet = <Marker>{};
     if (_allGardenMarkersVisible) {
-      tempMarkerSet.addAll(_allGardenMarkers);
+      tempMarkerSet.addAll(allGardenMarkers);
     }
     if (_allConnectionProjectMarkersVisible) {
-      tempMarkerSet.addAll(_allConnectionProjectMarkers);
+      tempMarkerSet.addAll(allConnectionProjectMarkers);
     }
     return tempMarkerSet;
   }
@@ -89,7 +88,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         displayModalBottomSheetGarden(context);
       }).then((marker) {
         setState(() {
-          _allGardenMarkers.add(marker);
+          allGardenMarkers.add(marker);
         });
       });
     }
@@ -116,7 +115,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       displayConnectionProjectGardensWithCircles(element.reference);
     }).then((markers) {
       setState(() {
-        _allConnectionProjectMarkers.addAll(markers);
+        allConnectionProjectMarkers.addAll(markers);
       });
     });
   }
@@ -132,7 +131,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         displayModalBottomSheetGarden(context);
       }).then((marker) {
         setState(() {
-          _allGardenMarkers.add(marker);
+          allGardenMarkers.add(marker);
         });
       });
     }
@@ -220,7 +219,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       displayModalBottomSheetGarden(context);
     }).then((marker) {
       setState(() {
-        _joinableConnectionProjectMarkers = {..._allConnectionProjectMarkers};
+        _joinableConnectionProjectMarkers = {...allConnectionProjectMarkers};
         _joinableConnectionProjectMarkers.removeWhere((element) =>
             element.markerId.value ==
             'garden' + gardenOfConnectionProject.reference.id);

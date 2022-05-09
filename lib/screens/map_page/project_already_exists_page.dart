@@ -1,4 +1,3 @@
-import 'package:biodiversity/components/join_connection_project_popup_button.dart';
 import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
@@ -9,7 +8,7 @@ import 'package:provider/provider.dart';
 
 class ProjectAlreadyExistsPage extends StatelessWidget {
   final ConnectionProject connectionProject;
-  Garden selectedGarden;
+  final Garden selectedGarden;
 
   ProjectAlreadyExistsPage(this.connectionProject, this.selectedGarden,
       {Key key})
@@ -17,7 +16,6 @@ class ProjectAlreadyExistsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    builder:
     (context) {
       Provider.of<Garden>(context).switchGarden(selectedGarden);
     };
@@ -30,7 +28,7 @@ class ProjectAlreadyExistsPage extends StatelessWidget {
               ServiceProvider.instance.imageService.getImage(
                   connectionProject.targetSpecies.toString().substring(48,
                       connectionProject.targetSpecies.toString().length - 1),
-                  "species"),
+                  'species'),
               const Padding(
                 padding: EdgeInsets.all(25.0),
                 child: Text(
