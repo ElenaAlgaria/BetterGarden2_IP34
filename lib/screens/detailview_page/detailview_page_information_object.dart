@@ -6,6 +6,7 @@ import 'package:biodiversity/screens/information_list_page/add_element_to_garden
 import 'package:biodiversity/screens/information_list_page/delete_element_garden_page.dart';
 import 'package:biodiversity/screens/information_list_page/edit_element_to_garden_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
@@ -44,6 +45,12 @@ class DetailViewPageInformationObject extends StatefulWidget {
 
 class _DetailViewPageInformationObjectState
     extends State<DetailViewPageInformationObject> {
+
+  List<String> images = [
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTIZccfNPnqalhrWev-Xo7uBhkor57_rKbkw&usqp=CAU",
+    "https://wallpaperaccess.com/full/2637581.jpg"
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,6 +62,24 @@ class _DetailViewPageInformationObjectState
       drawer: MyDrawer(),
       body: Column(
         children: [
+          CarouselSlider(
+              options: CarouselOptions(
+                enlargeCenterPage: true,
+                enableInfiniteScroll: false,
+                autoPlay: true,
+              ),
+              items: images.map((e) => ClipRect(
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: <Widget>[
+                    Image.network(e,
+                      width: 1050,
+                      height: 350,
+                      fit: BoxFit.cover,)
+                  ],
+                ),
+              )).toList()
+          ),
           ServiceProvider.instance.imageService
               .getImage(widget.object.name, widget.object.type, height: 150),
           TextButton(
