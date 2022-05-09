@@ -11,6 +11,7 @@ import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/user.dart';
+import 'package:biodiversity/screens/map_page/maps_general_information_page.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
 import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
@@ -252,6 +253,16 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Karte'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MapsGeneralInformationPage()),
+                );
+              },
+              icon: const Icon(Icons.help))
+        ],
       ),
       drawer: MyDrawer(),
       body: Stack(
