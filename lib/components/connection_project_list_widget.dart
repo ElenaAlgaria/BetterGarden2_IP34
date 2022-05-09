@@ -2,9 +2,7 @@ import 'dart:math' as math;
 
 import 'package:biodiversity/components/expandable_connection_project_card_widget.dart';
 import 'package:biodiversity/components/simple_connection_project_card_widget.dart';
-import 'package:biodiversity/components/tags/flutter_tags.dart';
 import 'package:biodiversity/models/connection_project.dart';
-import 'package:biodiversity/models/tag_item.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
 
@@ -52,8 +50,6 @@ class ConnectionProjectListWidget extends StatefulWidget {
 
 class _ConnectionProjectListWidgetState
     extends State<ConnectionProjectListWidget> {
-  final _tagStateKey = GlobalKey<TagsState>();
-  final List<TagItem> _tagItems = <TagItem>[];
   final editingController = TextEditingController();
   final filterController = TextEditingController();
   final categories = <String>[];

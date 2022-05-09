@@ -18,30 +18,26 @@ class SimpleConnectionProjectCard extends StatelessWidget {
   /// what should happen if you tap on the card
   final Function onTapHandler;
 
-  final ServiceProvider _serviceProvider;
 
   /// formKey to control the amount input field
   final GlobalKey<FormState> formKey;
 
   /// Non expandable ListTile, displaying a [BiodiversityMeasure]
-  SimpleConnectionProjectCard(this.project,
-      {this.onTapHandler,
-      //this.additionalInfo,
-      this.amountLocked = false,
-      this.amount,
-      ServiceProvider serviceProvider,
-      this.formKey,
-      Key key})
-      : _serviceProvider = serviceProvider ?? ServiceProvider.instance,
-        super(key: key);
+  SimpleConnectionProjectCard(
+      this.project,
+      {
+        this.onTapHandler,
+        //this.additionalInfo,
+        this.amountLocked = false,
+        this.amount,
+        ServiceProvider serviceProvider,
+        this.formKey,
+        Key key
+      }
+      ) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    String _unit;
-    if (project.runtimeType == BiodiversityMeasure) {
-      final biodiversityObject = project as BiodiversityMeasure;
-    }
-
     return InkWell(
       onTap: onTapHandler,
       child: Container(

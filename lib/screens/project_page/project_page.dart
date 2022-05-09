@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 
 class ProjectPage extends StatefulWidget {
   final ConnectionProject project;
-  final ServiceProvider _serviceProvider;
   final bool joinedProject;
 
   ProjectPage(
@@ -16,8 +15,7 @@ class ProjectPage extends StatefulWidget {
       this.project,
       this.joinedProject,
       ServiceProvider serviceProvider})
-      : _serviceProvider = serviceProvider ?? ServiceProvider.instance,
-        super(key: key);
+      : super(key: key);
 
   @override
   _ProjectPageState createState() => _ProjectPageState();
@@ -31,6 +29,7 @@ class _ProjectPageState extends State<ProjectPage> {
   void initState() {
     project = widget.project;
     updatedProject = project;
+    super.initState();
   }
 
   @override
