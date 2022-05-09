@@ -4,7 +4,6 @@ import 'package:biodiversity/components/white_redirect_page.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/information_object_amount_container.dart';
 import 'package:biodiversity/screens/information_list_page/biodiversity_elements_list_page.dart';
-import 'package:biodiversity/screens/map_page/maps_submap_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -81,8 +80,6 @@ class _AddElementToGardenOverviewPageState
               Text(' Gewählter Garten: ${container.gardenName}'),
             ],
           ),
-          const SizedBox(height: 20),
-          SubMap(initialPosition: container.garden.getLatLng()),
         ],
       ),
     );
