@@ -89,9 +89,9 @@ class _ExpandableConnectionProjectCardState
                 duration: const Duration(milliseconds: 200),
                 height: _expanded ? 100 : 0,
                 child: widget._serviceProvider.imageService.getImage(
-                  widget.object.title,
-                  widget.object.title,
-                )),
+                  widget.object.targetSpecies.toString().substring(48,
+                      widget.object.targetSpecies.toString().length - 1),
+                    "species")),
           ),
           ExpansionTile(
             onExpansionChanged: (value) {
