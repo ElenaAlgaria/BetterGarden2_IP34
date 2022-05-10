@@ -5,6 +5,7 @@ import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/screens/detailview_page/detailview_page_information_object.dart';
 import 'package:biodiversity/screens/project_page/edit_project_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ProjectPage extends StatefulWidget {
@@ -38,14 +39,16 @@ class _ProjectPageState extends State<ProjectPage> {
     return Scaffold(
         appBar: AppBar(title: Text(project.title)),
         drawer: MyDrawer(),
-        body: Container (
+        body: Container(
           child: SingleChildScrollView(
             child: Column(
               children: [
                 ServiceProvider.instance.imageService.getImage(
-                    ServiceProvider.instance.speciesService.getSpeciesByReference(project.targetSpecies).name,
-                    "species",
-                    ),
+                  ServiceProvider.instance.speciesService
+                      .getSpeciesByReference(project.targetSpecies)
+                      .name,
+                  "species",
+                ),
                 const Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 20)),
                 Text(
                   project.title,
@@ -80,8 +83,7 @@ class _ProjectPageState extends State<ProjectPage> {
                 const Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 20)),
                 const Text(
                   "Projektbeschreibung",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 18),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
                 const Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 10)),
                 Text(
@@ -108,6 +110,9 @@ class _ProjectPageState extends State<ProjectPage> {
                                       },
                                     )),
                           );
+                          setState(() {
+
+                          });
                         },
                         label: const Text('Bearbeiten'),
                         icon: const Icon(Icons.edit),
@@ -120,9 +125,47 @@ class _ProjectPageState extends State<ProjectPage> {
                             connectionProject: project),
                   ],
                 ),
+                const Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 20)),
+                const Text(
+                  "Teilnehmende",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
+                RichText(
+                    text: TextSpan(children: <TextSpan>[
+                  TextSpan(
+                      text: '\n' +
+                          getLinksOfGardensOfProject(widget.project.gardens)
+                              .join('\n'),
+                      style:
+                          const TextStyle(color: Colors.black, fontSize: 18)),
+                ]))
               ],
             ),
           ),
         ));
+  }
+
+  List<String> getLinksOfGardensOfProject(
+      List<DocumentReference<Object>> gardenRef) {
+    var gardens = gardenRef.map(
+        (e) => ServiceProvider.instance.gardenService.getGardenByReference(e));
+    var allUsers = ServiceProvider.instance.userService.getAllUsers();
+    var gardenNames = gardens
+        .map((e) =>
+            '  •  ' +
+            e.name +
+            ' von ' +
+            (allUsers
+                    ?.firstWhere(
+                        (user) =>
+                            user.gardenReferences?.contains(e.reference) ??
+                            false,
+                        orElse: () => null)
+                    ?.nickname ??
+                'Anonymous'))
+        .toList();
+
+    // TODO: return every gardenName with a link, with which you access the map with the location of the garden and open the corresponding expandable card
+    return gardenNames;
   }
 }
