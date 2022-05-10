@@ -11,8 +11,10 @@ import 'package:provider/provider.dart';
 
 class leaveConnectionProjectButton extends StatefulWidget {
   final ConnectionProject connectionProject;
+  final ValueChanged<ConnectionProject> onConnectionProjectDeleted;
 
-  leaveConnectionProjectButton({Key key, this.connectionProject})
+  leaveConnectionProjectButton(
+      {Key key, this.connectionProject, this.onConnectionProjectDeleted})
       : super(key: key);
 
   @override
@@ -37,10 +39,11 @@ class leaveConnectionProjectButtonState
     return ElevatedButton.icon(
       onPressed: _disabled
           ? null
-          : () {
+          : () async {
               Garden _selectedGarden;
               if (_ownedGardensInProject.length == 1) {
-                leaveConnectionProject(context, _ownedGardensInProject.first);
+                await leaveConnectionProject(
+                    context, _ownedGardensInProject.first);
               } else {
                 showDialog(
                     context: context,
@@ -120,6 +123,7 @@ class leaveConnectionProjectButtonState
       if (widget.connectionProject.gardens.isEmpty) {
         await ServiceProvider.instance.connectionProjectService
             .deleteConnectionProject(widget.connectionProject);
+        widget.onConnectionProjectDeleted(widget.connectionProject);
       }
       Navigator.of(context).pop();
       return logging.log(

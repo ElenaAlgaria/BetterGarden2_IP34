@@ -69,7 +69,7 @@ class ConnectionProjectService extends ChangeNotifier {
         .first;
   }
 
-  ///function to delete the ConnectionProject from an user
+  ///function to delete the ConnectionProject from a user
   Future<void> deleteConnectionProject(
       ConnectionProject connectionProject) async {
     if (connectionProject.reference != null) {
@@ -77,9 +77,9 @@ class ConnectionProjectService extends ChangeNotifier {
         myTransaction.delete(connectionProject.reference);
       });
     }
-    logging.log('Deleted ConnectionProject' + connectionProject.title);
-    _connectionProjects.remove(ConnectionProject);
+    _connectionProjects.remove(connectionProject);
     notifyListeners();
+    return logging.log('Deleted ConnectionProject' + connectionProject.title);
   }
 
   void addCreatedConnectionProject(ConnectionProject newConnectionProject) {
