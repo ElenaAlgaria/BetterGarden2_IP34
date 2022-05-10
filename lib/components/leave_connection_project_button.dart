@@ -106,7 +106,7 @@ class leaveConnectionProjectButtonState
                     });
               }
             },
-      label: const Text('Vernetzungsprojekt verlassen'),
+      label: const Text('Verlassen'),
       icon: const Icon(Icons.cancel_outlined),
     );
   }

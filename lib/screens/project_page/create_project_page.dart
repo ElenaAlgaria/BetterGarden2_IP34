@@ -146,6 +146,10 @@ class _CreateProjectPageState extends State<CreateProjectPage>
   }
 
   void saveProject() {
+
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Verbindungsprojekt wurde erfolgreich erstellt.')));
+
     var newConnectionProject = ConnectionProject.empty();
     newConnectionProject.title = _titleController.text;
     newConnectionProject.description = _descriptionController.text;
@@ -164,8 +168,6 @@ class _CreateProjectPageState extends State<CreateProjectPage>
     log(_titleController.text);
     log(_descriptionController.text);
 
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Verbindungsprojekt wurde erfolgreich erstellt.')));
 
     Navigator.pop(context);
   }

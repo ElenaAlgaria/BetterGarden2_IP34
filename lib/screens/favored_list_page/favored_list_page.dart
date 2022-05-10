@@ -16,7 +16,28 @@ class FavoredListPage extends StatelessWidget {
     list.addAll(Provider.of<User>(context).favoredHabitatObjects);
     list.addAll(Provider.of<User>(context).favoredSpeciesObjects);
     return Scaffold(
-      appBar: AppBar(title: const Text('Merkliste')),
+      appBar: AppBar(
+        title: const Text('Merkliste'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                          title: const Text("Merkliste"),
+                          content: const Text(
+                              "Die Merkliste speichert alle Texte über Lebensräume und Arten, die Du mit dem Herz-Symbol markiert hast. So sind die für Dich relevanten Informationen mit nur einem Klick erreichbar."),
+                          actions: [
+                            IconButton(
+                              onPressed: () => Navigator.pop(context),
+                              icon: const Icon(Icons.exit_to_app_rounded),
+                            )
+                          ],
+                        ));
+              },
+              icon: const Icon(Icons.help))
+        ],
+      ),
       drawer: MyDrawer(),
       body: InformationObjectListWidget(
         key: Key(list.map((e) => e.name).toString()),
