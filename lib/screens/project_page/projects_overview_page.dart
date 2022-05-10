@@ -76,8 +76,10 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
       body: SingleChildScrollView(
         child: Column(
           children: [
+            SizedBox(height: 20),
             DropdownButtonHideUnderline(
               child: DropdownButton2(
+
                 items: gardens
                     .map((item) => DropdownMenuItem<Garden>(
                           value: item,
@@ -85,11 +87,13 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
                             item.name,
                             style: const TextStyle(
                               fontSize: 22,
+                              fontWeight: FontWeight.normal,
                             ),
                           ),
                         ))
                     .toList(),
                 value: garden,
+
                 onChanged: (value) {
                   setState(() {
                     garden = value as Garden;
@@ -97,9 +101,20 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
                   Provider.of<Garden>(context, listen: false)
                       .switchGarden(garden);
                 },
-                buttonHeight: 100,
-                buttonWidth: 300,
-                itemHeight: 60,
+                icon: const Icon(Icons.arrow_drop_down_circle),
+                iconDisabledColor: Colors.deepOrange,
+                iconEnabledColor: Colors.deepOrange,
+                buttonWidth: 380,
+                buttonPadding: const EdgeInsets.all(8),
+                dropdownPadding: const EdgeInsets.symmetric(vertical: 15),
+                buttonDecoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.grey,
+                  ),
+                ),
+                scrollbarRadius: const Radius.circular(40),
+                scrollbarThickness: 6,
+                scrollbarAlwaysShow: true,
               ),
             ),
             const Padding(
