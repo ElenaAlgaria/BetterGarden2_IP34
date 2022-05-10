@@ -109,9 +109,6 @@ class _ProjectPageState extends State<ProjectPage> {
                                       },
                                     )),
                           );
-                          setState(() {
-                            //project = updatedProject;
-                          });
                         },
                         label: const Text('Bearbeiten'),
                         icon: const Icon(Icons.edit),

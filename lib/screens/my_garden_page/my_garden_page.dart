@@ -27,8 +27,6 @@ class MyGarden extends StatefulWidget {
 class _MyGardenState extends State<MyGarden> {
   List<Garden> gardens;
   Garden garden;
-  String title;
-  String description;
 
   @override
   Widget build(BuildContext context) {
