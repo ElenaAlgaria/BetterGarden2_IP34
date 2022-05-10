@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:biodiversity/components/connection_project_list_widget.dart';
 import 'package:biodiversity/components/drawer.dart';
-import 'package:biodiversity/components/general_information_pages.dart';
 import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/species.dart';
@@ -50,13 +49,19 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => GeneralInformationPages(
-                          "Vernetzungsprojekte",
-                          "Auf dieser Seite siehst Du die Vernetzungsprojekte, in denen Du bereits Mitglied bist und jene, zu denen Du beitreten kannst. Die Mitglieder eines Vernetzungsprojekts können sich über die Pinnwand der Projektseite austauschen.\n\nÜber ein Vernetzungsprojekt schliesst Du dich mit anderen Gärtner*innen in Deiner Umgebung zusammen, um gemeinsam eine Art- oder einer Gruppe von Arten zu fördern. Dadurch knüpft Ihr ein Netz aus Lebensräumen, das immer dichter wird, je mehr Leute beitreten. Infos wie Du eine Art fördern kannst, erhältst Du unter “Arten”.")),
-                );
+                showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text("Vernetzungsprojekte"),
+                      content: const Text(
+                          "Auf dieser Seite siehst Du die Vernetzungsprojekte, in denen Du bereits Mitglied bist und jene, zu denen Du beitreten kannst. Die Mitglieder eines Vernetzungsprojekts können sich über die Pinnwand der Projektseite austauschen.\n\nÜber ein Vernetzungsprojekt schliesst Du dich mit anderen Gärtner*innen in Deiner Umgebung zusammen, um gemeinsam eine Art- oder einer Gruppe von Arten zu fördern. Dadurch knüpft Ihr ein Netz aus Lebensräumen, das immer dichter wird, je mehr Leute beitreten. Infos wie Du eine Art fördern kannst, erhältst Du unter “Arten”."),
+                      actions: [
+                        IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(Icons.exit_to_app_rounded),
+                        )
+                      ],
+                    ));
               },
               icon: const Icon(Icons.help))
         ],

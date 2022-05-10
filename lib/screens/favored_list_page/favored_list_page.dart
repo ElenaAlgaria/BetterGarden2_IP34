@@ -1,5 +1,4 @@
 import 'package:biodiversity/components/drawer.dart';
-import 'package:biodiversity/components/general_information_pages.dart';
 import 'package:biodiversity/components/information_object_list_widget.dart';
 import 'package:biodiversity/models/information_object.dart';
 import 'package:biodiversity/models/user.dart';
@@ -22,12 +21,19 @@ class FavoredListPage extends StatelessWidget {
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => GeneralInformationPages("Merkliste",
-                          "Die Merkliste speichert alle Texte über Lebensräume und Arten, die Du mit dem Herz-Symbol markiert hast. So sind die für Dich relevanten Informationen mit nur einem Klick erreichbar.")),
-                );
+                showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text("Merkliste"),
+                      content: const Text(
+                          "Die Merkliste speichert alle Texte über Lebensräume und Arten, die Du mit dem Herz-Symbol markiert hast. So sind die für Dich relevanten Informationen mit nur einem Klick erreichbar."),
+                      actions: [
+                        IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(Icons.exit_to_app_rounded),
+                        )
+                      ],
+                    ));
               },
               icon: const Icon(Icons.help))
         ],

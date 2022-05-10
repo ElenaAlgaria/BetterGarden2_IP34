@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:biodiversity/components/circlesOverview.dart';
 import 'package:biodiversity/components/drawer.dart';
-import 'package:biodiversity/components/general_information_pages.dart';
 import 'package:biodiversity/components/information_object_list_widget.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/user.dart';
@@ -48,13 +47,19 @@ class _MyGardenState extends State<MyGarden> {
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => GeneralInformationPages(
-                          "Mein Garten",
-                          "Unter “Mein Garten” siehst Du eine Zusammenfassung der Lebensräume, die Du in Deinem Garten registriert hast. Unter den drei Punkten oben rechts kannst Du den aktuell angezeigten Garten wechseln, deine Gärten bearbeiten oder einen neuen Garten hinzufügen.")),
-                );
+                showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                          title: const Text("Mein Garten"),
+                          content: const Text(
+                              "Unter “Mein Garten” siehst Du eine Zusammenfassung der Lebensräume, die Du in Deinem Garten registriert hast. Unter den drei Punkten oben rechts kannst Du den aktuell angezeigten Garten wechseln, deine Gärten bearbeiten oder einen neuen Garten hinzufügen."),
+                          actions: [
+                            IconButton(
+                              onPressed: () => Navigator.pop(context),
+                              icon: const Icon(Icons.exit_to_app_rounded),
+                            )
+                          ],
+                        ));
               },
               icon: const Icon(Icons.help)),
           PopupMenuButton(

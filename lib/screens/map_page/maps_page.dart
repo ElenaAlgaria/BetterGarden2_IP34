@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:biodiversity/components/circlesOverview.dart';
 import 'package:biodiversity/components/drawer.dart';
-import 'package:biodiversity/components/general_information_pages.dart';
 import 'package:biodiversity/components/join_connection_project_popup_button.dart';
 import 'package:biodiversity/components/leave_connection_project_button.dart';
 import 'package:biodiversity/components/text_field_with_descriptor.dart';
@@ -256,12 +255,19 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => GeneralInformationPages("Karte",
-                          "Über die Karte kannst Du alle bereits registrierten Gärten und Vernetzungsprojekte erkunden. Das “+”-Symbol ermöglicht Dir, weitere Gärten oder Vernetzungsprojekte hinzuzufügen. Ausserdem können über das Layer-Symbol die Gärten und Vernetzungsprojekte auf der Karte ein- oder ausgeblendet werden.\n\nWenn Du eine Art oder Artengruppe im Suchfeld oben auswählst, siehst Du wie gross der Aktionsradius dieser Art um Deinen Garten ist. Alle Gärten innerhalb dieses Radius könnten einem Vernetzungsprojekt für diese Art beitreten.")),
-                );
+                showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text("Karte"),
+                      content: const Text(
+                          "Über die Karte kannst Du alle bereits registrierten Gärten und Vernetzungsprojekte erkunden. Das “+”-Symbol ermöglicht Dir, weitere Gärten oder Vernetzungsprojekte hinzuzufügen. Ausserdem können über das Layer-Symbol die Gärten und Vernetzungsprojekte auf der Karte ein- oder ausgeblendet werden.\n\nWenn Du eine Art oder Artengruppe im Suchfeld oben auswählst, siehst Du wie gross der Aktionsradius dieser Art um Deinen Garten ist. Alle Gärten innerhalb dieses Radius könnten einem Vernetzungsprojekt für diese Art beitreten."),
+                      actions: [
+                        IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(Icons.exit_to_app_rounded),
+                        )
+                      ],
+                    ));
               },
               icon: const Icon(Icons.help))
         ],
