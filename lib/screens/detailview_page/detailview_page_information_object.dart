@@ -47,8 +47,11 @@ class _DetailViewPageInformationObjectState
     extends State<DetailViewPageInformationObject> {
 
   List<String> images = [
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTIZccfNPnqalhrWev-Xo7uBhkor57_rKbkw&usqp=CAU",
-    "https://wallpaperaccess.com/full/2637581.jpg"
+    "https://firebasestorage.googleapis.com/v0/b/biodiversity-database.appspot.com/o/biodiversityMeasures%2Faltgras%20und%20s%C3%A4ume-1.jpg?alt=media&token=e9f8fac9-93cf-4038-bdc6-b4fc405b80b6",
+    "https://firebasestorage.googleapis.com/v0/b/biodiversity-database.appspot.com/o/biodiversityMeasures%2Faltgras%20und%20s%C3%A4ume-2.jpg?alt=media&token=6bac028b-cc52-47d3-a5a9-ce89ac52dd0f",
+    "https://firebasestorage.googleapis.com/v0/b/biodiversity-database.appspot.com/o/biodiversityMeasures%2Faltgras%20und%20s%C3%A4ume-3.jpg?alt=media&token=ad10cd70-817d-4c22-9eea-ae8c230c163e",
+    "https://firebasestorage.googleapis.com/v0/b/biodiversity-database.appspot.com/o/biodiversityMeasures%2Faltgras%20und%20s%C3%A4ume-4.jpg?alt=media&token=7f53e966-05e2-4c7f-b844-23dbd4541041",
+    "https://firebasestorage.googleapis.com/v0/b/biodiversity-database.appspot.com/o/biodiversityMeasures%2Faltgras%20und%20s%C3%A4ume-5.jpg?alt=media&token=60178fa0-bc26-4749-8fbf-dce3ca257cfc"
   ];
 
   @override
@@ -74,14 +77,14 @@ class _DetailViewPageInformationObjectState
                   children: <Widget>[
                     Image.network(e,
                       width: 1050,
-                      height: 350,
-                      fit: BoxFit.cover,)
+                      height: 200,
+                      fit: BoxFit.fill,)
                   ],
                 ),
               )).toList()
           ),
-          ServiceProvider.instance.imageService
-              .getImage(widget.object.name, widget.object.type, height: 150),
+          /*ServiceProvider.instance.imageService
+              .getImage(widget.object.name, widget.object.type, height: 150),*/
           TextButton(
             onPressed: () {
               Navigator.canPop(context)
