@@ -68,11 +68,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   }
 
   List<Circle> _circles = [];
-
   List<Species> speciesList = [];
-
-  DocumentReference reference;
-
   List<Garden> _allGardens = [];
 
   @override
@@ -93,7 +89,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       });
     }
 
-    initializeConnetionProjectMarkers();
+    initializeConnectionProjectMarkers();
 
     speciesList =
         ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
@@ -105,18 +101,17 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     loadUserLocation();
   }
 
-  void initializeConnetionProjectMarkers() {
-    ServiceProvider.instance.mapMarkerService.getConnectionProjectMarkerSet(
-        onTapCallback: (element) {
+  void initializeConnectionProjectMarkers() {
+    var markers = ServiceProvider.instance.mapMarkerService
+        .getConnectionProjectMarkerSet(onTapCallback: (element) {
       setState(() {
         _tappedConnectionProject = element;
       });
       displayModalBottomSheetConnectionProject(context);
       displayConnectionProjectGardensWithCircles(element.reference);
-    }).then((markers) {
-      setState(() {
-        allConnectionProjectMarkers.addAll(markers);
-      });
+    });
+    setState(() {
+      allConnectionProjectMarkers = markers;
     });
   }
 
@@ -136,12 +131,13 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       });
     }
 
-    initializeConnetionProjectMarkers();
+    initializeConnectionProjectMarkers();
   }
 
   void modifyPerimeterCircle(String name) {
     if (name != '') {
-      addCircle(speciesList.firstWhere((element) => element.name == name).radius);
+      addCircle(
+          speciesList.firstWhere((element) => element.name == name).radius);
     } else {
       removeCircle();
     }
@@ -561,6 +557,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                           connectionProject: _tappedConnectionProject),
                       leaveConnectionProjectButton(
                         connectionProject: _tappedConnectionProject,
+                        onConnectionProjectDeleted: (proj) {
+                          initializeConnectionProjectMarkers();
+                        },
                       )
                     ],
                   ),
@@ -623,7 +622,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                   builder: (context) => CreateProjectPage(
                     onConnectionProjectAdded: (newConnectionProject) {
                       setState(() {
-                        initializeConnetionProjectMarkers();
+                        initializeConnectionProjectMarkers();
                       });
                     },
                   ),
@@ -634,8 +633,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                   ),
                 ),
               );
-              setState(() {
-              });
+              setState(() {});
             },
             child: Icon(icons[2], color: Theme.of(context).backgroundColor),
           ),
