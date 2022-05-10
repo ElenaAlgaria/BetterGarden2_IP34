@@ -79,7 +79,6 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
             SizedBox(height: 20),
             DropdownButtonHideUnderline(
               child: DropdownButton2(
-
                 items: gardens
                     .map((item) => DropdownMenuItem<Garden>(
                           value: item,
@@ -93,7 +92,6 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
                         ))
                     .toList(),
                 value: garden,
-
                 onChanged: (value) {
                   setState(() {
                     garden = value as Garden;
