@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:biodiversity/components/connection_project_list_widget.dart';
 import 'package:biodiversity/components/drawer.dart';
-import 'package:biodiversity/components/garden_dropdown_widget.dart';
 import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/species.dart';
@@ -29,7 +28,6 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
   List<Species> speciesList = [];
   List<Garden> gardens;
   Garden garden;
-  String selectedValue;
 
   static const List<IconData> icons = [
     Icons.playlist_add,
@@ -39,13 +37,13 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
 
   @override
   void initState() {
+    super.initState();
     speciesList =
         ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
     _fabController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-    super.initState();
   }
 
   @override
@@ -53,10 +51,10 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
     final user = Provider.of<User>(context);
     gardens =
         ServiceProvider.instance.gardenService.getAllGardensFromUser(user);
-    garden = Provider.of<Garden>(context);
-    if (gardens.isNotEmpty && garden.isEmpty) {
-      garden = gardens.first;
-    }
+    garden = gardens
+        .firstWhere((element) =>
+            element.reference ==
+            Provider.of<Garden>(context).reference, orElse: () => null);
 
     return Scaffold(
       appBar: AppBar(
@@ -80,44 +78,25 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
           children: [
             DropdownButtonHideUnderline(
               child: DropdownButton2(
-                hint: Text(
-                  garden.name,
-                  style: TextStyle(
-                    fontSize: 22,
-                    color: Theme
-                        .of(context)
-                        .hintColor,
-                  ),
-                ),
-                isExpanded: true,
                 items: gardens
-                    .map((item) =>
-                    DropdownMenuItem<String>(
-                      value: item.name,
-                      child: Text(
-                        item.name,
-                        style: const TextStyle(
-                          fontSize: 22,
-                        ),
-                      ),
-                    ))
+                    .map((item) => DropdownMenuItem<Garden>(
+                          value: item,
+                          child: Text(
+                            item.name,
+                            style: const TextStyle(
+                              fontSize: 22,
+                            ),
+                          ),
+                        ))
                     .toList(),
-                value: selectedValue,
+                value: garden,
                 onChanged: (value) {
                   setState(() {
-                    debugPrint("abcde: ");
-                    selectedValue = value as String;
-                    final _garden = gardens
-                        .where((garden) => garden.name == selectedValue)
-                        .first;
-
-                    Provider.of<Garden>(context, listen: false).switchGarden(
-                        _garden);
-
-                    getJoinedConnectionProjects();
-
+                    garden = value as Garden;
                   });
-                      },
+                  Provider.of<Garden>(context, listen: false)
+                      .switchGarden(garden);
+                },
                 buttonHeight: 100,
                 buttonWidth: 300,
                 itemHeight: 60,
@@ -165,7 +144,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
               builder: (context, child) {
                 return Transform(
                   transform:
-                  Matrix4.rotationZ(_fabController.value * 1.25 * math.pi),
+                      Matrix4.rotationZ(_fabController.value * 1.25 * math.pi),
                   alignment: FractionalOffset.center,
                   child: Icon(
                     _fabController.isDismissed ? Icons.add : Icons.add,
@@ -194,9 +173,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
           child: FloatingActionButton(
             heroTag: null,
             tooltip: 'Vernetzungsprojekt erstellen',
-            backgroundColor: Theme
-                .of(context)
-                .cardColor,
+            backgroundColor: Theme.of(context).cardColor,
             onPressed: () {
               Navigator.push(
                 context,
@@ -205,9 +182,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
                 ),
               );
             },
-            child: Icon(icons[2], color: Theme
-                .of(context)
-                .backgroundColor),
+            child: Icon(icons[2], color: Theme.of(context).backgroundColor),
           ),
         ),
       )
@@ -218,9 +193,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
     return ServiceProvider.instance.connectionProjectService
         .getAllConnectionProjects()
         .where((element) =>
-        element.gardens.contains(Provider
-            .of<Garden>(context)
-            .reference))
+            element.gardens.contains(Provider.of<Garden>(context).reference))
         .toList();
   }
 
@@ -228,11 +201,8 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
     return ServiceProvider.instance.connectionProjectService
         .getAllConnectionProjects()
         .where((element) =>
-    !element.gardens.contains(Provider
-        .of<Garden>(context)
-        .reference))
-        .where((element) =>
-        getConnectionProjectsInRadius(
+            !element.gardens.contains(Provider.of<Garden>(context).reference))
+        .where((element) => getConnectionProjectsInRadius(
             Provider.of<Garden>(context),
             element,
             ServiceProvider.instance.speciesService
@@ -241,12 +211,12 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
         ?.toList();
   }
 
-  bool getConnectionProjectsInRadius(Garden garden,
-      ConnectionProject projectToCompareWith, int radius) {
+  bool getConnectionProjectsInRadius(
+      Garden garden, ConnectionProject projectToCompareWith, int radius) {
     return projectToCompareWith.gardens
         .map((e) =>
-    ServiceProvider.instance.gardenService.getGardenByReference(e) ??
-        Garden.empty())
+            ServiceProvider.instance.gardenService.getGardenByReference(e) ??
+            Garden.empty())
         .any((element) => element.isInRange(garden, radius));
   }
 }

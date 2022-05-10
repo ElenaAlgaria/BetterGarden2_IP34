@@ -53,15 +53,13 @@ class _ConnectionProjectListWidgetState
   final editingController = TextEditingController();
   final filterController = TextEditingController();
   final categories = <String>[];
-  final categorisedItems = <ConnectionProject>[];
-  final filteredItems = <ConnectionProject>[];
+  List<ConnectionProject> categorisedItems = <ConnectionProject>[];
+  List<ConnectionProject> filteredItems = <ConnectionProject>[];
   bool scroll_visibility = true;
 
   @override
   void initState() {
     super.initState();
-    categorisedItems.addAll(widget.objects);
-    filteredItems.addAll(widget.objects);
   }
 
   void filterSearchResults(String query) {
@@ -88,6 +86,8 @@ class _ConnectionProjectListWidgetState
 
   @override
   Widget build(BuildContext context) {
+    categorisedItems = widget.objects;
+    filteredItems = widget.objects;
     return Container(
       child: Column(
         mainAxisSize: MainAxisSize.min,
