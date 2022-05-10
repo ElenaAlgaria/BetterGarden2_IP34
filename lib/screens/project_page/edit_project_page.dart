@@ -111,7 +111,7 @@ class _EditProjectPageState extends State<EditProjectPage>
                                       updateProject();
                                     }
                                   },
-                                  label: const Text('Vernetzungsprojekt starten'),
+                                  label: const Text('Vernetzungsprojekt speichern'),
                                   icon: const Icon(Icons.save),
                                 )
                               ],
@@ -133,7 +133,7 @@ class _EditProjectPageState extends State<EditProjectPage>
     log(_descriptionController.text);
 
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Verbindungsprojekt wurde erfolgreich erstellt.')));
+        content: Text('Vernetzungsprojekt wurde erfolgreich erstellt.')));
 
     Navigator.pop(context);
   }
@@ -149,7 +149,7 @@ class _EditProjectPageState extends State<EditProjectPage>
     log(_currentConnectionProject.title);
 
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Verbindungsprojekt wurde erfolgreich aktualisiert.')));
+        content: Text('Vernetzungsprojekt wurde erfolgreich aktualisiert.')));
 
     Navigator.pop(context);
   }
