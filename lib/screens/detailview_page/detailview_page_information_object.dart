@@ -269,21 +269,18 @@ class _DetailViewPageInformationObjectState
   }
 
   String getCopyrightName(String name) {
-    var allKeys =
-        ServiceProvider.instance.imageService.copyrightInfo.keys.toList();
-    for (var key in allKeys) {
-      if (key.startsWith(name.toLowerCase())) {
-        return ServiceProvider.instance.imageService.copyrightInfo[key];
-      }
-    }
+    return ServiceProvider.instance.imageService.copyrightInfo.entries
+            .firstWhere((element) => element.key.startsWith(name.toLowerCase()),
+                orElse: () => null)
+            ?.value ??
+        '';
   }
 
   String getCaption(String name) {
-    var allKeys = ServiceProvider.instance.imageService.caption.keys.toList();
-    for (var key in allKeys) {
-      if (key.startsWith(name.toLowerCase())) {
-        return ServiceProvider.instance.imageService.caption[key];
-      }
-    }
+    return ServiceProvider.instance.imageService.caption.entries
+            .firstWhere((element) => element.key.startsWith(name.toLowerCase()),
+                orElse: () => null)
+            ?.value ??
+        '';
   }
 }
