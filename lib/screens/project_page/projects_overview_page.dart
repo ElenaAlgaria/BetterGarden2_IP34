@@ -7,6 +7,7 @@ import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,6 +24,8 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
     with TickerProviderStateMixin {
   AnimationController _fabController;
   List<Species> speciesList = [];
+  List<Garden> gardens;
+  Garden garden;
 
   static const List<IconData> icons = [
     Icons.playlist_add,
@@ -71,6 +74,45 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
       body: SingleChildScrollView(
         child: Column(
           children: [
+            SizedBox(height: 20),
+            DropdownButtonHideUnderline(
+              child: DropdownButton2(
+                items: gardens
+                    .map((item) => DropdownMenuItem<Garden>(
+                  value: item,
+                  child: Text(
+                    item.name,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ))
+                    .toList(),
+                value: garden,
+                onChanged: (value) {
+                  setState(() {
+                    garden = value as Garden;
+                  });
+                  Provider.of<Garden>(context, listen: false)
+                      .switchGarden(garden);
+                },
+                icon: const Icon(Icons.arrow_drop_down_circle),
+                iconDisabledColor: Colors.deepOrange,
+                iconEnabledColor: Colors.deepOrange,
+                buttonWidth: 380,
+                buttonPadding: const EdgeInsets.all(8),
+                dropdownPadding: const EdgeInsets.symmetric(vertical: 15),
+                buttonDecoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.grey,
+                  ),
+                ),
+                scrollbarRadius: const Radius.circular(40),
+                scrollbarThickness: 6,
+                scrollbarAlwaysShow: true,
+              ),
+            ),
             const Padding(
               padding: EdgeInsets.all(20),
               child: Text(
