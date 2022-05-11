@@ -15,6 +15,7 @@ class ImageService extends ChangeNotifier {
   StreamSubscription _streamSubscription;
   final Map<String, String> _urls = <String, String>{};
   final Map<String, String> _copyrightInfo = <String, String>{};
+  final Map<String, String> _caption = <String, String>{};
   final StorageProvider _storage;
 
   /// Service which holds the image urls and copyright information
@@ -30,6 +31,9 @@ class ImageService extends ChangeNotifier {
         }
         if (doc.data().containsKey('copyright')) {
           _copyrightInfo[doc.reference.id] = doc.data()['copyright'];
+        }
+        if (doc.data().containsKey('caption')) {
+          _caption[doc.reference.id] = doc.data()['caption'];
         }
       }
     });
@@ -258,4 +262,8 @@ class ImageService extends ChangeNotifier {
     }
     return urls;
   }
+
+  Map<String, String> get copyrightInfo => _copyrightInfo;
+
+  Map<String, String> get caption => _caption;
 }

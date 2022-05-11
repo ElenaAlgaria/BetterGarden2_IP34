@@ -7,7 +7,9 @@ import 'package:biodiversity/screens/information_list_page/delete_element_garden
 import 'package:biodiversity/screens/information_list_page/edit_element_to_garden_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -72,6 +74,29 @@ class _DetailViewPageInformationObjectState
 
           /*ServiceProvider.instance.imageService
               .getImage(widget.object.name, widget.object.type, height: 150),*/
+          ServiceProvider.instance.imageService
+              .getImage(widget.object.name, widget.object.type, height: 150),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Container(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
+                child: Text(
+                  '© ' + getCopyrightName(widget.object.name) ?? '',
+                ),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Container(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 30),
+                child: Text(getCaption(widget.object.name) ?? '',
+                    style: const TextStyle(fontStyle: FontStyle.italic)),
+              ),
+            ),
+          ),
           TextButton(
             onPressed: () {
               Navigator.canPop(context)
@@ -256,6 +281,22 @@ class _DetailViewPageInformationObjectState
         );
       },
     );
+  }
+
+  String getCopyrightName(String name) {
+    return ServiceProvider.instance.imageService.copyrightInfo.entries
+            .firstWhere((element) => element.key.startsWith(name.toLowerCase()),
+                orElse: () => null)
+            ?.value ??
+        '';
+  }
+
+  String getCaption(String name) {
+    return ServiceProvider.instance.imageService.caption.entries
+            .firstWhere((element) => element.key.startsWith(name.toLowerCase()),
+                orElse: () => null)
+            ?.value ??
+        '';
   }
 
   void getImages() {
