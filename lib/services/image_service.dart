@@ -263,11 +263,6 @@ class ImageService extends ChangeNotifier {
     return urls;
   }
 
-/*  Widget getCopyrightName(String name, String type) {
-    var copyrightName = copyrightInfo[name];
-    return Text((copyrightName));
-  }*/
-
   Map<String, String> get copyrightInfo => _copyrightInfo;
 
   Map<String, String> get caption => _caption;
