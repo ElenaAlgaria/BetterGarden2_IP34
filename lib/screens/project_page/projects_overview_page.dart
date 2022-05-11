@@ -62,11 +62,6 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ProjectGeneralInformationPage()),
-                );
                 showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
