@@ -47,12 +47,12 @@ class DetailViewPageInformationObject extends StatefulWidget {
 
 class _DetailViewPageInformationObjectState
     extends State<DetailViewPageInformationObject> {
-
   List<Widget> images = [];
 
   @override
   Widget build(BuildContext context) {
     getImages();
+
     return Scaffold(
       appBar: AppBar(
           title: Text(
@@ -63,19 +63,16 @@ class _DetailViewPageInformationObjectState
       body: Column(
         children: [
           CarouselSlider(
-              options: CarouselOptions(
+            options: CarouselOptions(
                 enlargeCenterPage: true,
                 enableInfiniteScroll: false,
                 autoPlay: true,
-                autoPlayInterval: const Duration(seconds: 10)
-              ),
-              items: images,
+                autoPlayInterval: const Duration(seconds: 10)),
+            items: images,
           ),
 
           /*ServiceProvider.instance.imageService
               .getImage(widget.object.name, widget.object.type, height: 150),*/
-          ServiceProvider.instance.imageService
-              .getImage(widget.object.name, widget.object.type, height: 150),
           Align(
             alignment: Alignment.centerRight,
             child: Container(
@@ -300,9 +297,18 @@ class _DetailViewPageInformationObjectState
   }
 
   void getImages() {
-    images.add(ServiceProvider.instance.imageService
-        .getImage(widget.object.name, widget.object.type, imageNr: 1, height: 150));
-    images.add(ServiceProvider.instance.imageService
-        .getImage(widget.object.name, widget.object.type, imageNr: 2 ,height: 150));
+    ServiceProvider.instance.imageService
+        .getAmountOfPicturesPerObject(widget.object.name, widget.object.type)
+        .then((value) {
+      var tempImages = <Widget>[];
+      for (var i = 1; i <= value; i++) {
+        setState(() {
+          tempImages.add(ServiceProvider.instance.imageService.getImage(
+              widget.object.name, widget.object.type,
+              imageNr: i, height: 150));
+        });
+      }
+      images = tempImages;
+    });
   }
 }

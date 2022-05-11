@@ -263,6 +263,14 @@ class ImageService extends ChangeNotifier {
     return urls;
   }
 
+  Future<int> getAmountOfPicturesPerObject(String name, String type) async {
+    final docs = await _storage.database
+        .collection('imageReferences')
+        .where('name', isEqualTo: name)
+        .get();
+    return docs.size;
+  }
+
   Map<String, String> get copyrightInfo => _copyrightInfo;
 
   Map<String, String> get caption => _caption;
