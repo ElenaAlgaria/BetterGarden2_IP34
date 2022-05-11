@@ -46,16 +46,11 @@ class DetailViewPageInformationObject extends StatefulWidget {
 class _DetailViewPageInformationObjectState
     extends State<DetailViewPageInformationObject> {
 
-  List<String> images = [
-    "https://firebasestorage.googleapis.com/v0/b/biodiversity-database.appspot.com/o/biodiversityMeasures%2Faltgras%20und%20s%C3%A4ume-1.jpg?alt=media&token=e9f8fac9-93cf-4038-bdc6-b4fc405b80b6",
-    "https://firebasestorage.googleapis.com/v0/b/biodiversity-database.appspot.com/o/biodiversityMeasures%2Faltgras%20und%20s%C3%A4ume-2.jpg?alt=media&token=6bac028b-cc52-47d3-a5a9-ce89ac52dd0f",
-    "https://firebasestorage.googleapis.com/v0/b/biodiversity-database.appspot.com/o/biodiversityMeasures%2Faltgras%20und%20s%C3%A4ume-3.jpg?alt=media&token=ad10cd70-817d-4c22-9eea-ae8c230c163e",
-    "https://firebasestorage.googleapis.com/v0/b/biodiversity-database.appspot.com/o/biodiversityMeasures%2Faltgras%20und%20s%C3%A4ume-4.jpg?alt=media&token=7f53e966-05e2-4c7f-b844-23dbd4541041",
-    "https://firebasestorage.googleapis.com/v0/b/biodiversity-database.appspot.com/o/biodiversityMeasures%2Faltgras%20und%20s%C3%A4ume-5.jpg?alt=media&token=60178fa0-bc26-4749-8fbf-dce3ca257cfc"
-  ];
+  List<Widget> images = [];
 
   @override
   Widget build(BuildContext context) {
+    getImages();
     return Scaffold(
       appBar: AppBar(
           title: Text(
@@ -70,19 +65,11 @@ class _DetailViewPageInformationObjectState
                 enlargeCenterPage: true,
                 enableInfiniteScroll: false,
                 autoPlay: true,
+                autoPlayInterval: const Duration(seconds: 10)
               ),
-              items: images.map((e) => ClipRect(
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: <Widget>[
-                    Image.network(e,
-                      width: 1050,
-                      height: 200,
-                      fit: BoxFit.fill,)
-                  ],
-                ),
-              )).toList()
+              items: images,
           ),
+
           /*ServiceProvider.instance.imageService
               .getImage(widget.object.name, widget.object.type, height: 150),*/
           TextButton(
@@ -269,5 +256,12 @@ class _DetailViewPageInformationObjectState
         );
       },
     );
+  }
+
+  void getImages() {
+    images.add(ServiceProvider.instance.imageService
+        .getImage(widget.object.name, widget.object.type, imageNr: 1, height: 150));
+    images.add(ServiceProvider.instance.imageService
+        .getImage(widget.object.name, widget.object.type, imageNr: 2 ,height: 150));
   }
 }
