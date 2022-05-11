@@ -76,9 +76,6 @@ class MapMarkerService extends ChangeNotifier {
   /// returns a set of all markers
   Future<Marker> getGardenMarkerSet(Garden garden,
       {Function(Garden element) onTapCallback}) async {
-    while (!_initialized) {
-      await Future.delayed(const Duration(milliseconds: 100));
-    }
     var marker = (Marker(
       markerId: MarkerId('garden' + garden.reference.id),
       position: garden.getLatLng(),
@@ -109,15 +106,13 @@ class MapMarkerService extends ChangeNotifier {
   }
 
   /// returns a set of all ConnectionProjectMarkers
-  Future<Set<Marker>> getConnectionProjectMarkerSet(
-      {Function(ConnectionProject element) onTapCallback}) async {
-    while (!_initialized) {
-      await Future.delayed(const Duration(milliseconds: 100));
-    }
-
+  Set<Marker> getConnectionProjectMarkerSet(
+      {Function(ConnectionProject element) onTapCallback}) {
     final list = <Marker>{};
     final latLngList = <LatLng>{};
-    ServiceProvider.instance.connectionProjectService.getAllConnectionProjects().forEach((project) {
+    ServiceProvider.instance.connectionProjectService
+        .getAllConnectionProjects()
+        .forEach((project) {
       var allGardenCoordinates = project.gardens.map((e) => ServiceProvider
           .instance.gardenService
           .getGardenByReference(e)
@@ -134,12 +129,15 @@ class MapMarkerService extends ChangeNotifier {
         midLat = (maxLat + minLat) / 2;
         midLng = (maxLng + minLng) / 2;
         //latLngList.add(LatLng(midLat, midLng));
-      } else {
+      } else if (allGardenCoordinates.length == 1) {
         midLat = allGardenCoordinates.elementAt(0).latitude - 0.0002;
         midLng = allGardenCoordinates.elementAt(0).longitude - 0.0002;
+      } else {
+        logging.log("ConnectionProject without gardens in service detected: " +
+            project.title);
       }
 
-      while(latLngList.contains(LatLng(midLat, midLng))) {
+      while (latLngList.contains(LatLng(midLat, midLng))) {
         midLat -= 0.00005;
         midLng -= 0.00005;
       }

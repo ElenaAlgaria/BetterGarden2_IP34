@@ -116,7 +116,7 @@ class joinConnectionProjectButtonState
                                                 }
                                               }
                                             },
-                                            label: const Text('beitreten'),
+                                            label: const Text('Beitreten'),
                                             icon: const Icon(
                                                 Icons.add_location_alt),
                                           ))

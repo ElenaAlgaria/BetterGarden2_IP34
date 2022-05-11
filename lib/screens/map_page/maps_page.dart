@@ -68,11 +68,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   }
 
   List<Circle> _circles = [];
-
   List<Species> speciesList = [];
-
-  DocumentReference reference;
-
   List<Garden> _allGardens = [];
 
   @override
@@ -93,7 +89,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       });
     }
 
-    initializeConnetionProjectMarkers();
+    initializeConnectionProjectMarkers();
 
     speciesList =
         ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
@@ -105,18 +101,17 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     loadUserLocation();
   }
 
-  void initializeConnetionProjectMarkers() {
-    ServiceProvider.instance.mapMarkerService.getConnectionProjectMarkerSet(
-        onTapCallback: (element) {
+  void initializeConnectionProjectMarkers() {
+    var markers = ServiceProvider.instance.mapMarkerService
+        .getConnectionProjectMarkerSet(onTapCallback: (element) {
       setState(() {
         _tappedConnectionProject = element;
       });
       displayModalBottomSheetConnectionProject(context);
       displayConnectionProjectGardensWithCircles(element.reference);
-    }).then((markers) {
-      setState(() {
-        allConnectionProjectMarkers.addAll(markers);
-      });
+    });
+    setState(() {
+      allConnectionProjectMarkers = markers;
     });
   }
 
@@ -136,11 +131,13 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       });
     }
 
-    initializeConnetionProjectMarkers();
+    initializeConnectionProjectMarkers();
   }
 
   void modifyPerimeterCircle(String name) {
-    if (name != '') {
+    if (name == 'Aktionsradius anzeigen') {
+      removeCircle();
+    } else if (name != '') {
       addCircle(speciesList.firstWhere((element) => element.name == name).radius);
     } else {
       removeCircle();
@@ -251,6 +248,25 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Karte'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                          title: const Text("Karte"),
+                          content: const Text(
+                              "Über die Karte kannst Du alle bereits registrierten Gärten und Vernetzungsprojekte erkunden. Das “+”-Symbol ermöglicht Dir, weitere Gärten oder Vernetzungsprojekte hinzuzufügen. Ausserdem können über das Layer-Symbol die Gärten und Vernetzungsprojekte auf der Karte ein- oder ausgeblendet werden.\n\nWenn Du eine Art oder Artengruppe im Suchfeld oben auswählst, siehst Du wie gross der Aktionsradius dieser Art um Deinen Garten ist. Alle Gärten innerhalb dieses Radius könnten einem Vernetzungsprojekt für diese Art beitreten."),
+                          actions: [
+                            IconButton(
+                              onPressed: () => Navigator.pop(context),
+                              icon: const Icon(Icons.exit_to_app_rounded),
+                            )
+                          ],
+                        ));
+              },
+              icon: const Icon(Icons.help))
+        ],
       ),
       drawer: MyDrawer(),
       body: Stack(
@@ -348,7 +364,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           child: DropdownButton<String>(
             icon: const Icon(Icons.emoji_nature, color: Colors.white),
             hint: Text(
-              _currentSpecies ?? 'Spezies anzeigen',
+              _currentSpecies ?? 'Aktionsradius anzeigen',
               style: const TextStyle(color: Colors.white),
             ),
             iconSize: 24,
@@ -356,7 +372,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             // value: selectedPurpose,
             items: [
               const DropdownMenuItem<String>(
-                value: '',
+                value: 'Aktionsradius anzeigen',
                 child: Text(
                   'Keine',
                   style: TextStyle(fontFamily: 'Gotham'),
@@ -561,6 +577,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                           connectionProject: _tappedConnectionProject),
                       leaveConnectionProjectButton(
                         connectionProject: _tappedConnectionProject,
+                        onConnectionProjectDeleted: (proj) {
+                          initializeConnectionProjectMarkers();
+                        },
                       )
                     ],
                   ),
@@ -623,7 +642,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                   builder: (context) => CreateProjectPage(
                     onConnectionProjectAdded: (newConnectionProject) {
                       setState(() {
-                        initializeConnetionProjectMarkers();
+                        initializeConnectionProjectMarkers();
                       });
                     },
                   ),
@@ -634,8 +653,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                   ),
                 ),
               );
-              setState(() {
-              });
+              setState(() {});
             },
             child: Icon(icons[2], color: Theme.of(context).backgroundColor),
           ),

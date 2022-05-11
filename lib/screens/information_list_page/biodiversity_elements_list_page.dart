@@ -11,7 +11,28 @@ class BiodiversityElementListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Lebensräume')),
+      appBar: AppBar(
+        title: const Text('Lebensräume'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                          title: const Text("Lebensräume"),
+                          content: const Text(
+                              "Hier erhältst Du weitere Informationen über die Schaffung und Pflege von Lebensräumen in Deinem Garten. Am Ende jedes Textes siehst Du, welche Arten mit dem jeweiligen Lebensraum gefördert werden.\n\nAusserdem kannst Du mit Hilfe des “+”-Symbols einen Lebensraum in einem Deiner Gärten registrieren."),
+                          actions: [
+                            IconButton(
+                              onPressed: () => Navigator.pop(context),
+                              icon: const Icon(Icons.exit_to_app_rounded),
+                            )
+                          ],
+                        ));
+              },
+              icon: const Icon(Icons.help))
+        ],
+      ),
       drawer: MyDrawer(),
       body: InformationObjectListWidget(
         objects: ServiceProvider.instance.biodiversityService
