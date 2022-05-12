@@ -48,6 +48,7 @@ class DetailViewPageInformationObject extends StatefulWidget {
 class _DetailViewPageInformationObjectState
     extends State<DetailViewPageInformationObject> {
   List<Widget> images = [];
+  int currentImageNr = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -65,9 +66,14 @@ class _DetailViewPageInformationObjectState
           CarouselSlider(
             options: CarouselOptions(
                 enlargeCenterPage: true,
+                onPageChanged: (index, reason){
+                  updateCopyrightAndCaption(index);
+                },
                 enableInfiniteScroll: false,
                 autoPlay: true,
-                autoPlayInterval: const Duration(seconds: 10)),
+                autoPlayInterval: const Duration(seconds: 10)
+
+            ),
             items: images,
           ),
 
@@ -79,7 +85,7 @@ class _DetailViewPageInformationObjectState
               child: Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
                 child: Text(
-                  '© ' + getCopyrightName(widget.object.name) ?? '',
+                  '© ' + getCopyrightName(widget.object.name, imageNr: currentImageNr) ?? '',
                 ),
               ),
             ),
@@ -89,7 +95,7 @@ class _DetailViewPageInformationObjectState
             child: Container(
               child: Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20, bottom: 30),
-                child: Text(getCaption(widget.object.name) ?? '',
+                child: Text(getCaption(widget.object.name, imageNr: currentImageNr) ?? '',
                     style: const TextStyle(fontStyle: FontStyle.italic)),
               ),
             ),
@@ -280,20 +286,28 @@ class _DetailViewPageInformationObjectState
     );
   }
 
-  String getCopyrightName(String name) {
+  String getCopyrightName(String name, {int imageNr}) {
+    var lowerCaseName = name.toLowerCase();
     return ServiceProvider.instance.imageService.copyrightInfo.entries
-            .firstWhere((element) => element.key.startsWith(name.toLowerCase()),
+            .firstWhere((element) => element.key.startsWith('$lowerCaseName-$imageNr'),
                 orElse: () => null)
             ?.value ??
         '';
   }
 
-  String getCaption(String name) {
+  String getCaption(String name, {int imageNr}) {
+    var lowerCaseName = name.toLowerCase();
     return ServiceProvider.instance.imageService.caption.entries
-            .firstWhere((element) => element.key.startsWith(name.toLowerCase()),
+            .firstWhere((element) => element.key.startsWith('$lowerCaseName-$imageNr'),
                 orElse: () => null)
             ?.value ??
         '';
+  }
+
+  void updateCopyrightAndCaption(int index) {
+    setState(() {
+      currentImageNr = index + 1;
+    });
   }
 
   void getImages() {
