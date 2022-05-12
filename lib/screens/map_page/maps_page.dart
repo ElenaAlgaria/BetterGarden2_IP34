@@ -11,6 +11,7 @@ import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
+import 'package:biodiversity/screens/project_page/project_page.dart';
 import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -138,7 +139,8 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     if (name == 'Aktionsradius anzeigen') {
       removeCircle();
     } else if (name != '') {
-      addCircle(speciesList.firstWhere((element) => element.name == name).radius);
+      addCircle(
+          speciesList.firstWhere((element) => element.name == name).radius);
     } else {
       removeCircle();
     }
@@ -573,6 +575,23 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                               '')),
                       TextFieldWithDescriptor('Projektbeschreibung',
                           Text(_tappedConnectionProject.description ?? '')),
+                      Padding(
+                          padding: const EdgeInsets.only(left: 8, bottom: 15),
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ProjectPage(
+                                        project: _tappedConnectionProject)),
+                              );
+                            },
+                            child: const Text(
+                              'Weitere Infos',
+                              style: TextStyle(
+                                  decoration: TextDecoration.underline),
+                            ),
+                          )),
                       joinConnectionProjectButton(
                           connectionProject: _tappedConnectionProject),
                       leaveConnectionProjectButton(
