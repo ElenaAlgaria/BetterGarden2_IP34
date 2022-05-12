@@ -15,8 +15,6 @@ class DevToolsPage extends StatelessWidget {
 
   final testProj = ServiceProvider.instance.connectionProjectService
       .getAllConnectionProjects()
-      .where((element) =>
-          element.reference.id == 'ff71ce2b-6e8f-48fe-94b5-b7b4ce0a7f22')
       .first;
 
   @override
