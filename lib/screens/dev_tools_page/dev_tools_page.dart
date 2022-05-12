@@ -2,8 +2,6 @@ import 'dart:collection';
 import 'dart:developer' as logging;
 
 import 'package:biodiversity/components/drawer.dart';
-import 'package:biodiversity/components/join_connection_project_popup_button.dart';
-import 'package:biodiversity/components/leave_connection_project_button.dart';
 import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/services/service_provider.dart';
@@ -12,10 +10,6 @@ import 'package:flutter/material.dart';
 
 class DevToolsPage extends StatelessWidget {
   DevToolsPage({Key key}) : super(key: key);
-
-  final testProj = ServiceProvider.instance.connectionProjectService
-      .getAllConnectionProjects()
-      .first;
 
   @override
   Widget build(BuildContext context) {
@@ -63,12 +57,7 @@ class DevToolsPage extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
               ),
-              leaveConnectionProjectButton(
-                connectionProject: testProj,
-              ),
-              joinConnectionProjectButton(
-                connectionProject: testProj,
-              ),
+              // ADD THE WIDGETS YOU WANT TO TEST/DEBUG/etc. HERE
             ]))
       ]),
     );
