@@ -53,7 +53,6 @@ class _DetailViewPageInformationObjectState
   @override
   Widget build(BuildContext context) {
     getImages();
-
     return Scaffold(
       appBar: AppBar(
           title: Text(
@@ -63,6 +62,20 @@ class _DetailViewPageInformationObjectState
       drawer: MyDrawer(),
       body: Column(
         children: [
+          TextButton(
+            onPressed: () {
+              Navigator.canPop(context)
+                  ? Navigator.pop(context)
+                  : Navigator.push(context, widget.fallbackRoute);
+            },
+            child: Row(
+              children: [
+                const Icon(Icons.arrow_back),
+                const SizedBox(width: 5),
+                const Text('Zurück zur Liste'),
+              ],
+            ),
+          ),
           CarouselSlider(
             options: CarouselOptions(
                 enlargeCenterPage: true,
@@ -83,7 +96,7 @@ class _DetailViewPageInformationObjectState
             alignment: Alignment.centerRight,
             child: Container(
               child: Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 5, bottom: 5),
                 child: Text(
                   '© ' + getCopyrightName(widget.object.name, imageNr: currentImageNr) ?? '',
                 ),
@@ -94,29 +107,15 @@ class _DetailViewPageInformationObjectState
             alignment: Alignment.centerLeft,
             child: Container(
               child: Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 30),
+                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 15),
                 child: Text(getCaption(widget.object.name, imageNr: currentImageNr) ?? '',
                     style: const TextStyle(fontStyle: FontStyle.italic)),
               ),
             ),
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.canPop(context)
-                  ? Navigator.pop(context)
-                  : Navigator.push(context, widget.fallbackRoute);
-            },
-            child: Row(
-              children: [
-                const Icon(Icons.arrow_back),
-                const SizedBox(width: 5),
-                const Text('Zurück zur Liste'),
-              ],
-            ),
-          ),
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
               children: [
                 _headRow(),
                 const SizedBox(height: 10),
