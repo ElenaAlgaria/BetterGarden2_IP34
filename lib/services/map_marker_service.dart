@@ -144,14 +144,15 @@ class MapMarkerService extends ChangeNotifier {
 
       latLngList.add(LatLng(midLat, midLng));
 
-      logging.log('Create connection project marker at ' +
-          midLat.toString() +
-          '/' +
-          midLng.toString() +
-          '/' +
-          project.creationDate.toString() +
-          '/' +
-          project.gardens.length.toString());
+      // logging.log('Create connection project marker at ' +
+      //     midLat.toString() +
+      //     '/' +
+      //     midLng.toString() +
+      //     '/' +
+      //     project.creationDate.toString() +
+      //     '/' +
+      //     project.gardens.length.toString());
+      
       list.add(Marker(
         markerId: MarkerId(midLat.toString() +
             midLng.toString() +
@@ -163,6 +164,7 @@ class MapMarkerService extends ChangeNotifier {
         },
       ));
     });
+    logging.log('Created connection project markers');
     return list;
   }
 }
