@@ -7,8 +7,11 @@ import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'package:biodiversity/models/user.dart';
 
 /// Displays an overview of all ConnectionProjects
 class ProjectsOverviewPage extends StatefulWidget {
@@ -23,6 +26,8 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
     with TickerProviderStateMixin {
   AnimationController _fabController;
   List<Species> speciesList = [];
+  List<Garden> gardens;
+  Garden garden;
 
   static const List<IconData> icons = [
     Icons.playlist_add,
@@ -32,17 +37,25 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
 
   @override
   void initState() {
+    super.initState();
     speciesList =
         ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
     _fabController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User>(context);
+    gardens =
+        ServiceProvider.instance.gardenService.getAllGardensFromUser(user);
+    garden = gardens
+        .firstWhere((element) =>
+    element.reference ==
+        Provider.of<Garden>(context).reference, orElse: () => null);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Vernetzungsprojekte'),
@@ -71,6 +84,45 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
       body: SingleChildScrollView(
         child: Column(
           children: [
+            const SizedBox(height: 20),
+            DropdownButtonHideUnderline(
+              child: DropdownButton2(
+                items: gardens
+                    .map((item) => DropdownMenuItem<Garden>(
+                          value: item,
+                          child: Text(
+                            item.name,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ))
+                    .toList(),
+                value: garden,
+                onChanged: (value) {
+                  setState(() {
+                    garden = value as Garden;
+                  });
+                  Provider.of<Garden>(context, listen: false)
+                      .switchGarden(garden);
+                },
+                icon: const Icon(Icons.arrow_drop_down_circle),
+                iconDisabledColor: const Color(0xFFC05410),
+                iconEnabledColor: const Color(0xFFC05410),
+                buttonWidth: 380,
+                buttonPadding: const EdgeInsets.all(8),
+                dropdownPadding: const EdgeInsets.symmetric(vertical: 15),
+                buttonDecoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.grey,
+                  ),
+                ),
+                scrollbarRadius: const Radius.circular(40),
+                scrollbarThickness: 6,
+                scrollbarAlwaysShow: true,
+              ),
+            ),
             const Padding(
               padding: EdgeInsets.all(20),
               child: Text(
