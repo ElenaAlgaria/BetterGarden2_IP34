@@ -11,6 +11,8 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:biodiversity/models/user.dart';
+
 /// Displays an overview of all ConnectionProjects
 class ProjectsOverviewPage extends StatefulWidget {
   /// Displays a list of all ConnectionProjects
@@ -35,17 +37,25 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
 
   @override
   void initState() {
+    super.initState();
     speciesList =
         ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
     _fabController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User>(context);
+    gardens =
+        ServiceProvider.instance.gardenService.getAllGardensFromUser(user);
+    garden = gardens
+        .firstWhere((element) =>
+    element.reference ==
+        Provider.of<Garden>(context).reference, orElse: () => null);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Vernetzungsprojekte'),
@@ -74,20 +84,20 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             DropdownButtonHideUnderline(
               child: DropdownButton2(
                 items: gardens
                     .map((item) => DropdownMenuItem<Garden>(
-                  value: item,
-                  child: Text(
-                    item.name,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                ))
+                          value: item,
+                          child: Text(
+                            item.name,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ))
                     .toList(),
                 value: garden,
                 onChanged: (value) {
