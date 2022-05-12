@@ -412,54 +412,89 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         context: context,
         isScrollControlled: true,
         builder: (context) {
-          return DraggableScrollableSheet(
-              initialChildSize: 0.18,
-              minChildSize: 0.1,
-              expand: false,
-              builder: (context, scrollController) {
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                  child: ListView(
-                    controller: scrollController,
-                    children: <Widget>[
-                      const Icon(
-                        Icons.horizontal_rule_rounded,
-                        color: Color(0xFFE36F00),
-                        size: 34.0,
-                      ),
-                      ButtonBar(
-                        alignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ElevatedButton(
-                            child: const Text('Gardens'),
-                            onPressed: () {
-                              _allGardenMarkersVisible =
-                                  !_allGardenMarkersVisible;
-                              setState(() {});
-                            },
-                          ),
-                          ElevatedButton(
-                            child: const Text('Projects'),
-                            onPressed: () {
-                              _allConnectionProjectMarkersVisible =
-                                  !_allConnectionProjectMarkersVisible;
-                              setState(() {});
-                            },
-                          ),
-                          /* ElevatedButton(
+          return StatefulBuilder(builder: (BuildContext context,
+              StateSetter setSheetState /*You can rename this!*/) {
+            return DraggableScrollableSheet(
+                initialChildSize: 0.18,
+                minChildSize: 0.1,
+                expand: false,
+                builder: (context, scrollController) {
+                  return Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                    child: ListView(
+                      controller: scrollController,
+                      children: <Widget>[
+                        const Icon(
+                          Icons.horizontal_rule_rounded,
+                          color: Color(0xFFE36F00),
+                          size: 34.0,
+                        ),
+                        ButtonBar(
+                          alignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextButton(
+                              style: _allGardenMarkersVisible
+                                  ? TextButton.styleFrom(
+                                      backgroundColor:
+                                          Theme.of(context).primaryColor,
+                                      primary: Colors.white)
+                                  : TextButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      primary: Theme.of(context).primaryColor,
+                                      shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                              width: 1,
+                                              style: BorderStyle.solid),
+                                          borderRadius:
+                                              BorderRadius.circular(5))),
+                              child: const Text('Gärten'),
+                              onPressed: () {
+                                setState(() => setSheetState(() =>
+                                    _allGardenMarkersVisible =
+                                        !_allGardenMarkersVisible));
+                              },
+                            ),
+                            TextButton(
+                              style: _allConnectionProjectMarkersVisible
+                                  ? TextButton.styleFrom(
+                                      backgroundColor:
+                                          Theme.of(context).primaryColor,
+                                      primary: Colors.white)
+                                  : TextButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      primary: Theme.of(context).primaryColor,
+                                      shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                              width: 1,
+                                              style: BorderStyle.solid),
+                                          borderRadius:
+                                              BorderRadius.circular(5))),
+                              child: const Text('Projekte'),
+                              onPressed: () {
+                                setState(() => setSheetState(() =>
+                                    _allConnectionProjectMarkersVisible =
+                                        !_allConnectionProjectMarkersVisible));
+                              },
+                            ),
+                            /* ElevatedButton(
                             child: const Text('Joinable Projects'),
                             onPressed: () {
                               _joinableConnectionProjectMarkersVisible =
                                   !_joinableConnectionProjectMarkersVisible;
                             },
                           ),*/
-                        ],
-                      )
-                    ],
-                  ),
-                );
-              });
+                          ],
+                        )
+                      ],
+                    ),
+                  );
+                });
+          });
         }).whenComplete(() => {});
   }
 
