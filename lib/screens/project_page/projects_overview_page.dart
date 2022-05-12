@@ -108,8 +108,8 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
                       .switchGarden(garden);
                 },
                 icon: const Icon(Icons.arrow_drop_down_circle),
-                iconDisabledColor: Colors.deepOrange,
-                iconEnabledColor: Colors.deepOrange,
+                iconDisabledColor: const Color(0xFFE36F00),
+                iconEnabledColor: const Color(0xFFE36F00),
                 buttonWidth: 380,
                 buttonPadding: const EdgeInsets.all(8),
                 dropdownPadding: const EdgeInsets.symmetric(vertical: 15),
