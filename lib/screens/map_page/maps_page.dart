@@ -279,7 +279,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 (defaultTargetPlatform == TargetPlatform.iOS) ? false : true,
             onMapCreated: (controller) => mapController = controller,
             initialCameraPosition: (widget.garden != null)
-                ? CameraPosition(target: widget.garden.getLatLng(), zoom: _zoom)
+                ? CameraPosition(target: widget.garden.getLatLng(), zoom: 18)
                 : (mapInteraction.selectedLocation != null)
                     ? CameraPosition(
                         target: mapInteraction.selectedLocation, zoom: _zoom)
@@ -592,14 +592,19 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                                   decoration: TextDecoration.underline),
                             ),
                           )),
-                      joinConnectionProjectButton(
-                          connectionProject: _tappedConnectionProject),
-                      leaveConnectionProjectButton(
-                        connectionProject: _tappedConnectionProject,
-                        onConnectionProjectDeleted: (proj) {
-                          initializeConnectionProjectMarkers();
-                        },
-                      )
+                      Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            joinConnectionProjectButton(
+                                connectionProject: _tappedConnectionProject),
+                            leaveConnectionProjectButton(
+                              connectionProject: _tappedConnectionProject,
+                              onConnectionProjectDeleted: (proj) {
+                                initializeConnectionProjectMarkers();
+                              },
+                            ),
+                          ]),
                     ],
                   ),
                 );
