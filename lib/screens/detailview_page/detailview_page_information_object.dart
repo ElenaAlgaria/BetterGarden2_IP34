@@ -96,7 +96,7 @@ class _DetailViewPageInformationObjectState
             alignment: Alignment.centerRight,
             child: Container(
               child: Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20, top: 5, bottom: 5),
+                padding: const EdgeInsets.only(left: 20, right: 40, top: 0, bottom: 0),
                 child: Text(
                   '© ' + getCopyrightName(widget.object.name, imageNr: currentImageNr) ?? '',
                 ),
@@ -107,7 +107,7 @@ class _DetailViewPageInformationObjectState
             alignment: Alignment.centerLeft,
             child: Container(
               child: Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 15),
+                padding: const EdgeInsets.only(left: 40, right: 40, bottom: 15),
                 child: Text(getCaption(widget.object.name, imageNr: currentImageNr) ?? '',
                     style: const TextStyle(fontStyle: FontStyle.italic)),
               ),
