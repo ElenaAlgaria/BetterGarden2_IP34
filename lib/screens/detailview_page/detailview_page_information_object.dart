@@ -79,14 +79,12 @@ class _DetailViewPageInformationObjectState
           CarouselSlider(
             options: CarouselOptions(
                 enlargeCenterPage: true,
-                onPageChanged: (index, reason){
+                onPageChanged: (index, reason) {
                   updateCopyrightAndCaption(index);
                 },
                 enableInfiniteScroll: false,
                 autoPlay: true,
-                autoPlayInterval: const Duration(seconds: 10)
-
-            ),
+                autoPlayInterval: const Duration(seconds: 10)),
             items: images,
           ),
 
@@ -98,7 +96,10 @@ class _DetailViewPageInformationObjectState
               child: Padding(
                 padding: const EdgeInsets.only(left: 20, right: 40, top: 0, bottom: 0),
                 child: Text(
-                  '© ' + getCopyrightName(widget.object.name, imageNr: currentImageNr) ?? '',
+                  '© ' +
+                          getCopyrightName(widget.object.name,
+                              imageNr: currentImageNr) ??
+                      '',
                 ),
               ),
             ),
@@ -288,7 +289,8 @@ class _DetailViewPageInformationObjectState
   String getCopyrightName(String name, {int imageNr}) {
     var lowerCaseName = name.toLowerCase();
     return ServiceProvider.instance.imageService.copyrightInfo.entries
-            .firstWhere((element) => element.key.startsWith('$lowerCaseName-$imageNr'),
+            .firstWhere(
+                (element) => element.key.startsWith('$lowerCaseName-$imageNr'),
                 orElse: () => null)
             ?.value ??
         '';
@@ -297,7 +299,8 @@ class _DetailViewPageInformationObjectState
   String getCaption(String name, {int imageNr}) {
     var lowerCaseName = name.toLowerCase();
     return ServiceProvider.instance.imageService.caption.entries
-            .firstWhere((element) => element.key.startsWith('$lowerCaseName-$imageNr'),
+            .firstWhere(
+                (element) => element.key.startsWith('$lowerCaseName-$imageNr'),
                 orElse: () => null)
             ?.value ??
         '';
