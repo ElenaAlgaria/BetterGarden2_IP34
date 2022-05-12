@@ -58,7 +58,7 @@ class MapMarkerService extends ChangeNotifier {
     }
     connectionProjectIcon = await BitmapDescriptor.fromAssetImage(
       const ImageConfiguration(),
-      'res/2.0x/methodIcon.png',
+      'res/2.0x/connectionProjectIcon.png',
     );
 
     joinableGardenIcon = await BitmapDescriptor.fromAssetImage(
