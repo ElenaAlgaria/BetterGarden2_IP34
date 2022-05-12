@@ -22,9 +22,6 @@ class ConnectionProjectListWidget extends StatefulWidget {
   /// Only used with expandable cards
   final bool arrangeLikeAndAddAsRow;
 
-  ///If this flag is set, the button "Beitreten" will be shown. Else, the Button "Vernetzungsprojekt verlassen" will be shown
-  final bool joinedProject;
-
   final ServiceProvider _serviceProvider;
 
   ///ScrollPhysics for the list of Info
@@ -37,7 +34,6 @@ class ConnectionProjectListWidget extends StatefulWidget {
       this.useSimpleCard = false,
       this.hideLikeAndAdd = false,
       this.arrangeLikeAndAddAsRow = false,
-      this.joinedProject,
       this.physics = const ScrollPhysics(),
       ServiceProvider serviceProvider})
       : _serviceProvider = serviceProvider ?? ServiceProvider.instance,
@@ -173,7 +169,6 @@ class _ConnectionProjectListWidgetState
                             : ExpandableConnectionProjectCard(
                                 element,
                                 hideLikeAndAdd: widget.hideLikeAndAdd,
-                                joinedProject: widget.joinedProject,
                                 additionalInfo: element.description,
                                 serviceProvider: widget._serviceProvider,
                                 arrangeLikeAndAddAsRow:

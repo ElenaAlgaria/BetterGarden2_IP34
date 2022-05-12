@@ -2,20 +2,20 @@ import 'package:biodiversity/components/drawer.dart';
 import 'package:biodiversity/components/join_connection_project_popup_button.dart';
 import 'package:biodiversity/components/leave_connection_project_button.dart';
 import 'package:biodiversity/models/connection_project.dart';
+import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/detailview_page/detailview_page_information_object.dart';
 import 'package:biodiversity/screens/project_page/edit_project_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProjectPage extends StatefulWidget {
   final ConnectionProject project;
-  final bool joinedProject;
 
   ProjectPage(
       {Key key,
       this.project,
-      this.joinedProject,
       ServiceProvider serviceProvider})
       : super(key: key);
 
@@ -36,6 +36,10 @@ class _ProjectPageState extends State<ProjectPage> {
 
   @override
   Widget build(BuildContext context) {
+    var userGardenReferences = ServiceProvider.instance.gardenService
+        .getAllGardensFromUser(Provider.of<User>(context, listen: false))
+        .map((e) => e.reference);
+
     return Scaffold(
         appBar: AppBar(title: Text(project.title)),
         drawer: MyDrawer(),
@@ -96,7 +100,8 @@ class _ProjectPageState extends State<ProjectPage> {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    if (widget.joinedProject == true)
+                    if (widget.project.gardens
+                        .any((garden) => userGardenReferences.contains(garden)))
                       ElevatedButton.icon(
                         onPressed: () async {
                           await Navigator.push(
@@ -115,17 +120,15 @@ class _ProjectPageState extends State<ProjectPage> {
                         label: const Text('Bearbeiten'),
                         icon: const Icon(Icons.edit),
                       ),
-                    SizedBox(width: 20),
-                    widget.joinedProject
-                        ? leaveConnectionProjectButton(
-                            connectionProject: project)
-                        : joinConnectionProjectButton(
-                            connectionProject: project),
+                    const SizedBox(width: 15),
+                    leaveConnectionProjectButton(connectionProject: project),
+                    const SizedBox(width: 15),
+                    joinConnectionProjectButton(connectionProject: project),
                   ],
                 ),
                 const Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 20)),
                 const Text(
-                  "Teilnehmende",
+                  'Teilnehmende',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
                 RichText(
