@@ -24,6 +24,7 @@ class ProjectsOverviewPage extends StatefulWidget {
 
 class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
     with TickerProviderStateMixin {
+  TabController _tabController;
   AnimationController _fabController;
   List<Species> speciesList = [];
   List<Garden> gardens;
@@ -38,6 +39,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
   @override
   void initState() {
     super.initState();
+    _tabController = new TabController(length: 2, vsync: this);
     speciesList =
         ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
     _fabController = AnimationController(
@@ -51,10 +53,10 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
     final user = Provider.of<User>(context);
     gardens =
         ServiceProvider.instance.gardenService.getAllGardensFromUser(user);
-    garden = gardens
-        .firstWhere((element) =>
-    element.reference ==
-        Provider.of<Garden>(context).reference, orElse: () => null);
+    garden = gardens.firstWhere(
+        (element) =>
+            element.reference == Provider.of<Garden>(context).reference,
+        orElse: () => null);
 
     return Scaffold(
       appBar: AppBar(
@@ -81,7 +83,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
         ],
       ),
       drawer: MyDrawer(),
-      body: SingleChildScrollView(
+      body: Container(
         child: Column(
           children: [
             const SizedBox(height: 20),
@@ -123,26 +125,34 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
                 scrollbarAlwaysShow: true,
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.all(20),
-              child: Text(
-                "Meine Vernetzungsprojekte",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+            const SizedBox(height: 20),
+            TabBar(
+              unselectedLabelColor: Colors.black,
+              labelColor: Theme.of(context).primaryColor,
+              tabs: [
+                const Tab(
+                  text: 'Meine Vernetzungsprojekte',
+                ),
+                const Tab(
+                  text: 'Verfügbare',
+                ),
+              ],
+              controller: _tabController,
+              indicatorSize: TabBarIndicatorSize.tab,
+            ),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  ConnectionProjectListWidget(
+                      objects: getJoinedConnectionProjects()
+                  ),
+                  ConnectionProjectListWidget(
+                      objects: getJoinableConnectionProjects()
+                  ),
+                ],
               ),
-            ),
-            ConnectionProjectListWidget(
-              objects: getJoinedConnectionProjects()
-            ),
-            const Padding(
-              padding: EdgeInsets.all(20),
-              child: Text(
-                "Verfügbare Vernetzungsprojekte",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-              ),
-            ),
-            ConnectionProjectListWidget(
-              objects: getJoinableConnectionProjects()
-            ),
+            )
           ],
         ),
       ),
