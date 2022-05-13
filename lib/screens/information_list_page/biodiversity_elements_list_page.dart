@@ -19,9 +19,9 @@ class BiodiversityElementListPage extends StatelessWidget {
                 showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                          title: const Text("Lebensräume"),
+                          title: const Text('Lebensräume'),
                           content: const Text(
-                              "Hier erhältst Du weitere Informationen über die Schaffung und Pflege von Lebensräumen in Deinem Garten. Am Ende jedes Textes siehst Du, welche Arten mit dem jeweiligen Lebensraum gefördert werden.\n\nAusserdem kannst Du mit Hilfe des “+”-Symbols einen Lebensraum in einem Deiner Gärten registrieren."),
+                              'Hier erhältst Du weitere Informationen über die Schaffung und Pflege von Lebensräumen in Deinem Garten. Am Ende jedes Textes siehst Du, welche Arten mit dem jeweiligen Lebensraum gefördert werden.\n\nAusserdem kannst Du mit Hilfe des “+”-Symbols einen Lebensraum in einem Deiner Gärten registrieren.'),
                           actions: [
                             IconButton(
                               onPressed: () => Navigator.pop(context),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 /// shows a pop up with the privacy agreement.<br>
 /// Returns true if the agreement was accepted
@@ -25,7 +25,7 @@ Future<bool> showPrivacyAgreement(BuildContext context) async {
       content: SizedBox(
         width: MediaQuery.of(context).size.width * .85,
         child: Markdown(
-            data: _privacyAgreement, onTapLink: (_, url, __) => launch(url)),
+            data: _privacyAgreement, onTapLink: (_, url, __) => launchUrlString(url)),
       ),
     ),
   );

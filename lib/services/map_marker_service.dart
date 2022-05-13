@@ -133,7 +133,7 @@ class MapMarkerService extends ChangeNotifier {
         midLat = allGardenCoordinates.elementAt(0).latitude - 0.0002;
         midLng = allGardenCoordinates.elementAt(0).longitude - 0.0002;
       } else {
-        logging.log("ConnectionProject without gardens in service detected: " +
+        logging.log('ConnectionProject without gardens in service detected: ' +
             project.title);
       }
 

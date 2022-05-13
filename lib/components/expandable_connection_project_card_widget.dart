@@ -75,7 +75,7 @@ class _ExpandableConnectionProjectCardState
                 child: widget._serviceProvider.imageService.getImage(
                   widget.object.targetSpecies.toString().substring(48,
                       widget.object.targetSpecies.toString().length - 1),
-                    "species")),
+                    'species')),
           ),
           ExpansionTile(
             onExpansionChanged: (value) {

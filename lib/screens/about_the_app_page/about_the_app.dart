@@ -3,7 +3,7 @@ import 'package:biodiversity/models/storage_provider.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 /// Displays the impressum
 class AboutTheApp extends StatefulWidget {
@@ -37,7 +37,7 @@ class _AboutTheAppState extends State<AboutTheApp> {
                 if (text.hasData) {
                   return MarkdownBody(
                     data: text.data,
-                    onTapLink: (_, url, __) => launch(url),
+                    onTapLink: (_, url, __) => launchUrlString(url),
                   );
                 } else {
                   return const Center(child: Text('Loading'));

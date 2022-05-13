@@ -51,7 +51,7 @@ class _ProjectPageState extends State<ProjectPage> {
                   ServiceProvider.instance.speciesService
                       .getSpeciesByReference(project.targetSpecies)
                       .name,
-                  "species",
+                  'species',
                 ),
                 const Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 20)),
                 Text(
@@ -86,7 +86,7 @@ class _ProjectPageState extends State<ProjectPage> {
                         icon: const Icon(Icons.emoji_nature))),
                 const Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 20)),
                 const Text(
-                  "Projektbeschreibung",
+                  'Projektbeschreibung',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
                 const Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 10)),
