@@ -3,12 +3,22 @@ import 'package:biodiversity/models/storage_provider.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 /// Displays the impressum
-class AboutTheApp extends StatelessWidget {
+class AboutTheApp extends StatefulWidget {
+  final String buildNumber;
+
+  final String version;
+
   /// Displays the impressum
-  AboutTheApp({Key key}) : super(key: key);
+  AboutTheApp({this.buildNumber, this.version, Key key}) : super(key: key);
+
+  @override
+  State<AboutTheApp> createState() => _AboutTheAppState();
+}
+
+class _AboutTheAppState extends State<AboutTheApp> {
 
   @override
   Widget build(BuildContext context) {
@@ -19,14 +29,15 @@ class AboutTheApp extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: ListView(
           children: <Widget>[
+            Text('Version/Build: ' + widget.version + '/' + widget.buildNumber),
             FutureBuilder(
               future: StorageProvider.instance
-                    .getTextFromFileStorage('aboutTheApp/aboutTheApp.md'),
+                  .getTextFromFileStorage('aboutTheApp/aboutTheApp.md'),
               builder: (context, text) {
                 if (text.hasData) {
                   return MarkdownBody(
                     data: text.data,
-                    onTapLink: (_, url, __) => launch(url),
+                    onTapLink: (_, url, __) => launchUrlString(url),
                   );
                 } else {
                   return const Center(child: Text('Loading'));
