@@ -11,6 +11,7 @@ import 'package:biodiversity/models/map_interactions_container.dart';
 import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
+import 'package:biodiversity/screens/project_page/project_page.dart';
 import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -68,11 +69,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   }
 
   List<Circle> _circles = [];
-
   List<Species> speciesList = [];
-
-  DocumentReference reference;
-
   List<Garden> _allGardens = [];
 
   @override
@@ -93,7 +90,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       });
     }
 
-    initializeConnetionProjectMarkers();
+    initializeConnectionProjectMarkers();
 
     speciesList =
         ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
@@ -105,18 +102,17 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     loadUserLocation();
   }
 
-  void initializeConnetionProjectMarkers() {
-    ServiceProvider.instance.mapMarkerService.getConnectionProjectMarkerSet(
-        onTapCallback: (element) {
+  void initializeConnectionProjectMarkers() {
+    var markers = ServiceProvider.instance.mapMarkerService
+        .getConnectionProjectMarkerSet(onTapCallback: (element) {
       setState(() {
         _tappedConnectionProject = element;
       });
       displayModalBottomSheetConnectionProject(context);
       displayConnectionProjectGardensWithCircles(element.reference);
-    }).then((markers) {
-      setState(() {
-        allConnectionProjectMarkers.addAll(markers);
-      });
+    });
+    setState(() {
+      allConnectionProjectMarkers = markers;
     });
   }
 
@@ -136,12 +132,15 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
       });
     }
 
-    initializeConnetionProjectMarkers();
+    initializeConnectionProjectMarkers();
   }
 
   void modifyPerimeterCircle(String name) {
-    if (name != '') {
-      addCircle(speciesList.firstWhere((element) => element.name == name).radius);
+    if (name == 'Aktionsradius anzeigen') {
+      removeCircle();
+    } else if (name != '') {
+      addCircle(
+          speciesList.firstWhere((element) => element.name == name).radius);
     } else {
       removeCircle();
     }
@@ -251,6 +250,25 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Karte'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                          title: const Text("Karte"),
+                          content: const Text(
+                              "Über die Karte kannst Du alle bereits registrierten Gärten und Vernetzungsprojekte erkunden. Das “+”-Symbol ermöglicht Dir, weitere Gärten oder Vernetzungsprojekte hinzuzufügen. Ausserdem können über das Layer-Symbol die Gärten und Vernetzungsprojekte auf der Karte ein- oder ausgeblendet werden.\n\nWenn Du eine Art oder Artengruppe im Suchfeld oben auswählst, siehst Du wie gross der Aktionsradius dieser Art um Deinen Garten ist. Alle Gärten innerhalb dieses Radius könnten einem Vernetzungsprojekt für diese Art beitreten."),
+                          actions: [
+                            IconButton(
+                              onPressed: () => Navigator.pop(context),
+                              icon: const Icon(Icons.exit_to_app_rounded),
+                            )
+                          ],
+                        ));
+              },
+              icon: const Icon(Icons.help))
+        ],
       ),
       drawer: MyDrawer(),
       body: Stack(
@@ -261,7 +279,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 (defaultTargetPlatform == TargetPlatform.iOS) ? false : true,
             onMapCreated: (controller) => mapController = controller,
             initialCameraPosition: (widget.garden != null)
-                ? CameraPosition(target: widget.garden.getLatLng(), zoom: _zoom)
+                ? CameraPosition(target: widget.garden.getLatLng(), zoom: 18)
                 : (mapInteraction.selectedLocation != null)
                     ? CameraPosition(
                         target: mapInteraction.selectedLocation, zoom: _zoom)
@@ -348,7 +366,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           child: DropdownButton<String>(
             icon: const Icon(Icons.emoji_nature, color: Colors.white),
             hint: Text(
-              _currentSpecies ?? 'Spezies anzeigen',
+              _currentSpecies ?? 'Aktionsradius anzeigen',
               style: const TextStyle(color: Colors.white),
             ),
             iconSize: 24,
@@ -356,7 +374,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
             // value: selectedPurpose,
             items: [
               const DropdownMenuItem<String>(
-                value: '',
+                value: 'Aktionsradius anzeigen',
                 child: Text(
                   'Keine',
                   style: TextStyle(fontFamily: 'Gotham'),
@@ -394,54 +412,89 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
         context: context,
         isScrollControlled: true,
         builder: (context) {
-          return DraggableScrollableSheet(
-              initialChildSize: 0.18,
-              minChildSize: 0.1,
-              expand: false,
-              builder: (context, scrollController) {
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                  child: ListView(
-                    controller: scrollController,
-                    children: <Widget>[
-                      const Icon(
-                        Icons.horizontal_rule_rounded,
-                        color: Color(0xFFE36F00),
-                        size: 34.0,
-                      ),
-                      ButtonBar(
-                        alignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ElevatedButton(
-                            child: const Text('Gardens'),
-                            onPressed: () {
-                              _allGardenMarkersVisible =
-                                  !_allGardenMarkersVisible;
-                              setState(() {});
-                            },
-                          ),
-                          ElevatedButton(
-                            child: const Text('Projects'),
-                            onPressed: () {
-                              _allConnectionProjectMarkersVisible =
-                                  !_allConnectionProjectMarkersVisible;
-                              setState(() {});
-                            },
-                          ),
-                          /* ElevatedButton(
+          return StatefulBuilder(builder: (BuildContext context,
+              StateSetter setSheetState /*You can rename this!*/) {
+            return DraggableScrollableSheet(
+                initialChildSize: 0.18,
+                minChildSize: 0.1,
+                expand: false,
+                builder: (context, scrollController) {
+                  return Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                    child: ListView(
+                      controller: scrollController,
+                      children: <Widget>[
+                        const Icon(
+                          Icons.horizontal_rule_rounded,
+                          color: Color(0xFFE36F00),
+                          size: 34.0,
+                        ),
+                        ButtonBar(
+                          alignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextButton(
+                              style: _allGardenMarkersVisible
+                                  ? TextButton.styleFrom(
+                                      backgroundColor:
+                                          Theme.of(context).primaryColor,
+                                      primary: Colors.white)
+                                  : TextButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      primary: Theme.of(context).primaryColor,
+                                      shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                              width: 1,
+                                              style: BorderStyle.solid),
+                                          borderRadius:
+                                              BorderRadius.circular(5))),
+                              child: const Text('Gärten'),
+                              onPressed: () {
+                                setState(() => setSheetState(() =>
+                                    _allGardenMarkersVisible =
+                                        !_allGardenMarkersVisible));
+                              },
+                            ),
+                            TextButton(
+                              style: _allConnectionProjectMarkersVisible
+                                  ? TextButton.styleFrom(
+                                      backgroundColor:
+                                          Theme.of(context).primaryColor,
+                                      primary: Colors.white)
+                                  : TextButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      primary: Theme.of(context).primaryColor,
+                                      shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                              width: 1,
+                                              style: BorderStyle.solid),
+                                          borderRadius:
+                                              BorderRadius.circular(5))),
+                              child: const Text('Projekte'),
+                              onPressed: () {
+                                setState(() => setSheetState(() =>
+                                    _allConnectionProjectMarkersVisible =
+                                        !_allConnectionProjectMarkersVisible));
+                              },
+                            ),
+                            /* ElevatedButton(
                             child: const Text('Joinable Projects'),
                             onPressed: () {
                               _joinableConnectionProjectMarkersVisible =
                                   !_joinableConnectionProjectMarkersVisible;
                             },
                           ),*/
-                        ],
-                      )
-                    ],
-                  ),
-                );
-              });
+                          ],
+                        )
+                      ],
+                    ),
+                  );
+                });
+          });
         }).whenComplete(() => {});
   }
 
@@ -557,11 +610,36 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                               '')),
                       TextFieldWithDescriptor('Projektbeschreibung',
                           Text(_tappedConnectionProject.description ?? '')),
-                      joinConnectionProjectButton(
-                          connectionProject: _tappedConnectionProject),
-                      leaveConnectionProjectButton(
-                        connectionProject: _tappedConnectionProject,
-                      )
+                      Padding(
+                          padding: const EdgeInsets.only(left: 8, bottom: 15),
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ProjectPage(
+                                        project: _tappedConnectionProject)),
+                              );
+                            },
+                            child: const Text(
+                              'Weitere Infos',
+                              style: TextStyle(
+                                  decoration: TextDecoration.underline),
+                            ),
+                          )),
+                      Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            joinConnectionProjectButton(
+                                connectionProject: _tappedConnectionProject),
+                            leaveConnectionProjectButton(
+                              connectionProject: _tappedConnectionProject,
+                              onConnectionProjectDeleted: (proj) {
+                                initializeConnectionProjectMarkers();
+                              },
+                            ),
+                          ]),
                     ],
                   ),
                 );
@@ -623,7 +701,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                   builder: (context) => CreateProjectPage(
                     onConnectionProjectAdded: (newConnectionProject) {
                       setState(() {
-                        initializeConnetionProjectMarkers();
+                        initializeConnectionProjectMarkers();
                       });
                     },
                   ),
@@ -634,8 +712,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                   ),
                 ),
               );
-              setState(() {
-              });
+              setState(() {});
             },
             child: Icon(icons[2], color: Theme.of(context).backgroundColor),
           ),

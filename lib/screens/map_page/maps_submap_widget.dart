@@ -12,10 +12,13 @@ import 'package:provider/provider.dart';
 class SubMap extends StatefulWidget {
   /// Small Map widget which displays the selection
   /// stored in [MapInteractionContainer]
-  SubMap({this.initialPosition, Key key}) : super(key: key);
+  SubMap({this.initialPosition, this.initialPositionWithAddress ,Key key}) : super(key: key);
 
   /// [LatLng] Object where the submap should be centered around
   final LatLng initialPosition;
+
+  /// [LatLng] Object where the submap should be centered around if there is already an address
+  final LatLng initialPositionWithAddress;
 
   @override
   _SubMapState createState() => _SubMapState();
@@ -38,10 +41,26 @@ class _SubMapState extends State<SubMap> {
     }
   }
 
+  void loadGardenLocation() async {
+    final controller = await mapController.future;
+    final mapInteraction =
+    Provider.of<MapInteractionContainer>(context, listen: false);
+    if (mapInteraction.selectedLocation == null) {
+      await  ( mapInteraction.selectedLocation = widget.initialPositionWithAddress);
+      controller
+          .moveCamera(CameraUpdate.newLatLng(mapInteraction.selectedLocation));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final mapInteraction = Provider.of<MapInteractionContainer>(context);
-    loadUserLocation();
+    if (widget.initialPositionWithAddress == null) {
+      loadUserLocation();
+    } else {
+      loadGardenLocation();
+    }
+
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

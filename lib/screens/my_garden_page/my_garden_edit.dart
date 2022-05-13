@@ -163,7 +163,7 @@ class _MyGardenEditState extends State<MyGardenEdit> {
               ),
               SubMap(
                   initialPosition:
-                      mapInteractions.selectedLocation ?? garden.getLatLng()),
+                      garden.getLatLng(), initialPositionWithAddress: garden.getLatLng()),
               const SizedBox(height: 20),
               SelectGardenImage(
                 deleteFunction: (toDeleteURL) {

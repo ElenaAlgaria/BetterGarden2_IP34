@@ -24,9 +24,6 @@ class ExpandableConnectionProjectCard extends StatefulWidget {
   /// if this flag is set, the card is used for species and hinzufügen and merken will be changed to Aktivitätsradius and merken
   final bool isSpecies;
 
-  ///If this flag is set, the button "Beitreten" will be shown. Else, the Button "Vernetzungsprojekt verlassen" will be shown
-  final bool joinedProject;
-
   /// additional Info to be displayed instead of hinzufügen and merken buttons.
   /// the Buttons will be automatically removed if this string is set
   final String additionalInfo;
@@ -37,7 +34,6 @@ class ExpandableConnectionProjectCard extends StatefulWidget {
   ExpandableConnectionProjectCard(this.object,
       {hideLikeAndAdd = false,
       this.additionalInfo,
-      this.joinedProject,
       arrangeLikeAndAddAsRow = false,
       ServiceProvider serviceProvider,
       Key key})
@@ -77,9 +73,9 @@ class _ExpandableConnectionProjectCardState
                 duration: const Duration(milliseconds: 200),
                 height: _expanded ? 100 : 0,
                 child: widget._serviceProvider.imageService.getImage(
-                  widget.object.title,
-                  widget.object.title,
-                )),
+                  widget.object.targetSpecies.toString().substring(48,
+                      widget.object.targetSpecies.toString().length - 1),
+                    "species")),
           ),
           ExpansionTile(
             onExpansionChanged: (value) {
@@ -309,8 +305,7 @@ class _ExpandableConnectionProjectCardState
                           context,
                           MaterialPageRoute(
                               builder: (context) => ProjectPage(
-                                  project: widget.object,
-                                  joinedProject: widget.joinedProject)),
+                                  project: widget.object)),
                         );
                       }
                     },

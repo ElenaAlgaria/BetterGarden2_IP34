@@ -6,7 +6,10 @@ import 'package:biodiversity/screens/information_list_page/add_element_to_garden
 import 'package:biodiversity/screens/information_list_page/delete_element_garden_page.dart';
 import 'package:biodiversity/screens/information_list_page/edit_element_to_garden_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -44,8 +47,12 @@ class DetailViewPageInformationObject extends StatefulWidget {
 
 class _DetailViewPageInformationObjectState
     extends State<DetailViewPageInformationObject> {
+  List<Widget> images = [];
+  int currentImageNr = 1;
+
   @override
   Widget build(BuildContext context) {
+    getImages();
     return Scaffold(
       appBar: AppBar(
           title: Text(
@@ -55,8 +62,6 @@ class _DetailViewPageInformationObjectState
       drawer: MyDrawer(),
       body: Column(
         children: [
-          ServiceProvider.instance.imageService
-              .getImage(widget.object.name, widget.object.type, height: 150),
           TextButton(
             onPressed: () {
               Navigator.canPop(context)
@@ -71,9 +76,47 @@ class _DetailViewPageInformationObjectState
               ],
             ),
           ),
+          CarouselSlider(
+            options: CarouselOptions(
+                enlargeCenterPage: true,
+                onPageChanged: (index, reason) {
+                  updateCopyrightAndCaption(index);
+                },
+                enableInfiniteScroll: false,
+                autoPlay: true,
+                autoPlayInterval: const Duration(seconds: 10)),
+            items: images,
+          ),
+
+          /*ServiceProvider.instance.imageService
+              .getImage(widget.object.name, widget.object.type, height: 150),*/
+          Align(
+            alignment: Alignment.centerRight,
+            child: Container(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20, right: 40, top: 0, bottom: 0),
+                child: Text(
+                  '© ' +
+                          getCopyrightName(widget.object.name,
+                              imageNr: currentImageNr) ??
+                      '',
+                ),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Container(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 40, right: 40, bottom: 15),
+                child: Text(getCaption(widget.object.name, imageNr: currentImageNr) ?? '',
+                    style: const TextStyle(fontStyle: FontStyle.italic)),
+              ),
+            ),
+          ),
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
               children: [
                 _headRow(),
                 const SizedBox(height: 10),
@@ -241,5 +284,47 @@ class _DetailViewPageInformationObjectState
         );
       },
     );
+  }
+
+  String getCopyrightName(String name, {int imageNr}) {
+    var lowerCaseName = name.toLowerCase();
+    return ServiceProvider.instance.imageService.copyrightInfo.entries
+            .firstWhere(
+                (element) => element.key.startsWith('$lowerCaseName-$imageNr'),
+                orElse: () => null)
+            ?.value ??
+        '';
+  }
+
+  String getCaption(String name, {int imageNr}) {
+    var lowerCaseName = name.toLowerCase();
+    return ServiceProvider.instance.imageService.caption.entries
+            .firstWhere(
+                (element) => element.key.startsWith('$lowerCaseName-$imageNr'),
+                orElse: () => null)
+            ?.value ??
+        '';
+  }
+
+  void updateCopyrightAndCaption(int index) {
+    setState(() {
+      currentImageNr = index + 1;
+    });
+  }
+
+  void getImages() {
+    ServiceProvider.instance.imageService
+        .getAmountOfPicturesPerObject(widget.object.name, widget.object.type)
+        .then((value) {
+      var tempImages = <Widget>[];
+      for (var i = 1; i <= value; i++) {
+        setState(() {
+          tempImages.add(ServiceProvider.instance.imageService.getImage(
+              widget.object.name, widget.object.type,
+              imageNr: i, height: 150));
+        });
+      }
+      images = tempImages;
+    });
   }
 }
