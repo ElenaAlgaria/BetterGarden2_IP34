@@ -39,7 +39,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
   @override
   void initState() {
     super.initState();
-    _tabController = new TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     speciesList =
         ServiceProvider.instance.speciesService.getFullSpeciesObjectList();
     _fabController = AnimationController(
@@ -68,9 +68,9 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
                 showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                          title: const Text("Vernetzungsprojekte"),
+                          title: const Text('Vernetzungsprojekte'),
                           content: const Text(
-                              "Auf dieser Seite siehst Du die Vernetzungsprojekte, in denen Du bereits Mitglied bist und jene, zu denen Du beitreten kannst. Die Mitglieder eines Vernetzungsprojekts können sich über die Pinnwand der Projektseite austauschen.\n\nÜber ein Vernetzungsprojekt schliesst Du dich mit anderen Gärtner*innen in Deiner Umgebung zusammen, um gemeinsam eine Art- oder einer Gruppe von Arten zu fördern. Dadurch knüpft Ihr ein Netz aus Lebensräumen, das immer dichter wird, je mehr Leute beitreten. Infos wie Du eine Art fördern kannst, erhältst Du unter “Arten”."),
+                              'Auf dieser Seite siehst Du die Vernetzungsprojekte, in denen Du bereits Mitglied bist und jene, zu denen Du beitreten kannst. Die Mitglieder eines Vernetzungsprojekts können sich über die Pinnwand der Projektseite austauschen.\n\nÜber ein Vernetzungsprojekt schliesst Du dich mit anderen Gärtner*innen in Deiner Umgebung zusammen, um gemeinsam eine Art- oder einer Gruppe von Arten zu fördern. Dadurch knüpft Ihr ein Netz aus Lebensräumen, das immer dichter wird, je mehr Leute beitreten. Infos wie Du eine Art fördern kannst, erhältst Du unter “Arten”.'),
                           actions: [
                             IconButton(
                               onPressed: () => Navigator.pop(context),
@@ -201,7 +201,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
           ),
           child: FloatingActionButton(
             heroTag: null,
-            tooltip: "Vernetzungsprojekt erstellen",
+            tooltip: 'Vernetzungsprojekt erstellen',
             backgroundColor: Theme.of(context).cardColor,
             onPressed: () {
               Navigator.push(

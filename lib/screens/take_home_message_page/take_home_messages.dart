@@ -19,9 +19,9 @@ class TakeHomeMessagePage extends StatelessWidget {
                 showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                          title: const Text("Wissensgrundlagen"),
+                          title: const Text('Wissensgrundlagen'),
                           content: const Text(
-                              "Diese Seite bietet Dir eine Zusammenfassung von Erkenntnissen aus der Forschung in der Form von acht Schlüsselbotschaften. Diese wurden im Rahmen des vom schweizerischen Nationalfonds finanzierten Projekts «Let`s talk about Better Gardens»\n(SNF – Agora Nr. 191645) kreiert und fassen die wichtigsten Resultate aus vier Jahren Forschungsarbeit im «Better Gardens»-Projekts (SNF–Sinergia Nr. 154416) zusammen."),
+                              'Diese Seite bietet Dir eine Zusammenfassung von Erkenntnissen aus der Forschung in der Form von acht Schlüsselbotschaften. Diese wurden im Rahmen des vom schweizerischen Nationalfonds finanzierten Projekts «Let`s talk about Better Gardens»\n(SNF – Agora Nr. 191645) kreiert und fassen die wichtigsten Resultate aus vier Jahren Forschungsarbeit im «Better Gardens»-Projekts (SNF–Sinergia Nr. 154416) zusammen.'),
                           actions: [
                             IconButton(
                               onPressed: () => Navigator.pop(context),

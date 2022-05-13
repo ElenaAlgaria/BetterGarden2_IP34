@@ -24,9 +24,9 @@ class FavoredListPage extends StatelessWidget {
                 showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                          title: const Text("Merkliste"),
+                          title: const Text('Merkliste'),
                           content: const Text(
-                              "Die Merkliste speichert alle Texte über Lebensräume und Arten, die Du mit dem Herz-Symbol markiert hast. So sind die für Dich relevanten Informationen mit nur einem Klick erreichbar."),
+                              'Die Merkliste speichert alle Texte über Lebensräume und Arten, die Du mit dem Herz-Symbol markiert hast. So sind die für Dich relevanten Informationen mit nur einem Klick erreichbar.'),
                           actions: [
                             IconButton(
                               onPressed: () => Navigator.pop(context),

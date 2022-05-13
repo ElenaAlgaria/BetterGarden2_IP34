@@ -46,7 +46,7 @@ class _SubMapState extends State<SubMap> {
     final mapInteraction =
     Provider.of<MapInteractionContainer>(context, listen: false);
     if (mapInteraction.selectedLocation == null) {
-      await  ( mapInteraction.selectedLocation = widget.initialPositionWithAddress);
+      mapInteraction.selectedLocation = widget.initialPositionWithAddress;
       controller
           .moveCamera(CameraUpdate.newLatLng(mapInteraction.selectedLocation));
     }
