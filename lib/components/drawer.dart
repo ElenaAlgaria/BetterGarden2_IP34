@@ -13,6 +13,7 @@ import 'package:biodiversity/screens/species_list_page/species_list_page.dart';
 import 'package:biodiversity/screens/take_home_message_page/take_home_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 /// The Drawer which is located at the right side of the screen
@@ -23,6 +24,12 @@ class MyDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String version;
+    String buildNumber;
+    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+      version = packageInfo.version;
+      buildNumber = packageInfo.buildNumber;
+    });
     return Drawer(
       elevation: 5,
       child: Theme(
@@ -207,7 +214,9 @@ class MyDrawer extends StatelessWidget {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => AboutTheApp()),
+                                      builder: (context) => AboutTheApp(
+                                          version: version,
+                                          buildNumber: buildNumber)),
                                 );
                               },
                             ),
