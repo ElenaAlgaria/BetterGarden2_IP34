@@ -168,7 +168,7 @@ class _MyGardenAddState extends State<MyGardenAdd> {
                       initialValue: mapInteractions.lastSelectedAddress,
                       autofocus: false,
                       decoration: const InputDecoration(
-                          labelText: 'Garten Adresse',
+                          labelText: 'Gartenadresse',
                           hintText: 'Strasse Nr, PLZ Ort',
                           contentPadding: EdgeInsets.symmetric(vertical: 4)),
                       onSaved: (value) {
