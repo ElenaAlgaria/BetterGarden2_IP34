@@ -207,7 +207,15 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => CreateProjectPage(),
+                  builder: (context) => CreateProjectPage(
+                    onConnectionProjectAdded: (newConnectionProject) {
+                      setState(() {
+                        ProjectsOverviewPage();
+                        //todo set DropdownButton2 value to newConnectionProject garden (this should switch alswell "Provider.of<Garden>(context, listen: false)
+                        //                       .switchGarden(garden);"
+                      });
+                    },
+                  ),
                 ),
               );
             },
