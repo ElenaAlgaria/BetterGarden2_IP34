@@ -257,6 +257,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                 showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
+                      scrollable: true,
                           title: const Text('Karte'),
                           content: const Text(
                               'Über die Karte kannst Du alle bereits registrierten Gärten und Vernetzungsprojekte erkunden. Das “+”-Symbol ermöglicht Dir, weitere Gärten oder Vernetzungsprojekte hinzuzufügen. Ausserdem können über das Layer-Symbol die Gärten und Vernetzungsprojekte auf der Karte ein- oder ausgeblendet werden.\n\nWenn Du eine Art oder Artengruppe im Suchfeld oben auswählst, siehst Du wie gross der Aktionsradius dieser Art um Deinen Garten ist. Alle Gärten innerhalb dieses Radius könnten einem Vernetzungsprojekt für diese Art beitreten.'),

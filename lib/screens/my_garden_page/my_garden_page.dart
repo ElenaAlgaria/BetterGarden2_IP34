@@ -46,6 +46,7 @@ class _MyGardenState extends State<MyGarden> {
                 showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
+                      scrollable: true,
                           title: const Text('Mein Garten'),
                           content: const Text(
                               'Unter “Mein Garten” siehst Du eine Zusammenfassung der Lebensräume, die Du in Deinem Garten registriert hast. Unter den drei Punkten oben rechts kannst Du den aktuell angezeigten Garten wechseln, deine Gärten bearbeiten oder einen neuen Garten hinzufügen.'),
