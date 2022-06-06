@@ -12,7 +12,6 @@ import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
 import 'package:biodiversity/screens/project_page/project_page.dart';
-import 'package:biodiversity/services/garden_service.dart';
 import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -637,8 +636,9 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                             leaveConnectionProjectButton(
                               connectionProject: _tappedConnectionProject,
                               onConnectionProjectDeleted: (proj) {
-                                initializeConnectionProjectMarkers();
-                              },
+                                initializeConnectionProjectMarkers()
+                                ;
+                              }, connectionProjectPage: false,
                             ),
                           ]),
                     ],

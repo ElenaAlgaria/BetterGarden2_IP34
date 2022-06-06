@@ -123,7 +123,7 @@ class _ProjectPageState extends State<ProjectPage> {
                     const SizedBox(width: 15),
                     joinConnectionProjectButton(connectionProject: project),
                     const SizedBox(width: 15),
-                    leaveConnectionProjectButton(connectionProject: project),
+                    leaveConnectionProjectButton(connectionProject: project, connectionProjectPage: true),
                   ],
                 ),
                 const Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 20)),
