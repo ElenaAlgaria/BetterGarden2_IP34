@@ -404,6 +404,8 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Container(
+            height: 45,
+            alignment: Alignment.centerLeft,
             color: const Color(0xFFE36F00),
             child: Text('Wähle einen Garten, um den Aktionsradius anzuzeigen',
                 style: const TextStyle(
