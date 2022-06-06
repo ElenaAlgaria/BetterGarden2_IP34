@@ -1,4 +1,5 @@
 import 'package:biodiversity/components/white_redirect_page.dart';
+import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/about_the_app_page/about_the_app.dart';
 import 'package:biodiversity/screens/account_page/account_page.dart';
@@ -143,11 +144,19 @@ class MyDrawer extends StatelessWidget {
                             ListTile(
                               title: const Text('Karte'),
                               onTap: () {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => MapsPage()),
-                                );
+                                if(Provider.of<Garden>(context, listen: false).isEmpty) {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MapsPage()),
+                                  );
+                                } else {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MapsPage(garden: Provider.of<Garden>(context))),
+                                  );
+                                }
                               },
                             ),
                             ListTile(

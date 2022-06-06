@@ -12,7 +12,6 @@ import 'package:biodiversity/models/species.dart';
 import 'package:biodiversity/models/user.dart';
 import 'package:biodiversity/screens/project_page/create_project_page.dart';
 import 'package:biodiversity/screens/project_page/project_page.dart';
-import 'package:biodiversity/services/garden_service.dart';
 import 'package:biodiversity/services/image_service.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -359,46 +358,58 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   }
 
   Widget speciesListWidget() {
-    return Container(
-        child:
-            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      Container(
-          color: const Color(0xFFE36F00),
-          child: DropdownButton<String>(
-            icon: const Icon(Icons.emoji_nature, color: Colors.white),
-            hint: Text(
-              _currentSpecies ?? 'Aktionsradius anzeigen',
-              style: const TextStyle(color: Colors.white),
-            ),
-            iconSize: 24,
-            isExpanded: true,
-            // value: selectedPurpose,
-            items: [
-              const DropdownMenuItem<String>(
-                value: 'Aktionsradius anzeigen',
-                child: Text(
-                  'Keine',
-                  style: TextStyle(fontFamily: 'Gotham'),
-                ),
+    if (widget.garden != null) {
+      return Container(
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        Container(
+            color: const Color(0xFFE36F00),
+            child: DropdownButton<String>(
+              icon: const Icon(Icons.emoji_nature, color: Colors.white),
+              hint: Text(
+                _currentSpecies ?? 'Aktionsradius anzeigen',
+                style: const TextStyle(color: Colors.white),
               ),
-              ...speciesList.map((species) {
-                return DropdownMenuItem<String>(
-                  value: species.name,
+              iconSize: 24,
+              isExpanded: true,
+              // value: selectedPurpose,
+              items: [
+                const DropdownMenuItem<String>(
+                  value: 'Aktionsradius anzeigen',
                   child: Text(
-                    species.name,
-                    style: const TextStyle(fontFamily: 'Gotham'),
+                    'Keine',
+                    style: TextStyle(fontFamily: 'Gotham'),
                   ),
-                );
-              }).toList()
-            ],
-            onChanged: (String name) {
-              modifyPerimeterCircle(name);
-              setState(() {
-                _currentSpecies = name;
-              });
-            },
-          ))
-    ]));
+                ),
+                ...speciesList.map((species) {
+                  return DropdownMenuItem<String>(
+                    value: species.name,
+                    child: Text(
+                      species.name,
+                      style: const TextStyle(fontFamily: 'Gotham'),
+                    ),
+                  );
+                }).toList()
+              ],
+              onChanged: (String name) {
+                modifyPerimeterCircle(name);
+                setState(() {
+                  _currentSpecies = name;
+                });
+              },
+            ))
+      ]));
+    } else {
+      return Container(
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        Container(
+            color: const Color(0xFFE36F00),
+            child: Text('Wähle einen Garten, um den Aktionsradius anzuzeigen',
+                style: const TextStyle(
+                    color: Colors.white, fontFamily: 'Gotham', fontSize: 16)))
+      ]));
+    }
   }
 
   Future<Widget> displayModalBottomOverlayLayers(BuildContext context) async {
@@ -703,8 +714,14 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                     onConnectionProjectAdded: (newConnectionProject) {
                       setState(() {
                         initializeConnectionProjectMarkers();
-                        var newConnectionProjectGeoPoint = ServiceProvider.instance.gardenService.getGardenByReference(newConnectionProject.gardens.first).coordinates;
-                        var newConnectionProjectLatLng = LatLng(newConnectionProjectGeoPoint.latitude, newConnectionProjectGeoPoint.longitude);
+                        var newConnectionProjectGeoPoint = ServiceProvider
+                            .instance.gardenService
+                            .getGardenByReference(
+                                newConnectionProject.gardens.first)
+                            .coordinates;
+                        var newConnectionProjectLatLng = LatLng(
+                            newConnectionProjectGeoPoint.latitude,
+                            newConnectionProjectGeoPoint.longitude);
                         setCurrentLocation(newConnectionProjectLatLng);
                       });
                     },
