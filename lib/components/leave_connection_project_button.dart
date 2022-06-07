@@ -126,18 +126,26 @@ class leaveConnectionProjectButtonState
       if (widget.connectionProject.gardens.isEmpty) {
         await ServiceProvider.instance.connectionProjectService
             .deleteConnectionProject(widget.connectionProject);
-        //widget.onConnectionProjectDeleted(widget.connectionProject);
-      }
-
-      if(connectionProjectPage == true) {
-        Navigator.push(context, MaterialPageRoute(
-            builder: (context) =>
-                ProjectsOverviewPage()));
+        // Navigator
+        if(connectionProjectPage == true) {
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) =>
+                  ProjectsOverviewPage()));
+        } else {
+          Navigator.pop(context);
+        }
+        widget.onConnectionProjectDeleted(widget.connectionProject);
       } else {
-        Navigator.pop(context);
-        Navigator.push(context, MaterialPageRoute(
-            builder: (context) =>
-                MapsPage(garden: gardenToRemove)));
+        if(connectionProjectPage == true) {
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) =>
+                  ProjectsOverviewPage()));
+        } else {
+          Navigator.pop(context);
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) =>
+                  MapsPage(garden: gardenToRemove)));
+        }
       }
 
       return logging.log(
