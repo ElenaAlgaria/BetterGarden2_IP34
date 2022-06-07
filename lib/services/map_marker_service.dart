@@ -74,17 +74,28 @@ class MapMarkerService extends ChangeNotifier {
   void setMarker() {}
 
   /// returns a set of all markers
-  Future<Marker> getGardenMarkerSet(Garden garden,
+  Future<Marker> getGardenMarkerSet(Garden garden, bool alreadyExists,
       {Function(Garden element) onTapCallback}) async {
-    var marker = (Marker(
-      markerId: MarkerId('garden' + garden.reference.id),
-      position: garden.getLatLng(),
-      icon: _icons['garden'],
-      onTap: () {
-        onTapCallback(garden);
-      },
-    ));
-
+    var marker;
+    if(alreadyExists) {
+      marker = (Marker(
+        markerId: MarkerId('garden' + garden.reference.id),
+        position: LatLng(garden.getLatLng().latitude - 0.0002, garden.getLatLng().longitude - 0.0002),
+        icon: _icons['garden'],
+        onTap: () {
+          onTapCallback(garden);
+        },
+      ));
+    } else {
+      marker = (Marker(
+        markerId: MarkerId('garden' + garden.reference.id),
+        position: garden.getLatLng(),
+        icon: _icons['garden'],
+        onTap: () {
+          onTapCallback(garden);
+        },
+      ));
+    }
     return marker;
   }
 
