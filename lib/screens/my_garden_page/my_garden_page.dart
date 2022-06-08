@@ -46,6 +46,7 @@ class _MyGardenState extends State<MyGarden> {
                 showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
+                      scrollable: true,
                           title: const Text('Mein Garten'),
                           content: const Text(
                               'Unter “Mein Garten” siehst Du eine Zusammenfassung der Lebensräume, die Du in Deinem Garten registriert hast. Unter den drei Punkten oben rechts kannst Du den aktuell angezeigten Garten wechseln, deine Gärten bearbeiten oder einen neuen Garten hinzufügen.'),
@@ -165,9 +166,9 @@ class _MyGardenState extends State<MyGarden> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const Text(
-                          'Hallo\n\nHier siehst du die Übersicht über deinen Garten.\n'
-                          'Damit du Lebensräume in deinem Garten hinzufügen kannst '
-                          'und dich mit anderen Gärtnern vernetzen kannst musst du zuerst einen Garten erstellen.',
+                          'Hallo\n\nHier siehst Du die Übersicht über Deinen Garten.\n'
+                          'Damit Du Deinem Garten Lebensräume hinzufügen kannst, '
+                          'und Dich mit anderen Gärtnern vernetzen kannst, musst Du zuerst einen Garten erstellen.',
                           style: TextStyle(fontSize: 15)),
                       const SizedBox(height: 30),
                       ElevatedButton(
@@ -226,10 +227,10 @@ class _MyGardenState extends State<MyGarden> {
                         textAlign: TextAlign.center,
                       ),
                       const Text(
-                          'Hier sehen Sie die Lebenräume, die Sie registriert haben. '
+                          'Hier siehst Du die Lebenräume, die Du registriert hast. '
                           'Die Menge der einzelnen Lebensräume wird je nach Typ unterschiedlich berechnet. '
-                          'Je mehr unterschiedliche Lebensräume in ihrem Garten vorhanden sind, '
-                          'desto grösser ist die Anzahl der Arten, die in Ihrem Garten vorkommen könnten.'),
+                          'Je mehr unterschiedliche Lebensräume in Deinem Garten vorhanden sind, '
+                          'desto grösser ist die Anzahl der Arten, die in Deinem Garten vorkommen könnten.'),
                       const SizedBox(height: 20),
                       CirclesOverview(context, garden),
                       const SizedBox(height: 15.0),
@@ -257,7 +258,7 @@ class _MyGardenState extends State<MyGarden> {
                 ),
                 const Padding(
                   padding: EdgeInsets.only(right: 30, left: 30, top: 30),
-                  child: Text('Lebensräume in Ihrem Garten suchen',
+                  child: Text('Lebensräume in Deinem Garten suchen',
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 ),

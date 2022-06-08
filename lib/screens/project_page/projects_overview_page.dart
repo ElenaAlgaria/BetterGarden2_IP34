@@ -68,6 +68,7 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
                 showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
+                      scrollable: true,
                           title: const Text('Vernetzungsprojekte'),
                           content: const Text(
                               'Auf dieser Seite siehst Du die Vernetzungsprojekte, in denen Du bereits Mitglied bist und jene, zu denen Du beitreten kannst. Die Mitglieder eines Vernetzungsprojekts können sich über die Pinnwand der Projektseite austauschen.\n\nÜber ein Vernetzungsprojekt schliesst Du dich mit anderen Gärtner*innen in Deiner Umgebung zusammen, um gemeinsam eine Art- oder einer Gruppe von Arten zu fördern. Dadurch knüpft Ihr ein Netz aus Lebensräumen, das immer dichter wird, je mehr Leute beitreten. Infos wie Du eine Art fördern kannst, erhältst Du unter “Arten”.'),
@@ -207,7 +208,15 @@ class _ProjectsOverviewPageState extends State<ProjectsOverviewPage>
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => CreateProjectPage(),
+                  builder: (context) => CreateProjectPage(
+                    onConnectionProjectAdded: (newConnectionProject) {
+                      setState(() {
+                        ProjectsOverviewPage();
+                        //todo set DropdownButton2 value to newConnectionProject garden (this should switch alswell "Provider.of<Garden>(context, listen: false)
+                        //                       .switchGarden(garden);"
+                      });
+                    },
+                  ),
                 ),
               );
             },
