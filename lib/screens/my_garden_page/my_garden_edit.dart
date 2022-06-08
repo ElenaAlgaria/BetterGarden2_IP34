@@ -148,7 +148,7 @@ class _MyGardenEditState extends State<MyGardenEdit> {
                   initialValue:
                       mapInteractions.lastSelectedAddress ?? garden.street,
                   decoration: const InputDecoration(
-                      labelText: 'Garten Adresse',
+                      labelText: 'Gartenadresse',
                       hintText: 'Strasse Nr, PLZ Ort',
                       contentPadding: EdgeInsets.symmetric(vertical: 4)),
                   onSaved: (value) {

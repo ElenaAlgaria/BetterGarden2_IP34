@@ -74,54 +74,58 @@ class _DetailViewPageInformationObjectState
               ],
             ),
           ),
-          CarouselSlider(
-            options: CarouselOptions(
-                enlargeCenterPage: true,
-                onPageChanged: (index, reason) {
-                  updateCopyrightAndCaption(index);
-                },
-                enableInfiniteScroll: false,
-                autoPlay: true,
-                autoPlayInterval: const Duration(seconds: 10)),
-            items: images,
-          ),
-
-          /*ServiceProvider.instance.imageService
-              .getImage(widget.object.name, widget.object.type, height: 150),*/
-          Align(
-            alignment: Alignment.centerRight,
-            child: Container(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 20, right: 40, top: 0, bottom: 0),
-                child: Text(
-                  '© ' +
-                          getCopyrightName(widget.object.name,
-                              imageNr: currentImageNr) ??
-                      '',
-                ),
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Container(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 40, right: 40, bottom: 15),
-                child: Text(getCaption(widget.object.name, imageNr: currentImageNr) ?? '',
-                    style: const TextStyle(fontStyle: FontStyle.italic)),
-              ),
-            ),
-          ),
           Expanded(
             child: ListView(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
               children: [
+                CarouselSlider(
+                  options: CarouselOptions(
+                      enlargeCenterPage: true,
+                      onPageChanged: (index, reason) {
+                        updateCopyrightAndCaption(index);
+                      },
+                      enableInfiniteScroll: false,
+                      autoPlay: true,
+                      autoPlayInterval: const Duration(seconds: 10)),
+                  items: images,
+                ),
+
+                /*ServiceProvider.instance.imageService
+              .getImage(widget.object.name, widget.object.type, height: 150),*/
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 20, right: 40, top: 0, bottom: 0),
+                      child: Text(
+                        '© ' +
+                                getCopyrightName(widget.object.name,
+                                    imageNr: currentImageNr) ??
+                            '',
+                      ),
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 40, right: 40, bottom: 15),
+                      child: Text(
+                          getCaption(widget.object.name,
+                                  imageNr: currentImageNr) ??
+                              '',
+                          style: const TextStyle(fontStyle: FontStyle.italic)),
+                    ),
+                  ),
+                ),
                 _headRow(),
                 const SizedBox(height: 10),
                 MarkdownBody(
-                  data: widget.object.description,
-                  onTapLink: (text, link, title) => launchUrlString(link)
-                ),
+                    data: widget.object.description,
+                    onTapLink: (text, link, title) => launchUrlString(link)),
                 const SizedBox(
                   height: 20,
                 ),

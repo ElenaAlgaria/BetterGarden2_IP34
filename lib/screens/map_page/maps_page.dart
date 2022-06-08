@@ -542,7 +542,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
                     TextFieldWithDescriptor(
                         'Gartentyp', Text(_tappedGarden.gardenType ?? '')),
                     TextFieldWithDescriptor(
-                        'Garten Adresse', Text(_tappedGarden.street ?? '')),
+                        'Gartenadresse', Text(_tappedGarden.street ?? '')),
                     TextFieldWithDescriptor(
                       'Besitzer',
                       FutureBuilder(

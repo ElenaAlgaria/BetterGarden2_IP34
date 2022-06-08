@@ -132,7 +132,7 @@ class _AccountPage extends State<AccountPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  TextFieldWithDescriptor('Benutzername', Text(user.nickname)),
+                  TextFieldWithDescriptor('Username', Text(user.nickname)),
                   TextFieldWithDescriptor('Email', Text(user.mail)),
                 ],
               ),
