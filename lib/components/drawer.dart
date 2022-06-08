@@ -128,16 +128,27 @@ class MyDrawer extends StatelessWidget {
                             ListTile(
                               title: const Text('Vernetzungsprojekte'),
                               onTap: () {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        ProjectsOverviewPage(),
-                                    settings: const RouteSettings(
-                                      arguments: '',
+                                if (Provider.of<User>(context, listen: false)
+                                    .isLoggedIn) {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          ProjectsOverviewPage(),
+                                      settings: const RouteSettings(
+                                        arguments: '',
+                                      ),
                                     ),
-                                  ),
-                                );
+                                  );
+                                } else {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => WhiteRedirectPage(
+                                            'Bitte melde Dich zuerst an',
+                                            LoginPage())),
+                                  );
+                                }
                               },
                             ),
                             ListTile(
