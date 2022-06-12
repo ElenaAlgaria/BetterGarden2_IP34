@@ -8,7 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-/// A service which load all users and stores them
+/// A service which loads all [User] at once and stores them.
 class UserService extends ChangeNotifier {
   final List<User> _users = [];
 
@@ -16,7 +16,9 @@ class UserService extends ChangeNotifier {
 
   StorageProvider _storage;
 
-  /// init the service, should only be used once
+  /// Initializes the service [UserService].
+  ///
+  /// Should only be used once.
   UserService({StorageProvider storageProvider}) {
     _storage = storageProvider ?? StorageProvider.instance;
     _streamSubscription = _storage.database
@@ -25,12 +27,14 @@ class UserService extends ChangeNotifier {
         .listen(_updateElements);
   }
 
+  /// Gets called when object is removed from the widget tree permanently.
   @override
   void dispose() {
     _streamSubscription.cancel();
     super.dispose();
   }
 
+  /// Updates all [User].
   void _updateElements(QuerySnapshot snapshots) {
     _users.clear();
     for (final DocumentSnapshot snapshot in snapshots.docs) {
@@ -39,22 +43,22 @@ class UserService extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Returns a list of all registered Users
+  /// Returns a list of all registered [User].
   List<User> getAllUsers() {
     return _users;
   }
 
-  /// returns a single User referenced by the provided reference
+  /// Returns a single [User] referenced by the provided [reference].
   User getUserByReference(DocumentReference reference) {
     return _users?.where((element) => element.reference == reference)?.first;
   }
 
-  /// returns a single User referenced by the provided reference
+  /// Returns a single [User] referenced by the provided [reference] (uuid).
   User getUserByUuid(DocumentReference reference) {
     return _users?.where((element) => element.reference == reference)?.first;
   }
 
-  /// returns a single User referenced by the provided reference
+  /// Deletes a [User] referenced by that [user].
   Future<void> deleteUserAccount(User user) async {
     if (user.reference != null) {
       if (user.imageURL != null && user.imageURL.isNotEmpty) {

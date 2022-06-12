@@ -75,9 +75,11 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    final latLngList = <LatLng>{};
     _allGardens = ServiceProvider.instance.gardenService.getAllGardens();
     for (var g in _allGardens) {
-      ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(g,
+      if(!latLngList.contains(g.getLatLng())) {
+      ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(g, false,
           onTapCallback: (element) {
         setState(() {
           _tappedGarden = element;
@@ -88,6 +90,21 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
           allGardenMarkers.add(marker);
         });
       });
+      latLngList.add(g.getLatLng());
+      } else {
+        ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(g, true,
+            onTapCallback: (element) {
+              setState(() {
+                _tappedGarden = element;
+              });
+              displayModalBottomSheetGarden(context);
+            }).then((marker) {
+          setState(() {
+            allGardenMarkers.add(marker);
+          });
+        });
+        latLngList.add(g.getLatLng());
+      }
     }
 
     initializeConnectionProjectMarkers();
@@ -119,7 +136,7 @@ class _MapsPageState extends State<MapsPage> with TickerProviderStateMixin {
   void addNewConnectionProjectMarker() {
     _allGardens = ServiceProvider.instance.gardenService.getAllGardens();
     for (var g in _allGardens) {
-      ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(g,
+      ServiceProvider.instance.mapMarkerService.getGardenMarkerSet(g, false,
           onTapCallback: (element) {
         setState(() {
           _tappedGarden = element;

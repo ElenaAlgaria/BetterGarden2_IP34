@@ -7,7 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
-/// a service which loads all [BiodiversityMeasure] at once and stores them
+/// A service which loads all [BiodiversityMeasure] at once and stores them.
 class BiodiversityService extends ChangeNotifier {
   StreamSubscription _streamSubscription;
   final List<BiodiversityMeasure> _measures = [];
@@ -15,7 +15,9 @@ class BiodiversityService extends ChangeNotifier {
   bool _initialized = false;
   final StorageProvider _storage;
 
-  /// initializer for the service
+  /// Initializes the service [BiodiversityService].
+  ///
+  /// Should only be used once.
   BiodiversityService(
       {StorageProvider storageProvider, ServiceProvider serviceProvider})
       : _storage = storageProvider ?? StorageProvider.instance {
@@ -26,15 +28,17 @@ class BiodiversityService extends ChangeNotifier {
             _updateElements(snapshot, serviceProvider: serviceProvider));
   }
 
-  /// whether the service is ready and has fetched data from the server
+  /// Returns `true` if the service is ready and has fetched data from the server.
   bool get isInitialized => _initialized;
 
+  /// Gets called when object is removed from the widget tree permanently.
   @override
   Future<void> dispose() async {
     await _streamSubscription.cancel();
     super.dispose();
   }
 
+  /// Updates all [BiodiversityMeasure] elements.
   void _updateElements(QuerySnapshot snapshots,
       {ServiceProvider serviceProvider}) {
     _measures.clear();
@@ -51,7 +55,7 @@ class BiodiversityService extends ChangeNotifier {
     _initialized = true;
   }
 
-  /// returns a list of [BiodiversityMeasure] which have the given type
+  /// Returns a list of all [BiodiversityMeasure] that have the given [dimension].
   List<BiodiversityMeasure> getBiodiversityObjectList(String dimension) {
     return _measures
         .where((element) =>
@@ -59,12 +63,12 @@ class BiodiversityService extends ChangeNotifier {
         .toList();
   }
 
-  /// returns the complete list of [BiodiversityMeasure]
+  /// Returns the complete list of [BiodiversityMeasure].
   List<BiodiversityMeasure> getFullBiodiversityObjectList() {
     return _measures.toList();
   }
 
-  /// returns the type of a [BiodiversityMeasure] identified by the given name
+  /// Returns the type of a [BiodiversityMeasure] identified by the given [name].
   Future<String> getTypeOfObject(String name) async {
     while (!_initialized) {
       await Future.delayed(const Duration(milliseconds: 100));
@@ -78,8 +82,8 @@ class BiodiversityService extends ChangeNotifier {
     }
   }
 
-  /// returns the measure type of a [BiodiversityMeasure]
-  /// identified by the given name e.g. point
+  /// Returns the measure type of a [BiodiversityMeasure]
+  /// identified by the given [name] e.g. point.
   Future<String> getMeasureOfObject(String name) async {
     while (!_initialized) {
       await Future.delayed(const Duration(milliseconds: 100));
@@ -93,7 +97,7 @@ class BiodiversityService extends ChangeNotifier {
     }
   }
 
-  /// returns the [BiodiversityMeasure] identified by the provided reference
+  /// Returns the [BiodiversityMeasure] identified by the provided [reference].
   BiodiversityMeasure getBiodiversityMeasureByReference(
       DocumentReference reference) {
     try {
@@ -103,7 +107,7 @@ class BiodiversityService extends ChangeNotifier {
     }
   }
 
-  /// returns the [BiodiversityMeasure] identified by the name
+  /// Returns the [BiodiversityMeasure] identified by the [name].
   BiodiversityMeasure getBiodiversityMeasureByName(String name) {
     try {
       return _measures.where((element) => element.name == name).first;
@@ -112,7 +116,7 @@ class BiodiversityService extends ChangeNotifier {
     }
   }
 
-  /// returns a list of all distinct classes all species are in
+  /// Returns a list of all distinct classes where all species are in.
   List<String> getAllClasses() {
     return _classes == null ? [] : _classes.toList();
   }

@@ -74,18 +74,35 @@ class MapMarkerService extends ChangeNotifier {
 
   void setMarker() {}
 
-  /// Returns orange garden marker
-  Future<Marker> getGardenMarkerSet(Garden garden,
+  /// Returns a set of all [garden] markers.
+  ///
+  /// The location of marker is slightly changed
+  /// if there already exists a [garden] marker
+  /// on the same position. For this purpose there
+  /// is the parameter [alreadyExists].
+  Future<Marker> getGardenMarkerSet(Garden garden, bool alreadyExists,
       {Function(Garden element) onTapCallback}) async {
-    var marker = (Marker(
-      markerId: MarkerId('garden' + garden.reference.id),
-      position: garden.getLatLng(),
-      icon: _icons['garden'],
-      onTap: () {
-        onTapCallback(garden);
-      },
-    ));
-
+    var marker;
+    if (alreadyExists) {
+      marker = (Marker(
+        markerId: MarkerId('garden' + garden.reference.id),
+        position: LatLng(garden.getLatLng().latitude - 0.0002,
+            garden.getLatLng().longitude - 0.0002),
+        icon: _icons['garden'],
+        onTap: () {
+          onTapCallback(garden);
+        },
+      ));
+    } else {
+      marker = (Marker(
+        markerId: MarkerId('garden' + garden.reference.id),
+        position: garden.getLatLng(),
+        icon: _icons['garden'],
+        onTap: () {
+          onTapCallback(garden);
+        },
+      ));
+    }
     return marker;
   }
 
@@ -145,7 +162,7 @@ class MapMarkerService extends ChangeNotifier {
       }
 
       latLngList.add(LatLng(midLat, midLng));
-      
+
       list.add(Marker(
         markerId: MarkerId(midLat.toString() +
             midLng.toString() +
