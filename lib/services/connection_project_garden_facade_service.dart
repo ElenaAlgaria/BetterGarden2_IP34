@@ -17,6 +17,7 @@ class ConnectionProjectGardenFacadeService extends ChangeNotifier {
     super.dispose();
   }
 
+  /// returns boolean if a garden is in range of a connectionProject
   bool isGardenInRangeOfConnectionProject(
       Garden garden, ConnectionProject connectionProject) {
     var radius = ServiceProvider.instance.speciesService
@@ -30,12 +31,14 @@ class ConnectionProjectGardenFacadeService extends ChangeNotifier {
     });
   }
 
+  /// deletes all gardens from user and deletes the gardens themselves
   void deleteAllGardensFromUser(User user) {
     ServiceProvider.instance.gardenService
         .getAllGardensFromUser(user)
         .forEach((element) => fullyDeleteGarden(element));
   }
 
+  /// deletes garden and all references to it
   void fullyDeleteGarden(Garden garden) {
     ServiceProvider.instance.gardenService.deleteGarden(garden);
     ServiceProvider.instance.userService
@@ -45,12 +48,14 @@ class ConnectionProjectGardenFacadeService extends ChangeNotifier {
     deleteGardenFromAllConnectionProjects(garden);
   }
 
+  /// gets all gardens of a [connectionProject]
   List<Garden> getAllGardensOfConnectionProject(
       ConnectionProject connectionProject) {
     return connectionProject.gardens.map((element) =>
         ServiceProvider.instance.gardenService.getGardenByReference(element));
   }
 
+  /// deletes the reference to a [garden] from all connectionProjects
   void deleteGardenFromAllConnectionProjects(Garden garden) {
     var projectsToDelete = <ConnectionProject>[];
     getAllConnectionProjectsOfGarden(garden)?.forEach((element) {
@@ -64,6 +69,7 @@ class ConnectionProjectGardenFacadeService extends ChangeNotifier {
         .deleteConnectionProject(element));
   }
 
+  /// gets all connectionProjects of [garden]
   List<ConnectionProject> getAllConnectionProjectsOfGarden(Garden garden) {
     return ServiceProvider.instance.connectionProjectService
         .getAllConnectionProjects()

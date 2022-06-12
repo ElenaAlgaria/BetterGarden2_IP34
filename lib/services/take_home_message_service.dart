@@ -12,7 +12,7 @@ class TakeHomeMessageService extends ChangeNotifier {
   final List<TakeHomeMessage> _messages = [];
   final StorageProvider _storage;
 
-  /// initializer for the service
+  /// initializer for the service. Subscribes to the [storageProvider]
   TakeHomeMessageService({StorageProvider storageProvider})
       : _storage = storageProvider ?? StorageProvider.instance {
     _streamSubscription = _storage.database
@@ -21,12 +21,14 @@ class TakeHomeMessageService extends ChangeNotifier {
         .listen(_updateElements);
   }
 
+  /// Cancels the [_streamSubscription]
   @override
   Future<void> dispose() async {
     await _streamSubscription.cancel();
     super.dispose();
   }
 
+  /// Updates the take home messages according to the [snapshots]
   void _updateElements(QuerySnapshot snapshots) {
     _messages.clear();
     for (final DocumentSnapshot snapshot in snapshots.docs) {

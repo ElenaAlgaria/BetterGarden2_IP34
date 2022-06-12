@@ -110,7 +110,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   children: [
                     Row(
                       children: [
-                        TextButton(
+                        Flexible(child: TextButton(
                           onPressed: () async {
                             final _read = await showPrivacyAgreement(context);
                             setState(() {
@@ -119,7 +119,7 @@ class _RegisterFormState extends State<RegisterForm> {
                           },
                           child: const Text(
                               'Ich habe das Privacy-Agreement gelesen'),
-                        ),
+                        ),),
                         Checkbox(
                           value: field.value,
                           onChanged: (value) => field.didChange(value),

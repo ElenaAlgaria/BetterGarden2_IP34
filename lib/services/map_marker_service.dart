@@ -10,12 +10,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-/// a service which loads and stores all map markers
+/// A service which loads and stores all map markers
 class MapMarkerService extends ChangeNotifier {
   final Map<String, BitmapDescriptor> _icons = <String, BitmapDescriptor>{};
   bool _initialized = false;
 
-  ///init of the service, should only be used once
+  /// Init of the service, should only be used once
   MapMarkerService({StorageProvider storageProvider}) {
     _loadIcons();
     updateElements();
@@ -31,6 +31,7 @@ class MapMarkerService extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Loads all marker-icons from resources
   Future<void> _loadIcons() async {
     BitmapDescriptor gardenIcon;
     BitmapDescriptor connectionProjectIcon;
@@ -105,6 +106,7 @@ class MapMarkerService extends ChangeNotifier {
     return marker;
   }
 
+  /// Returns green garden marker
   Future<Marker> getJoinableMarker(Garden garden,
       {Function(Garden element) onTapCallback}) async {
     while (!_initialized) {
@@ -122,7 +124,7 @@ class MapMarkerService extends ChangeNotifier {
     return marker;
   }
 
-  /// returns a set of all ConnectionProjectMarkers
+  /// Returns a set of all ConnectionProjectMarkers
   Set<Marker> getConnectionProjectMarkerSet(
       {Function(ConnectionProject element) onTapCallback}) {
     final list = <Marker>{};
@@ -138,6 +140,7 @@ class MapMarkerService extends ChangeNotifier {
       var midLat;
       var midLng;
 
+      /// Calculates center of all connection projects
       if (allGardenCoordinates.length > 1) {
         var maxLat = allGardenCoordinates.map((e) => e.latitude).reduce(max);
         var minLat = allGardenCoordinates.map((e) => e.latitude).reduce(min);
@@ -152,7 +155,7 @@ class MapMarkerService extends ChangeNotifier {
         logging.log('ConnectionProject without gardens in service detected: ' +
             project.title);
       }
-
+      /// Makes sure that connection project markers aren't on top of each other
       while (latLngList.contains(LatLng(midLat, midLng))) {
         midLat -= 0.00005;
         midLng -= 0.00005;
