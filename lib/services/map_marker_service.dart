@@ -73,14 +73,20 @@ class MapMarkerService extends ChangeNotifier {
 
   void setMarker() {}
 
-  /// returns a set of all markers
+  /// Returns a set of all [garden] markers.
+  ///
+  /// The location of marker is slightly changed
+  /// if there already exists a [garden] marker
+  /// on the same position. For this purpose there
+  /// is the parameter [alreadyExists].
   Future<Marker> getGardenMarkerSet(Garden garden, bool alreadyExists,
       {Function(Garden element) onTapCallback}) async {
     var marker;
-    if(alreadyExists) {
+    if (alreadyExists) {
       marker = (Marker(
         markerId: MarkerId('garden' + garden.reference.id),
-        position: LatLng(garden.getLatLng().latitude - 0.0002, garden.getLatLng().longitude - 0.0002),
+        position: LatLng(garden.getLatLng().latitude - 0.0002,
+            garden.getLatLng().longitude - 0.0002),
         icon: _icons['garden'],
         onTap: () {
           onTapCallback(garden);
@@ -163,7 +169,7 @@ class MapMarkerService extends ChangeNotifier {
       //     project.creationDate.toString() +
       //     '/' +
       //     project.gardens.length.toString());
-      
+
       list.add(Marker(
         markerId: MarkerId(midLat.toString() +
             midLng.toString() +
