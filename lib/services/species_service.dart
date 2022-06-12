@@ -7,7 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
-/// A service which loads all species and stores them
+/// service for species data
 class SpeciesService extends ChangeNotifier {
   final List<Species> _species = [];
   final List<String> _classes = [];
@@ -26,12 +26,14 @@ class SpeciesService extends ChangeNotifier {
             _updateElements(snapshot, serviceProvider: serviceProvider));
   }
 
+  /// discard (free up) resources
   @override
   Future<void> dispose() async {
     await _streamSubscription.cancel();
     super.dispose();
   }
 
+  /// updates local data from database and notifies listeners
   void _updateElements(QuerySnapshot snapshots,
       {ServiceProvider serviceProvider}) {
     _species.clear();
@@ -43,19 +45,19 @@ class SpeciesService extends ChangeNotifier {
     _initialized = true;
   }
 
-  ///returns all Species associated with the given type
+  /// returns all species  associated with the given type
   List<Species> getSpeciesObjectList(String type) {
     return _species
         .where((element) => element.type.toLowerCase() == type.toLowerCase())
         .toList();
   }
 
-  ///returns all Species
+  /// returns all Species from local data as list
   List<Species> getFullSpeciesObjectList() {
     return _species.toList();
   }
 
-  /// returns the type of a given Species
+  /// lookup, returns the type of a given species
   Future<String> getTypeOfObject(String name) async {
     while (!_initialized) {
       await Future.delayed(const Duration(milliseconds: 100));

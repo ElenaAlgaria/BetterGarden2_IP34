@@ -108,7 +108,7 @@ class _EditProfilePage extends State<EditProfilePage> {
                 child: TextFormField(
                   initialValue: user.nickname,
                   decoration: const InputDecoration(
-                      labelText: 'Benutzername',
+                      labelText: 'Username',
                       contentPadding: EdgeInsets.symmetric(vertical: 4)),
                   onSaved: (value) => _nickname = value,
                 ),
@@ -125,7 +125,7 @@ class _EditProfilePage extends State<EditProfilePage> {
               ),
               SwitchListTile(
                   contentPadding: const EdgeInsets.all(0),
-                  title: const Text('Benutzername auf Karte anzeigen'),
+                  title: const Text('Username auf Karte anzeigen'),
                   value: _showNameOnMap,
                   onChanged: (value) => {
                         setState(() => {_showNameOnMap = value})

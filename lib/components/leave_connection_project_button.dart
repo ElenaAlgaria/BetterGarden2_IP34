@@ -5,6 +5,8 @@ import 'package:biodiversity/components/garden_dropdown_widget.dart';
 import 'package:biodiversity/models/connection_project.dart';
 import 'package:biodiversity/models/garden.dart';
 import 'package:biodiversity/models/user.dart';
+import 'package:biodiversity/screens/map_page/maps_page.dart';
+import 'package:biodiversity/screens/project_page/projects_overview_page.dart';
 import 'package:biodiversity/services/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,9 +14,10 @@ import 'package:provider/provider.dart';
 class leaveConnectionProjectButton extends StatefulWidget {
   final ConnectionProject connectionProject;
   final ValueChanged<ConnectionProject> onConnectionProjectDeleted;
+  final bool connectionProjectPage;
 
   leaveConnectionProjectButton(
-      {Key key, this.connectionProject, this.onConnectionProjectDeleted})
+      {Key key, this.connectionProject, this.onConnectionProjectDeleted, this.connectionProjectPage})
       : super(key: key);
 
   @override
@@ -43,7 +46,7 @@ class leaveConnectionProjectButtonState
               Garden _selectedGarden;
               if (_ownedGardensInProject.length == 1) {
                 await leaveConnectionProject(
-                    context, _ownedGardensInProject.first);
+                    context, _ownedGardensInProject.first, widget.connectionProjectPage);
               } else {
                 showDialog(
                     context: context,
@@ -92,7 +95,7 @@ class leaveConnectionProjectButtonState
                                             child: ElevatedButton.icon(
                                               onPressed: () async {
                                                 return await leaveConnectionProject(
-                                                    context, _selectedGarden);
+                                                    context, _selectedGarden, widget.connectionProjectPage);
                                               },
                                               label: const Text('Verlassen'),
                                               icon: const Icon(
@@ -112,7 +115,7 @@ class leaveConnectionProjectButtonState
   }
 
   Future<void> leaveConnectionProject(
-      BuildContext context, Garden gardenToRemove) async {
+      BuildContext context, Garden gardenToRemove, bool connectionProjectPage) async {
     if (await confirm(context,
         content: Text(
             'Möchtest du das Vernetzungsprojekt \"${widget.connectionProject.title}\" wirklich verlassen?'),
@@ -123,9 +126,28 @@ class leaveConnectionProjectButtonState
       if (widget.connectionProject.gardens.isEmpty) {
         await ServiceProvider.instance.connectionProjectService
             .deleteConnectionProject(widget.connectionProject);
+        // Navigator
+        if(connectionProjectPage == true) {
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) =>
+                  ProjectsOverviewPage()));
+        } else {
+          Navigator.pop(context);
+        }
         widget.onConnectionProjectDeleted(widget.connectionProject);
+      } else {
+        if(connectionProjectPage == true) {
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) =>
+                  ProjectsOverviewPage()));
+        } else {
+          Navigator.pop(context);
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) =>
+                  MapsPage(garden: gardenToRemove)));
+        }
       }
-      Navigator.of(context).pop();
+
       return logging.log(
           'left connectionProject ${widget.connectionProject.title} with garden ${gardenToRemove.name}');
     }
