@@ -145,7 +145,6 @@ class MapMarkerService extends ChangeNotifier {
         var minLng = allGardenCoordinates.map((e) => e.longitude).reduce(min);
         midLat = (maxLat + minLat) / 2;
         midLng = (maxLng + minLng) / 2;
-        //latLngList.add(LatLng(midLat, midLng));
       } else if (allGardenCoordinates.length == 1) {
         midLat = allGardenCoordinates.elementAt(0).latitude - 0.0002;
         midLng = allGardenCoordinates.elementAt(0).longitude - 0.0002;
@@ -160,15 +159,6 @@ class MapMarkerService extends ChangeNotifier {
       }
 
       latLngList.add(LatLng(midLat, midLng));
-
-      // logging.log('Create connection project marker at ' +
-      //     midLat.toString() +
-      //     '/' +
-      //     midLng.toString() +
-      //     '/' +
-      //     project.creationDate.toString() +
-      //     '/' +
-      //     project.gardens.length.toString());
 
       list.add(Marker(
         markerId: MarkerId(midLat.toString() +
