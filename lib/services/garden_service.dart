@@ -13,13 +13,13 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
-/// A service which loads all gardens and stores them
+/// A service which loads all [_gardens] and stores them
 class GardenService extends ChangeNotifier {
   final List<Garden> _gardens = [];
   StreamSubscription _streamSubscription;
   StorageProvider _storage;
 
-  /// init the service, should only be used once
+  /// init the service, should only be used once. Subscribes to [storageProvider]
   GardenService({StorageProvider storageProvider}) {
     _storage = storageProvider ?? StorageProvider.instance;
     _streamSubscription = _storage.database
@@ -28,12 +28,14 @@ class GardenService extends ChangeNotifier {
         .listen(_updateElements);
   }
 
+  /// ends gardenService [_streamSubscription]
   @override
   void dispose() {
     _streamSubscription.cancel();
     super.dispose();
   }
 
+  /// update all gardens from given [snapshots]
   void _updateElements(QuerySnapshot snapshots) {
     _gardens.clear();
     for (final DocumentSnapshot snapshot in snapshots.docs) {
@@ -42,7 +44,7 @@ class GardenService extends ChangeNotifier {
     notifyListeners();
   }
 
-  ///handles the routing to MyGardenAdd, if logged in: redirects to MyGardenAdd, if not: redirect to LoginPage
+  ///handles the routing to [MyGardenAdd], if logged in: redirects to MyGardenAdd, if not: redirect to LoginPage
   void handle_create_garden(BuildContext context, {LatLng startingPosition}) {
     if (Provider.of<User>(context, listen: false).isLoggedIn) {
       Navigator.push(
@@ -60,17 +62,17 @@ class GardenService extends ChangeNotifier {
     }
   }
 
-  /// Returns a list of Gardens which the provided User has
+  /// Returns a list of Gardens which the provided [user] has
   List<Garden> getAllGardensFromUser(User user) {
     return _gardens.where((element) => user.gardenReferences.contains(element.reference)).toList();
   }
 
-  /// Returns a list of all registered Gardens
+  /// Returns a list of all registered Gardens [_gardens]
   List<Garden> getAllGardens() {
     return _gardens;
   }
 
-  ///Returns all elements inside the users active garden
+  ///Returns all elements inside the users active [garden]
   List<BiodiversityMeasure> getAllBiodiversityMeasuresFromGarden(
       Garden garden) {
     final result = <BiodiversityMeasure>[];
@@ -81,13 +83,13 @@ class GardenService extends ChangeNotifier {
     return result;
   }
 
-  /// returns a single Garden referenced by the provided reference
+  /// returns a single Garden referenced by the provided [reference]
   Garden getGardenByReference(DocumentReference reference) {
     return _gardens.firstWhere((element) => element.reference == reference,
         orElse: () => null);
   }
 
-  /// returns the nickname of the garden owner if showGardenOnMap is set to true for this user
+  /// returns the nickname of the [garden] owner if showGardenOnMap is set to true for this user
   Future<String> getNicknameOfOwner(Garden garden) async {
     final doc = await _storage.database.doc('users/${garden.owner}').get();
     if (doc != null && doc.exists) {
@@ -100,7 +102,7 @@ class GardenService extends ChangeNotifier {
     return 'Anonym';
   }
 
-  ///function to delete the garden from a user
+  ///function to delete the [garden] from a user
   Future<void> deleteGarden(Garden garden) async {
     if (garden.reference != null) {
       if (garden.imageURL != null && garden.imageURL.isNotEmpty) {
