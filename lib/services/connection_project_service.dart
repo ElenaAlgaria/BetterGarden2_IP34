@@ -23,12 +23,14 @@ class ConnectionProjectService extends ChangeNotifier {
         .listen(_updateElements);
   }
 
+  /// cancels the stream subscription
   @override
   void dispose() {
     _streamSubscription.cancel();
     super.dispose();
   }
 
+  ///update the elements of the connection project list
   void _updateElements(QuerySnapshot snapshots) {
     _connectionProjects.clear();
     for (final DocumentSnapshot snapshot in snapshots.docs) {
@@ -81,7 +83,7 @@ class ConnectionProjectService extends ChangeNotifier {
     notifyListeners();
     return logging.log('Deleted ConnectionProject' + connectionProject.title);
   }
-
+  ///add new Connection Project to the list of connectionProjects
   void addCreatedConnectionProject(ConnectionProject newConnectionProject) {
     _connectionProjects.add(newConnectionProject);
     notifyListeners();
